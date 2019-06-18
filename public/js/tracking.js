@@ -18,7 +18,7 @@ $(document).ready(function () {
         operating_system_id: getOS(),
         device_type_id: getDevice(),
         browser_id: getBrowser(),
-        referrer: getReference()
+        acquistion_id: getReference()
       };
 
     fetch('https://capstone-man.herokuapp.com/api/session', {
