@@ -1,0 +1,22 @@
+const Sequelize = require('sequelize');
+const db = require('../config/db');
+
+const Device = db.define('page', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    page_url: {
+        type: String
+    },
+    shop_id: {
+        type: Sequelize.INTEGER
+    },
+}, {
+        timestamps: false,
+        freezeTableName: true
+    }
+);
+
+module.exports = Device;
