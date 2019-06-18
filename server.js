@@ -45,6 +45,8 @@ app.use('/api/session', require('./routes/api/session.route'));
 app.use('/api/shopify', require('./routes/api/shopify.route'));
 app.use('/api/shop', require('./routes/api/profile.route'));
 
+app.use('/api/city', require('./routes/api/city.route'));
+app.use('/api/country', require('./routes/api/country.route'));
 
 const PORT = process.env.PORT || 3000;
 
