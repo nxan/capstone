@@ -20,4 +20,4 @@ const Country = db.define('country', {
     }
 );
 
-module.exports = Device;
+module.exports = Country;

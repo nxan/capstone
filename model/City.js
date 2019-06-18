@@ -22,4 +22,4 @@ const City = db.define('city', {
     }
 );
 
-module.exports = Device;
+module.exports = City;

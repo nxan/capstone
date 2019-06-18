@@ -52,7 +52,7 @@ router.post('/', [
             jsession_id: jsession
         }
     })
-    if(!session){
+    if(session == null){
         const {  jsession_id, user_id, session_start_time, session_end_time, entrance_page_id, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
         var sessionFields = {};
         
