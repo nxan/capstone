@@ -3,6 +3,11 @@ const db = require('../config/db');
 
 
 const Profile = db.define('shop', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     user_id: {
         type: Sequelize.INTEGER
     },

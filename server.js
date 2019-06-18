@@ -37,12 +37,13 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
+app.use('/api/profile', require('./routes/api/profile.route'));
 app.use('/api/os', require('./routes/api/os.route'));
 app.use('/api/device', require('./routes/api/device.route'));
 app.use('/api/browser', require('./routes/api/browser.route'));
 app.use('/api/session', require('./routes/api/session.route'));
 app.use('/api/shopify', require('./routes/api/shopify.route'));
-app.use('/api/shop', require('./routes/api/shop.route'));
+app.use('/api/shop', require('./routes/api/profile.route'));
 
 
 const PORT = process.env.PORT || 3000;

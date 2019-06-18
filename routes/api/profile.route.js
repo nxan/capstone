@@ -33,8 +33,8 @@ router.get('/me', auth, async (req, res) => {
 });
 
 /* ----- 
-  @route  POST api/profile
-  @desc   Create or update user profile
+  @route  POST api/shop
+  @desc   Create or update user shop
 -----*/
 
 router.post('/', [auth, [
