@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 const func = require('../func');
+
 const Session = require('../../model/Session');
+const City = require('../../model/City');
+const Device = require('../../model/Device');
+const Os = require('../../model/OperatingSystem');
+const Browser = require('../../model/Browser');
+
 /* ----- 
   @route  GET api/session
   @desc   Get all session
@@ -10,8 +16,8 @@ const Session = require('../../model/Session');
 
 router.get('/', async (req, res) => {
     try {
-        const session = await Session.findAll();                
-        res.json(session)        
+        const session = await Session.findAll();
+        res.json(session)
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server error');
@@ -52,15 +58,15 @@ router.post('/', [
             jsession_id: jsession
         }
     })
-    if(session == null){
-        const {  jsession_id, user_id, session_start_time, session_end_time, entrance_page_id, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
+    if (session == null) {
+        const { jsession_id, user_id, session_start_time, session_end_time, entrance_page_id, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
         var sessionFields = {};
-        
+
         var ip = req.headers['x-forwarded-for'];
         var location = func.getLocation(ip)
-        
+
         console.log(location)
-        sessionFields.jsession_id = req.session.id;      
+        sessionFields.jsession_id = req.session.id;
         if (user_id) sessionFields.user_id = user_id;
         if (session_start_time) sessionFields.session_start_time = session_start_time;
         if (session_end_time) sessionFields.session_end_time = session_end_time;
@@ -74,7 +80,7 @@ router.post('/', [
         if (age_id) sessionFields.age_id = age_id;
         if (gender_id) sessionFields.gender_id = gender_id;
         if (is_first_visit) sessionFields.is_first_visit = is_first_visit;
-    
+
         try {
             session = new Session(sessionFields);
             await session.save();
@@ -86,7 +92,7 @@ router.post('/', [
     } else {
         res.status(200)
     }
-    
+
 });
 
 /* ----- 
