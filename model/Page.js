@@ -8,7 +8,7 @@ const Page = db.define('page', {
         autoIncrement: true
     },
     page_url: {
-        type: String
+        type: Sequelize.STRING
     },
     shop_id: {
         type: Sequelize.INTEGER

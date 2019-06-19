@@ -4,28 +4,28 @@ const auth = require('../../middleware/auth.middleware');
 const { check, validationResult } = require('express-validator/check');
 
 
-const Profile = require('../../model/Profile');
+const Shop = require('../../model/Shop');
 const User = require('../../model/User');
 
 
 /* ----- 
-  @route  GET api/profile
-  @desc   Get logged in profile
+  @route  GET api/Shop
+  @desc   Get logged in Shop
 -----*/
-Profile.hasOne(User, { foreignKey: 'id', sourceKey: 'user_id' });
+Shop.hasOne(User, { foreignKey: 'id', sourceKey: 'user_id' });
 
 router.get('/me', auth, async (req, res) => {
     try {
-        const profile = await Profile.findOne({
+        const shop = await Shop.findOne({
             include: [{
                 model: User,
                 where: { id: req.user.id }
             }]
         });
-        if (!profile) {
-            return res.status(400).json({ message: 'There is no profile for this user' });
+        if (!shop) {
+            return res.status(400).json({ message: 'There is no Shop for this user' });
         }
-        res.status(200).json(profile);
+        res.status(200).json(shop);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -47,29 +47,29 @@ router.post('/', [auth, [
 
     const { shop_url, shop_name } = req.body;
 
-    //Build profile object
-    var profileFields = {};
-    profileFields.user_id = req.user.id;
-    if (shop_url) profileFields.shop_url = shop_url;
-    if (shop_name) profileFields.shop_name = shop_name;
+    //Build Shop object
+    var shopFields = {};
+    shopFields.user_id = req.user.id;
+    if (shop_url) shopFields.shop_url = shop_url;
+    if (shop_name) shopFields.shop_name = shop_name;
     try {
-        var profile = await Profile.findOne({
+        var shop = await Shop.findOne({
             include: [{
                 model: User,
                 where: { id: req.user.id }
             }]
         });
-        if (profile) {
-            profile.update({
+        if (shop) {
+            Shop.update({
                 attributes: ['id', 'shop_url', 'shop_name'],
-                shop_url: profileFields.shop_url,
-                shop_name: profileFields.shop_name
+                shop_url: shopFields.shop_url,
+                shop_name: shopFields.shop_name
             });
-            return res.json(profile);
+            return res.json(shop);
         } else {
-            profile = new Profile(profileFields);
-            await profile.save();
-            res.json(profile);
+            shop = new Shop(shopFields);
+            await Shop.save();
+            res.json(shop);
         }
     } catch (err) {
         console.log(err.message);
@@ -79,17 +79,17 @@ router.post('/', [auth, [
 });
 
 /* ----- 
-  @route  GET api/profile
-  @desc   Get all profile
+  @route  GET api/Shop
+  @desc   Get all Shop
 -----*/
 router.get('/', async (req, res) => {
     try {
-        const profiles = await Profile.findAll({
+        const shops = await Shop.findAll({
             include: [{
                 model: User
             }]
         });
-        res.json(profiles)
+        res.json(shops)
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server error');
@@ -97,25 +97,40 @@ router.get('/', async (req, res) => {
 });
 
 /* ----- 
-  @route  GET api/profile//user/:user_id
-  @desc   Get user profile
+  @route  GET api/Shop//user/:user_id
+  @desc   Get user Shop
 -----*/
 router.get('/user/:user_id', async (req, res) => {
     try {
-        const profile = await Profile.findOne({
+        const shop = await Shop.findOne({
             include: [{
                 model: User,
                 where: { id: req.params.user_id }
             }]
         });
-        if (!profile) {
-            return res.status(400).json({ message: 'Profile not found' });
+        if (!shop) {
+            return res.status(400).json({ message: 'Shop not found' });
         }
-        res.json(profile)
+        res.json(shop)
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server error');
     }
 });
 
+/* ----- 
+  @route  GET api/shop/url/:url
+  @desc   Get shop by url
+-----*/
+router.get('/url/:url',async (req,res)=>{
+    var url = req.param('url')
+    var shop_id = -1
+    var shop = await Shop.findOne({
+        where: {
+            shop_url:url
+        }
+    })
+    shop_id = shop.shop_id
+    res.json({shop_id:shop_id})
+})
 module.exports = router;

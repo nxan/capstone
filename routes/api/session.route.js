@@ -110,11 +110,18 @@ router.post('/', [
             sessionFields.city_id = response.data.id
         })
         //Save done
+
+        //get entrance page
+        await axios.post(process.env.DOMAIN + '/api/page',location)
+        .then(response=>{
+            sessionFields.entrance_page_id = response.data.id
+        })
+        //get done
         sessionFields.jsession_id = req.session.id;
         if (user_id) sessionFields.user_id = user_id;
         if (session_start_time) sessionFields.session_start_time = session_start_time;
         if (session_end_time) sessionFields.session_end_time = session_end_time;
-        if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
+        // if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
         if (exit_page_id) sessionFields.exit_page_id = exit_page_id;
         // if (city_id) sessionFields.city_id = city_id;
         if (device_type_id) sessionFields.device_type_id = device_type_id;

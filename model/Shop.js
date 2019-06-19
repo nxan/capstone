@@ -12,7 +12,7 @@ const Profile = db.define('shop', {
         type: Sequelize.INTEGER
     },
     shop_url: {
-        type: String
+        type: Sequelize.STRING
     },
     shop_name: {
         type: String
