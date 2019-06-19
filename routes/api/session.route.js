@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
-const func = require('../func');
+const dotenv = require('dotenv')
+dotenv.config();
 
 const Session = require('../../model/Session');
 const City = require('../../model/City');
 const Device = require('../../model/Device');
 const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
+const axios = require('axios')
 
 City.hasMany(Session, { foreignKey: 'city_id', sourceKey: 'id' });
 Session.belongsTo(City, { foreignKey: 'city_id', targetKey: 'id' });
@@ -92,17 +94,29 @@ router.post('/', [
         const { jsession_id, user_id, session_start_time, session_end_time, entrance_page_id, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
         var sessionFields = {};
 
+        //Get location by IPIFY api
         var ip = req.headers['x-forwarded-for'];
-        var location = func.getLocation(ip)
+        var api_Key = process.env.IPIFY_API_KEY;
+        var location
+        await axios.get(`https://geo.ipify.org/api/v1?apiKey=${api_Key}&ipAddress=${ip}`)
+            .then((response) =>{
+               location = response.data
+            })
+        //Get done
 
-        console.log(location)
+        //Save location and get id to save to session
+        await axios.post(process.env.DOMAIN + '/api/city',location)
+        .then(response=>{
+            sessionFields.city_id = response.data.id
+        })
+        //Save done
         sessionFields.jsession_id = req.session.id;
         if (user_id) sessionFields.user_id = user_id;
         if (session_start_time) sessionFields.session_start_time = session_start_time;
         if (session_end_time) sessionFields.session_end_time = session_end_time;
         if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
         if (exit_page_id) sessionFields.exit_page_id = exit_page_id;
-        if (city_id) sessionFields.city_id = city_id;
+        // if (city_id) sessionFields.city_id = city_id;
         if (device_type_id) sessionFields.device_type_id = device_type_id;
         if (browser_id) sessionFields.browser_id = browser_id;
         if (operating_system_id) sessionFields.operating_system_id = operating_system_id;

@@ -7,7 +7,6 @@ const request = require('request-promise');
 var favicon = require('serve-favicon')
 const db = require('./config/db');
 const bodyParser = require('body-parser')
-
 const app = express();
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
@@ -47,7 +46,7 @@ app.use('/api/shop', require('./routes/api/profile.route'));
 
 app.use('/api/city', require('./routes/api/city.route'));
 app.use('/api/country', require('./routes/api/country.route'));
-
+app.use('/api/test', require('./routes/api/test.route'));
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

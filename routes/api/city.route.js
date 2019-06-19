@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
             var cityFields = {}
             cityFields.city_name = result.location.city
             cityFields.postal_code = result.location.postalCode
-            await axios.post('http://localhost:3000/api/country', result)
+            await axios.post(process.env.DOMAIN + '/api/country', result)
                 .then(function (response) {
                     cityFields.country_id = response.data.id
                 })
