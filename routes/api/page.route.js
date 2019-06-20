@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 
 })
 router.get('/page_url/:url',async (req,res)=>{
-    var url = req.param('url')
+    var url = req.query.url
     page_id = -1
     var page = await Page.findOne({
         where:{

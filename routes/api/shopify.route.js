@@ -4,11 +4,12 @@ const dotenv = require('dotenv').config();
 const path = require('path');
 const request = require('request-promise');
 const nonce = require('nonce')();
+const axios = require('axios')
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
-const scope = 'write_products, read_script_tags, write_script_tags';
-const forwardingAddress = "https://capstone-man.herokuapp.com";
+const scope = 'read_products, write_products, read_script_tags, write_script_tags';
+const forwardingAddress = process.env.DOMAIN;
 const app = express();
 
 // var func = require('./../func')
@@ -59,20 +60,24 @@ router.get('/addScript', async (req, res) => {
                 'X-Shopify-Access-Token': accessToken,
                 "Content-Type": "application/json",
                 "Accept": "application/json"
-            };
-            console.log("shop:" + shop);
-            
+            };            
             const scriptTagBody = {
                 "script_tag": {
                     "event": "onload",
                     "src": forwardingAddress + "/api/shopify/getScript",
                 }
             };
-
+            getProductsField = {}
+            getProductsField.shop = shop
+            getProductsField.accessToken = accessToken
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders }, function (e, r, body) {
-                console.log(body);
-                res.status(200).send('Chien Tho 2');
-
+                await axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
+                .then((response)=>{
+                    var products = response.products
+                    products.forEach(element =>{
+                        console.log(shop +'/products/'+  element.handle)
+                    })
+                })
             });
         })
         .catch((error) => {
@@ -96,4 +101,28 @@ router.post('/saveInformation',async(req,res)=>{
     // var location = {ip:ip}    
     // res.send(JSON.stringify(location));
 })
+
+router.post('/products', function (req, res, next) {
+    
+    let url = 'https://' + req.body.shop + '/admin/products.json';
+
+    let options = {
+        method: 'GET',
+        uri: url,
+        json: true,
+        headers: {
+            'X-Shopify-Access-Token': req.body.accessToken,
+            'content-type': 'application/json'
+        }
+    };
+
+    request(options)
+        .then(function (parsedBody) {
+            res.json(parsedBody);
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.json(err);
+        });
+});
 module.exports = router;
