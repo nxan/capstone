@@ -91,7 +91,7 @@ router.post('/', [
         }
     })
     if (session == null) {
-        const { jsession_id, user_id, session_start_time, session_end_time, entrance_page_id, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
+        const { jsession_id, user_id, session_start_time, session_end_time, url, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
         var sessionFields = {};
 
         //Get location by IPIFY api
@@ -112,7 +112,7 @@ router.post('/', [
         //Save done
 
         //get entrance page
-        await axios.post(process.env.DOMAIN + '/api/page',location)
+        await axios.get(process.env.DOMAIN + '/api/page/page_url/'+url,)
         .then(response=>{
             sessionFields.entrance_page_id = response.data.id
         })
@@ -135,15 +135,29 @@ router.post('/', [
         try {
             session = new Session(sessionFields);
             await session.save();
+            var session_page = {}
+            session_page.session_id = session.id
+            session_page.page_id = session.entrance_page_id
+            await axios.post(process.env.DOMAIN + '/api/session_page/',session_page)
+            .then((response=>{
+                console.log(response)
+            }))
             res.json(session);
         } catch (err) {
             console.log(err.message);
             res.status(500).send('Server Error');
         }
-    } else {
-        res.status(200)
     }
-
+    
+    else {
+        var session_page = {}
+        session_page.session_id = session.id
+        session_page.page_id = session.entrance_page_id
+        await axios.post(process.env.DOMAIN + '/api/session_page/',session_page)
+        .then((response)=>{
+            console.log(response)
+        })
+    }
 });
 
 /* ----- 

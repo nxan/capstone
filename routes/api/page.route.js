@@ -8,19 +8,14 @@ dotenv.config()
 
 router.post('/', async (req, res) => {
     var url = req.body.page_url
-
-    //Remove https and get domain shop
-    var indexHttps = str.indexOf("//")
-    var urlRemovedHttp = str.substring(indexHttps + 2, str.length);
-    var indexLink = urlRemovedHttp.indexOf("/")
-    var domainShop = urlRemovedHttp.substring(0, indexLink);
-
+    
     let page = Page.findOne({
         where: {
-            page_url: urlRemovedHttp
+            page_url: url
         }
     })
-
+    var indexSlash = url.indexOf("/")    
+    var domainShop = url.substring(0,indexSlash)
 
     var shop_id
     if (page == null) {
@@ -40,5 +35,20 @@ router.post('/', async (req, res) => {
         }
     }
 
+})
+router.get('/page_url/:url',async (req,res)=>{
+    var url = req.param('url')
+    page_id = -1
+    var page = await Page.findOne({
+        where:{
+            page_url:url
+        }
+    })
+    if (page!=null){
+        res.json(page)
+    }
+    else {
+        res.json({page_id: page_id})
+    }
 })
 module.exports = router

@@ -34,7 +34,7 @@ $(document).ready(function () {
     .then(e=>{})
 })
 function getInfor() {
-    var url = window.location.pathname;
+    var url = window.location.hostname + window.location.pathname;    
     var infor = {
         url: url,
         operating_system_id: getOS(),
