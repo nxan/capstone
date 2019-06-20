@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
   @route  GET api/shopify/addScript
   @desc   Add script to shop
 -----*/
-router.get('/addScript', async (req, res) => {
+router.get('/addScript', (req, res) => {
     const { shop, hmac, code, state } = req.query;
     const accessTokenRequestUrl = "https://" + shop + '/admin/oauth/access_token';
     const accesTokenPayLoad = {
