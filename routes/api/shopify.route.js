@@ -71,11 +71,11 @@ router.get('/addScript', async (req, res) => {
             getProductsField = {}
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
-            request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders },async function (e, r, body) {
+            request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders },function (e, r, body) {
                 await axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
                 .then((response)=>{
-                    var products = await response.products
-                    products.forEach(element =>{
+                    var products = response.products
+                    await products.forEach(element =>{
                         console.log(shop +'/products/'+  element.handle)
                     })
                 })
