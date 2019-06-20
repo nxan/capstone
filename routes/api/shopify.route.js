@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
   @route  GET api/shopify/addScript
   @desc   Add script to shop
 -----*/
-router.get('/addScript', (req, res) => {
+router.get('/addScript', async (req, res) => {
     const { shop, hmac, code, state } = req.query;
     const accessTokenRequestUrl = "https://" + shop + '/admin/oauth/access_token';
     const accesTokenPayLoad = {
@@ -71,10 +71,10 @@ router.get('/addScript', (req, res) => {
             getProductsField = {}
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
-            request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders }, function (e, r, body) {
-                axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
+            request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders },async function (e, r, body) {
+                await axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
                 .then((response)=>{
-                    var products = response.products
+                    var products = await response.products
                     products.forEach(element =>{
                         console.log(shop +'/products/'+  element.handle)
                     })
