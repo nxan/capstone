@@ -72,8 +72,8 @@ router.get('/addScript', async (req, res) => {
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
-            .then((res)=>{
-                request.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
+            .then((responses)=>{
+                return request.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
                 .then((response)=>{
                     res.json(response)
                 })     
