@@ -68,7 +68,7 @@ router.get('/addScript', async (req, res) => {
                     "src": forwardingAddress + "/api/shopify/getScript",
                 }
             };
-            getProductsField = {}
+            var getProductsField = {}
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
