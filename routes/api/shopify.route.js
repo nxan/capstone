@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
             + '&state=' + state
             + '&redirect_uri=' + redirectUri
             ;
+        console.log(installUrl)
         res.cookie('state', state);
 
         res.redirect(installUrl);
