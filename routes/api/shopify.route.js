@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     if (shop) {
         const state = nonce();
         const redirectUri = forwardingAddress + '/api/shopify/addScript';
-        const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey
+        const installUrl = 'https://' + shop + 'admin/oauth/authorize?client_id=' + apiKey
             + '&scope=' + scope
             + '&state=' + state
             + '&redirect_uri=' + redirectUri
