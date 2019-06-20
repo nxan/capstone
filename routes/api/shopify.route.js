@@ -8,7 +8,7 @@ const axios = require('axios')
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
-const scope = 'read_products, write_products, read_script_tags, write_script_tags';
+const scope = 'read_products, read_script_tags, write_script_tags';
 const forwardingAddress = process.env.DOMAIN;
 const app = express();
 
