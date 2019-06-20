@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     if (shop) {
         const state = nonce();
         const redirectUri = forwardingAddress + '/api/shopify/addScript';
-        const installUrl = 'https://' + shop + 'admin/oauth/authorize?client_id=' + apiKey
+        const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey
             + '&scope=' + scope
             + '&state=' + state
             + '&redirect_uri=' + redirectUri
@@ -71,12 +71,23 @@ router.get('/addScript', async (req, res) => {
             var getProductsField = {}
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
+            console.log(getProductsField)
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
-            .then((responses)=>{
-                return request.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
-                .then((response)=>{
-                    res.json(response)
-                })     
+            .then(async (responses)=>{                
+               await axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
+                .then((response)=>{        
+                    var products = response.data.products            
+                    products.forEach(element => {
+                        url = shop + '/products/' + element.handle
+                        axios.post(process.env.DOMAIN + '/api/page',{page_url:url})
+                    });
+                })
+                .catch((error) => {
+                  // handle error
+                  console.log(error);
+                }).finally(()=>{
+                    res.send('Done')
+                })   
             })
         })
         .catch((error) => {
