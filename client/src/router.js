@@ -8,47 +8,60 @@ import IndexLayout from 'layouts'
 import NotFoundPage from 'pages/404'
 
 const loadable = loader =>
-    Loadable({
-        loader,
-        delay: false,
-        loading: () => <Loader />,
-    })
+  Loadable({
+    loader,
+    delay: false,
+    loading: () => <Loader />,
+  })
 
 const routes = [
-    {
-        path: '/user/login',
-        component: loadable(() => import('pages/user/login')),
-        exact: true,
-    },
-    {
-        path: '/user/forgot',
-        component: loadable(() => import('pages/user/forgot')),
-        exact: true,
-    },
+  // System Pages
+  {
+    path: '/user/login',
+    component: loadable(() => import('pages/user/login')),
+    exact: true,
+  },
+  {
+    path: '/user/forgot',
+    component: loadable(() => import('pages/user/forgot')),
+    exact: true,
+  },
+
+  // Dashboards
+  {
+    path: '/dashboard/alpha',
+    component: loadable(() => import('pages/dashboard/alpha')),
+  },
+  // AntDesign
+  {
+    path: '/antd',
+    component: loadable(() => import('pages/antd')),
+    exact: true,
+  },
 ]
 
 class Router extends React.Component {
-    render() {
-        const { history } = this.props
-        return (
-            <ConnectedRouter history={history}>
-                <IndexLayout>
-                    <Switch>
-                        <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
-                        {routes.map(route => (
-                            <Route
-                                path={route.path}
-                                component={route.component}
-                                key={route.path}
-                                exact={route.exact}
-                            />
-                        ))}
-                        <Route component={NotFoundPage} />
-                    </Switch>
-                </IndexLayout>
-            </ConnectedRouter>
-        )
-    }
+  render() {
+    const { history } = this.props
+    return (
+      <ConnectedRouter history={history}>
+        <IndexLayout>
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/dashboard/alpha" />} />
+            {routes.map(route => (
+              <Route
+                path={route.path}
+                component={route.component}
+                key={route.path}
+                exact={route.exact}
+              />
+            ))}
+            <Route component={NotFoundPage} />
+          </Switch>
+        </IndexLayout>
+      </ConnectedRouter>
+    )
+  }
 }
 
 export default Router
