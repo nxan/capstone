@@ -240,19 +240,6 @@ class MenuLeft extends React.Component {
           >
             {menu}
           </Menu>
-          <div className={styles.buyPro}>
-            <p>
-              <strong>More components, more styles, more themes, and premium support!</strong>
-            </p>
-            <a
-              href="https://themeforest.net/item/clean-ui-react-admin-template/21938700"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sm btn-danger"
-            >
-              Buy Pro 24$
-            </a>
-          </div>
         </Scrollbars>
       </Sider>
     )
