@@ -14,5 +14,15 @@ const Layouts = {
 @withRouter
 @connect(({ user }) => ({ user }))
 class IndexLayout extends React.PureComponent {
+    previousPath = ''
 
+    componentDidUpdate(prevProps) {
+        const { location } = this.props
+        const { prevLocation } = prevProps;
+        if(location != prevLocation) {
+            window.scrollTo(0,0)
+        }
+    }
+
+    render
 }
