@@ -21,7 +21,7 @@ $(document).ready(function () {
         acquistion_id: getReference()
       };
 
-    fetch('https://capstone-shopify.herokuapp.com/api/session', {
+    fetch('https://e6fa1774.ngrok.io/api/session', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'no-cors', // no-cors, cors, *same-origin
         credentials: 'include', // include, *same-origin, omit

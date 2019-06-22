@@ -14,8 +14,8 @@ const Profile = db.define('shop', {
     shop_url: {
         type: Sequelize.STRING
     },
-    shop_name: {
-        type: String
+    name_shop: {
+        type: Sequelize.STRING
     }
 }, {
         timestamps: false,

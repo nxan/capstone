@@ -128,13 +128,18 @@ router.post('/products', function (req, res, next) {
 
     request(options)
         .then(async function (response) {
-            var products = response
-            Array.from(products).forEach(element => {
+            var products = response.products
+            console.log(shop)
+            var shopInfor = await shopDB.getShop(shop)
+            var shopId = shopInfor.dataValues.id
+            console.log(shopId)
+            Array.from(products).forEach((element) => {
                 url = shop + '/products/' + element.handle
-                var shopInfor = shopDB.getShop(shop)
-                pageDB.addPage(url, shopInfor.id)
+                console.log(url)                
+                console.log(shopId)
+                pageDB.addPage(url, shopId)
             });
-            res.send(response)
+            res.end()
         })
         .catch(function (err) {
             console.log(err);

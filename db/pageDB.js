@@ -1,22 +1,10 @@
 const Page = require('../model/Page')
 module.exports = {
-    addPage : async (page_url,shop_id)=>{
-        var page = Page.findOne({
-            where:{
-                page_url:page_url
-            }
+    addPage: (page_url, shop_id) => {
+        console.log('URL: ' + page_url)
+        const create = { page_url, shop_id }
+        return Page.findOrCreate({
+            where: { page_url }, defaults: create
         })
-        if(page==null){
-            var pageFields = {}
-            pageFields.page_url = page_url
-            pageFields.shop_id = shop_id
-            try {
-                page = new Page(pageFields)
-                await page.save()
-            } catch (error) {
-                
-            }
-            return page
-        }
-    }
+    },    
 }

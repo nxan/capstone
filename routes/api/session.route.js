@@ -11,6 +11,11 @@ const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
 const axios = require('axios')
 
+const func = require('../../func/check')
+
+const shopDB = require('../../db/shopDB')
+const pageDB = require('../../db/pageDB')
+
 City.hasMany(Session, { foreignKey: 'city_id', sourceKey: 'id' });
 Session.belongsTo(City, { foreignKey: 'city_id', targetKey: 'id' });
 
@@ -112,10 +117,9 @@ router.post('/', [
         //Save done
 
         //get entrance page
-        await axios.get(process.env.DOMAIN + '/api/page/page_url/'+url,)
-        .then(response=>{
-            sessionFields.entrance_page_id = response.data.id
-        })
+        shopUrl = func.getDomain(url)
+        shopId = shopDB.getShop(shopUrl).dataValues.id
+        sessionFields.entrance_page_id = pageDB.addPage(url,shopId)
         //get done
         sessionFields.jsession_id = req.session.id;
         if (user_id) sessionFields.user_id = user_id;
