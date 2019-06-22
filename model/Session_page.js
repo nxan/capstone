@@ -21,10 +21,10 @@ const Session_page = db.define('session_page', {
     },
     end_time: {
         type: Sequelize.DATE
-    },
+    }
+},
     {
         timestamps: false,
         freezeTableName: true
-    }
-})
+    })
 module.exports = Session_page

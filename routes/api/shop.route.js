@@ -105,7 +105,7 @@ router.get('/user/:user_id', async (req, res) => {
         const shop = await Shop.findOne({
             include: [{
                 model: User,
-                where: { id: req.params.user_id }
+                where: { id: req.query.user_id }
             }]
         });
         if (!shop) {
@@ -122,15 +122,21 @@ router.get('/user/:user_id', async (req, res) => {
   @route  GET api/shop/url/:url
   @desc   Get shop by url
 -----*/
-router.get('/url/:url',async (req,res)=>{
-    var url = req.param('url')
+router.get('/url/:url', async (req, res) => {
+    var url = req.query.url
     var shop_id = -1
     var shop = await Shop.findOne({
         where: {
-            shop_url:url
+            shop_url: url
         }
     })
-    shop_id = shop.shop_id
-    res.json({shop_id:shop_id})
+    if (shop != null) {
+        res.json(shop)
+    }
+    else {
+        res.json({ shop_id: shop_id })
+    }
+
+
 })
 module.exports = router;
