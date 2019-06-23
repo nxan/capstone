@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom'
 import classNames from 'classnames'
 import TopBar from 'components/LayoutComponents/TopBar'
 import Menu from 'components/LayoutComponents/Menu'
-import Footer from 'components/LayoutComponents/Footer'
 import Breadcrumbs from 'components/LayoutComponents/Breadcrumbs'
 import Settings from 'components/LayoutComponents/Settings'
 
@@ -50,9 +49,6 @@ class MainLayout extends React.PureComponent {
             <Breadcrumbs />
             <div className="utils__content">{children}</div>
           </Layout.Content>
-          <Layout.Footer>
-            <Footer />
-          </Layout.Footer>
         </Layout>
       </Layout>
     )

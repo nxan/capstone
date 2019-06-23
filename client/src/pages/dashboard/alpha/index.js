@@ -1,67 +1,73 @@
 import React from 'react'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
 import { Helmet } from 'react-helmet'
-import PaymentCard from 'components/CleanUIComponents/PaymentCard'
-import PaymentAccount from 'components/CleanUIComponents/PaymentAccount'
-import PaymentTransaction from 'components/CleanUIComponents/PaymentTransaction'
 import ChartCard from 'components/CleanUIComponents/ChartCard'
 import Authorize from 'components/LayoutComponents/Authorize'
-import { tableData } from './data.json'
+import ChartistGraph from 'react-chartist'
+import Donut from 'components/CleanUIComponents/Donut'
+import ChartistTooltip from 'chartist-plugin-tooltips-updated'
+import styles from './style.module.scss'
+import { weekChartistData, supportCasesPieData, supportCasesTableData } from './data.json'
 
+const supportCasesTableColumns = [
+  {
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
+  },
+  {
+    title: 'Amount',
+    key: 'amount',
+    dataIndex: 'amount',
+    render: amount => {
+      if (amount === 'Negative') {
+        return <span className="text-danger font-weight-bold">{amount}</span>
+      }
+      return <span className="text-primary font-weight-bold">{amount}</span>
+    },
+  },
+]
+const weekChartistOptions = {
+  fullWidth: true,
+  showArea: false,
+  chartPadding: {
+    right: 30,
+    left: 0,
+  },
+  plugins: [
+    // tooltip({
+    //   seriesName: false,
+    // }),
+  ],
+}
+const supportCasesPieOptions = {
+  donut: true,
+  donutWidth: 35,
+  showLabel: false,
+  plugins: [
+    ChartistTooltip({
+      anchorToPoint: false,
+      appendToBody: true,
+      seriesName: false,
+    }),
+  ],
+}
 class DashboardAlpha extends React.Component {
   render() {
-    const tableColumns = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'Position',
-        dataIndex: 'position',
-        key: 'position',
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        sorter: (a, b) => a.age - b.age,
-      },
-      {
-        title: 'Office',
-        dataIndex: 'office',
-        key: 'office',
-      },
-      {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-      },
-      {
-        title: 'Salary',
-        dataIndex: 'salary',
-        key: 'salary',
-        sorter: (a, b) => a.salary - b.salary,
-      },
-    ]
-
     return (
-      <Authorize roles={['admin']} redirect to="/dashboard/beta">
-        <Helmet title="Dashboard Alpha" />
-        <div className="utils__title utils__title--flat mb-3">
-          <strong className="text-uppercase font-size-16">Last Week Statistics</strong>
-        </div>
+      <Authorize roles={['admin']}>
+        <Helmet title="Dashboard" />
         <div className="row">
-          <div className="col-xl-4">
+          <div className="col-xl-3">
             <ChartCard
-              title="Transactions"
+              title="Total Sessions"
               amount="1240"
               chartProps={{
-                width: 120,
+                width: 180,
                 height: 107,
                 lines: [
                   {
-                    values: [2, 11, 8, 14, 18, 20, 26],
+                    values: [1, 1, 1, 1, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -71,16 +77,16 @@ class DashboardAlpha extends React.Component {
               }}
             />
           </div>
-          <div className="col-xl-4">
+          <div className="col-xl-3">
             <ChartCard
-              title="Income"
+              title="Total visitors"
               amount="$1,240.00"
               chartProps={{
-                width: 120,
+                width: 180,
                 height: 107,
                 lines: [
                   {
-                    values: [20, 80, 67, 120, 132, 66, 97],
+                    values: [1, 1, 1, 1, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -90,16 +96,35 @@ class DashboardAlpha extends React.Component {
               }}
             />
           </div>
-          <div className="col-xl-4">
+          <div className="col-xl-3">
             <ChartCard
-              title="Outcome"
+              title="Avg. Session duration"
               amount="$240.56"
               chartProps={{
-                width: 120,
+                width: 180,
                 height: 107,
                 lines: [
                   {
-                    values: [42, 40, 80, 67, 84, 20, 97],
+                    values: [1, 1, 1, 1, 18, 20, 26],
+                    colors: {
+                      area: 'rgba(199, 228, 255, 0.5)',
+                      line: '#004585',
+                    },
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div className="col-xl-3">
+            <ChartCard
+              title="Online visitors"
+              amount="$240.56"
+              chartProps={{
+                width: 180,
+                height: 107,
+                lines: [
+                  {
+                    values: [1, 1, 1, 1, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -114,129 +139,68 @@ class DashboardAlpha extends React.Component {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-header">
-                <div className="utils__title">
-                  <strong>Recently Referrals</strong>
-                </div>
-                <div className="utils__titleDescription">
-                  Block with important Recently Referrals information
-                </div>
+                <Donut type="primary" name="Nuts" />
+                <Donut type="success" name="Apples" />
+                <Donut color="yellow" name="Peaches" />
               </div>
               <div className="card-body">
-                <Table
-                  className="utils__scrollTable"
-                  scroll={{ x: '100%' }}
-                  columns={tableColumns}
-                  dataSource={tableData}
-                  pagination={false}
+                <ChartistGraph
+                  data={weekChartistData}
+                  options={weekChartistOptions}
+                  type="Line"
+                  className="chart-area height-300 mt-4 chartist"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="utils__title utils__title--flat mb-3">
-          <strong className="text-uppercase font-size-16">Your Cards (3)</strong>
-          <Button className="ml-3">View All</Button>
-        </div>
-        <div className="row">
-          <div className="col-lg-4">
-            <PaymentCard
-              icon="lnr lnr-bookmark"
-              name="Matt Daemon"
-              number="4512-XXXX-1678-7528"
-              type="VISA"
-              footer="Expires at 02/20"
-              sum="$2,156.78"
-            />
-          </div>
-          <div className="col-lg-4">
-            <PaymentCard
-              icon="lnr lnr-bookmark"
-              name="David Beckham"
-              number="8748-XXXX-1678-5416"
-              type="MASTERCARD"
-              footer="Expires at 03/22"
-              sum="$560,245.35"
-            />
-          </div>
-          <div className="col-lg-4">
-            <PaymentCard
-              icon="lnr lnr-hourglass"
-              name="Mrs. Angelina Jolie"
-              number="6546-XXXX-1678-1579"
-              type="VISA"
-              footer="Locked Temporary"
-              sum="$1,467,98"
-            />
-          </div>
-        </div>
-        <div className="utils__title utils__title--flat mb-3">
-          <strong className="text-uppercase font-size-16">Your Accounts (6)</strong>
-          <Button className="ml-3">View All</Button>
-        </div>
         <div className="row">
           <div className="col-lg-6">
-            <PaymentAccount
-              icon="lnr lnr-inbox"
-              number="US 4658-1678-7528"
-              footer="Current month charged: $10,200.00"
-              sum="$2,156.78"
-            />
-          </div>
-          <div className="col-lg-6">
-            <PaymentAccount
-              icon="lnr lnr-inbox"
-              number="IBAN 445646-8748-4664-1678-5416"
-              footer="Current month charged: $1,276.00"
-              sum="$560,245.35"
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-6">
-            <PaymentAccount
-              icon="lnr lnr-inbox"
-              number="US 4658-1678-7528"
-              footer="Current month charged: $10,200.00"
-              sum="$2,156.78"
-            />
-          </div>
-          <div className="col-lg-6">
-            <PaymentAccount
-              icon="lnr lnr-inbox"
-              number="IBAN 445646-8748-4664-1678-5416"
-              footer="Current month charged: $1,276.00"
-              sum="$560,245.35"
-            />
-          </div>
-        </div>
-        <div className="utils__title mb-3">
-          <strong className="text-uppercase font-size-16">Recent Transactions (167)</strong>
-          <Button className="ml-3">View All</Button>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <PaymentTransaction
-              income={false}
-              amount="-$100.00"
-              info="US 4658-1678-7528"
-              footer="To AMAZON COPR, NY, 1756"
-            />
-            <PaymentTransaction
-              income
-              amount="+27,080.00"
-              info="4512-XXXX-1678-7528"
-              footer="To DigitalOcean Cloud Hosting, Winnetka, LA"
-            />
-            <PaymentTransaction
-              income={false}
-              amount="-100,000.00"
-              info="6245-XXXX-1678-3256"
-              footer="To Tesla Cars, LA, USA"
-            />
-            <div className="text-center pb-5">
-              <Button type="primary" className="width-200" loading>
-                Load More...
-              </Button>
+            <div className="card card--fullHeight">
+              <div className="card-header">
+                <div className="utils__title utils__title--flat">
+                  <strong className="text-uppercase font-size-16">Trafic sources</strong>
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-xl-6">
+                    <div className="mb-3">
+                      <Table
+                        className="utils__scrollTable"
+                        scroll={{ x: '100%' }}
+                        dataSource={supportCasesTableData}
+                        columns={supportCasesTableColumns}
+                        pagination={false}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-6">
+                    <div
+                      className={`h-100 d-flex flex-column justify-content-center align-items-center ${
+                        styles.chartPieExample
+                      }`}
+                    >
+                      <ChartistGraph
+                        data={supportCasesPieData}
+                        type="Pie"
+                        options={supportCasesPieOptions}
+                      />
+                      <div className="text-center">
+                        <span className="mr-2">
+                          <Donut type="success" name="Facebook" />
+                        </span>
+                        <span className="mr-2">
+                          <Donut type="primary" name="Email" />
+                        </span>
+                        <span className="mr-2">
+                          <Donut type="danger" name="Others" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
