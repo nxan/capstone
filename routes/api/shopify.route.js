@@ -5,8 +5,8 @@ const path = require('path');
 const request = require('request-promise');
 const nonce = require('nonce')();
 const axios = require('axios')
-const shopDB = require('../../db/shopDB')
-const pageDB = require('../../db/pageDB')
+const shop_db = require('../../db/shop_db')
+const page_db = require('../../db/page_db')
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
@@ -130,14 +130,14 @@ router.post('/products', function (req, res, next) {
         .then(async function (response) {
             var products = response.products
             console.log(shop)
-            var shopInfor = await shopDB.getShop(shop)
-            var shopId = shopInfor.dataValues.id
+            var shop_infor = await shop_db.getShop(shop)
+            var shopId = shop_infor.id
             console.log(shopId)
             Array.from(products).forEach((element) => {
                 url = shop + '/products/' + element.handle
                 console.log(url)                
                 console.log(shopId)
-                pageDB.addPage(url, shopId)
+                page_db.addPage(url, shopId)
             });
             res.end()
         })

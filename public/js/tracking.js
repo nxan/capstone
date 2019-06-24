@@ -13,15 +13,9 @@ $(document).ready(function () {
     //     }
     // })
     var url = window.location.pathname;
-    let reqBody = {
-        url: url,
-        operating_system_id: getOS(),
-        device_type_id: getDevice(),
-        browser_id: getBrowser(),
-        acquistion_id: getReference()
-      };
+    var host = window.location.host;
 
-    fetch('https://e6fa1774.ngrok.io/api/session', {
+    fetch('https://1e346827.ngrok.io/api/session', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'no-cors', // no-cors, cors, *same-origin
         credentials: 'include', // include, *same-origin, omit
@@ -31,16 +25,29 @@ $(document).ready(function () {
             'Content-Type': 'application/json',
         }
     })
-    .then(e=>{})
+        .then((e) => {
+            fetch('https://1e346827.ngrok.io/api/session_page', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'no-cors', // no-cors, cors, *same-origin
+                credentials: 'include', // include, *same-origin, omit
+                body: {
+                    url:window.location.hostname + window.location.pathname,                    
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            })
+        })
 })
 function getInfor() {
-    var url = window.location.hostname + window.location.pathname;    
     var infor = {
-        url: url,
+        url: window.location.pathname,
+        domain: window.location.hostname,
         operating_system_id: getOS(),
         device_type_id: getDevice(),
         browser_id: getBrowser(),
-        referrer: getReference()
+        acquistion_id: getReference()
     }
     return infor
 }
