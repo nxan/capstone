@@ -5,12 +5,13 @@ import 'firebase/database'
 import 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAE5G0RI2LwzwTBizhJbnRKIKbiXQIA1dY',
-  authDomain: 'cleanui-72a42.firebaseapp.com',
-  databaseURL: 'https://cleanui-72a42.firebaseio.com',
-  projectId: 'cleanui-72a42',
-  storageBucket: 'cleanui-72a42.appspot.com',
-  messagingSenderId: '583382839121',
+  apiKey: "AIzaSyAGdFzEG4PBY29m3ipBRGtU0fZhYlV1o7Y",
+    authDomain: "capstone-1bdf2.firebaseapp.com",
+    databaseURL: "https://capstone-1bdf2.firebaseio.com",
+    projectId: "capstone-1bdf2",
+    storageBucket: "capstone-1bdf2.appsot.com",
+    messagingSenderId: "151157023949",
+    appId: "1:151157023949:web:3538bd13518bd8e7"
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig)

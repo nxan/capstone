@@ -53,13 +53,13 @@ class Login extends Component {
                   <Form layout="vertical" hideRequiredMark onSubmit={this.onSubmit}>
                     <Form.Item label="Email">
                       {form.getFieldDecorator('email', {
-                        initialValue: 'admin@mediatec.org',
+                        initialValue: 'nxan.developer@gmail.com',
                         rules: [{ required: true, message: 'Please input your e-mail address' }],
                       })(<Input size="default" />)}
                     </Form.Item>
                     <Form.Item label="Password">
                       {form.getFieldDecorator('password', {
-                        initialValue: 'cleanui',
+                        initialValue: 'nxan.developer@gmail.com',
                         rules: [{ required: true, message: 'Please input your password' }],
                       })(<Input size="default" type="password" />)}
                     </Form.Item>
