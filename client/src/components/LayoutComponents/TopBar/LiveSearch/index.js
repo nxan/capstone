@@ -1,58 +1,58 @@
 import React from 'react'
-import { Input, Icon, Checkbox } from 'antd'
+import { Input, Icon } from 'antd'
 import { injectIntl } from 'react-intl'
 import styles from './style.module.scss'
 
 @injectIntl
 class LiveSearch extends React.Component {
-  state = {
-    showSearch: false,
-    searchText: '',
-  }
+  // state = {
+  //   showSearch: false,
+  //   searchText: '',
+  // }
 
-  componentWillMount() {
-    document.addEventListener('keydown', this.handleKeyDown, false)
-  }
+  // componentWillMount() {
+  //   document.addEventListener('keydown', this.handleKeyDown, false)
+  // }
 
-  showLiveSearch = () => {
-    setTimeout(() => {
-      this.searchInput.focus()
-    }, 100)
-    this.setState({
-      showSearch: true,
-    })
-  }
+  // showLiveSearch = () => {
+  //   setTimeout(() => {
+  //     this.searchInput.focus()
+  //   }, 100)
+  //   this.setState({
+  //     showSearch: true,
+  //   })
+  // }
 
-  changeSearchText = e => {
-    this.setState({
-      searchText: e.target.value,
-    })
-  }
+  // changeSearchText = e => {
+  //   this.setState({
+  //     searchText: e.target.value,
+  //   })
+  // }
 
-  hideLiveSearch = () => {
-    this.searchInput.blur()
-    this.setState({
-      showSearch: false,
-      searchText: '',
-    })
-  }
+  // hideLiveSearch = () => {
+  //   this.searchInput.blur()
+  //   this.setState({
+  //     showSearch: false,
+  //     searchText: '',
+  //   })
+  // }
 
-  handleKeyDown = event => {
-    const { showSearch } = this.state
-    if (showSearch) {
-      const key = event.keyCode.toString()
-      if (key === '27') {
-        this.hideLiveSearch()
-      }
-    }
-  }
+  // handleKeyDown = event => {
+  //   const { showSearch } = this.state
+  //   if (showSearch) {
+  //     const key = event.keyCode.toString()
+  //     if (key === '27') {
+  //       this.hideLiveSearch()
+  //     }
+  //   }
+  // }
 
-  handleNode = node => {
-    this.searchInput = node
-  }
+  // handleNode = node => {
+  //   this.searchInput = node
+  // }
 
   render() {
-    const { showSearch, searchText } = this.state
+    // const { showSearch, searchText } = this.state
     const {
       intl: { formatMessage },
     } = this.props
@@ -65,7 +65,7 @@ class LiveSearch extends React.Component {
           style={{ width: 200 }}
           onFocus={this.showLiveSearch}
         />
-        <div
+        {/* <div
           className={`${
             showSearch ? `${styles.livesearch} ${styles.livesearchVisible}` : styles.livesearch
           }`}
@@ -87,7 +87,7 @@ class LiveSearch extends React.Component {
                 onChange={this.changeSearchText}
                 id="livesearchInput"
                 placeholder="Type to search..."
-                ref={this.handleNode}
+                // ref={this.handleNode}
               />
               <ul className={styles.options}>
                 <li className={`${styles.option} ${styles.optionCheckbox}`}>
@@ -165,7 +165,7 @@ class LiveSearch extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     )
   }

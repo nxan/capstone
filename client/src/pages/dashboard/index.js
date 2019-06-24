@@ -6,9 +6,16 @@ import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import Donut from 'components/Components/Donut'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
+import C3Chart from 'react-c3js'
 import styles from './style.module.scss'
-import { weekChartistData, supportCasesPieData, supportCasesTableData } from './data.json'
+import { supportCasesPieData, supportCasesTableData } from './data.json'
 
+const colors = {
+  primary: '#01a8fe',
+  def: '#acb7bf',
+  success: '#46be8a',
+  danger: '#fb434a',
+}
 const supportCasesTableColumns = [
   {
     title: 'Type',
@@ -27,19 +34,6 @@ const supportCasesTableColumns = [
     },
   },
 ]
-const weekChartistOptions = {
-  fullWidth: true,
-  showArea: false,
-  chartPadding: {
-    right: 30,
-    left: 0,
-  },
-  plugins: [
-    // tooltip({
-    //   seriesName: false,
-    // }),
-  ],
-}
 const supportCasesPieOptions = {
   donut: true,
   donutWidth: 35,
@@ -51,6 +45,51 @@ const supportCasesPieOptions = {
       seriesName: false,
     }),
   ],
+}
+const pie = {
+  data: {
+    columns: [['Mobile', 30], ['PC', 120]],
+    type: 'pie',
+  },
+  color: {
+    pattern: [colors.primary, colors.success],
+  },
+}
+const spline = {
+  data: {
+    columns: [
+      ['Primary', 100, 165, 140, 270, 200, 140, 220],
+      ['Danger', 110, 80, 100, 85, 125, 90, 100],
+    ],
+    type: 'spline',
+  },
+  color: {
+    pattern: [colors.primary, colors.danger],
+  },
+  axis: {
+    x: {
+      tick: {
+        outer: !1,
+      },
+    },
+    y: {
+      max: 300,
+      min: 0,
+      tick: {
+        outer: !1,
+        count: 7,
+        values: [0, 50, 100, 150, 200, 250, 300],
+      },
+    },
+  },
+  grid: {
+    x: {
+      show: !1,
+    },
+    y: {
+      show: !0,
+    },
+  },
 }
 class DashboardAlpha extends React.Component {
   render() {
@@ -139,16 +178,16 @@ class DashboardAlpha extends React.Component {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-header">
-                <Donut type="primary" name="Nuts" />
-                <Donut type="success" name="Apples" />
-                <Donut color="yellow" name="Peaches" />
+                <h5 className="text-black">
+                  <strong>Spline</strong>
+                </h5>
               </div>
               <div className="card-body">
-                <ChartistGraph
-                  data={weekChartistData}
-                  options={weekChartistOptions}
-                  type="Line"
-                  className="chart-area height-300 mt-4 chartist"
+                <C3Chart
+                  data={spline.data}
+                  color={spline.color}
+                  axis={spline.axis}
+                  grid={spline.grid}
                 />
               </div>
             </div>
@@ -199,6 +238,20 @@ class DashboardAlpha extends React.Component {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="card card--fullHeight">
+              <div className="card-header">
+                <div className="utils__title utils__title--flat">
+                  <strong className="text-uppercase font-size-16">Devices</strong>
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="mb-5">
+                  <C3Chart data={pie.data} color={pie.color} />
                 </div>
               </div>
             </div>

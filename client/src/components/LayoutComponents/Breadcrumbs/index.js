@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { reduce } from 'lodash'
 import styles from './style.module.scss'
@@ -89,9 +89,9 @@ class Breadcrumbs extends React.Component {
     return (
       <div className={styles.breadcrumbs}>
         <div className={styles.path}>
-          <Link to="/dashboard" className="text-muted">
+          {/* <Link to="/dashboard" className="text-muted">
             Home
-          </Link>
+          </Link> */}
           {breadcrumb}
         </div>
       </div>

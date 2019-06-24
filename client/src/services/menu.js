@@ -3,7 +3,7 @@ export async function getLeftMenuData() {
     {
       title: 'Home',
       key: 'dashboardAlpha',
-      url: '/dashboard/alpha',
+      url: '/dashboard',
       icon: 'icmn icmn-home',
     },
     {
@@ -13,96 +13,26 @@ export async function getLeftMenuData() {
       title: 'Realtime',
       key: 'realtime',
       icon: 'icmn icmn-menu',
-      children: [
-        {
-          key: 'e1',
-          title: 'Example1',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-        {
-          key: 'e2',
-          title: 'Example2',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-      ],
     },
     {
       title: 'Acquisition',
       key: 'acquisition',
       icon: 'icmn icmn-menu',
-      children: [
-        {
-          key: 'e3',
-          title: 'Example3',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-        {
-          key: 'e4',
-          title: 'Example4',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-      ],
     },
     {
       title: 'Behavior',
       key: 'behavior',
       icon: 'icmn icmn-menu',
-      children: [
-        {
-          key: 'e3',
-          title: 'Example3',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-        {
-          key: 'e4',
-          title: 'Example4',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-      ],
     },
     {
       title: 'Audience',
       key: 'audience',
       icon: 'icmn icmn-menu',
-      children: [
-        {
-          key: 'e3',
-          title: 'Example3',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-        {
-          key: 'e4',
-          title: 'Example4',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-      ],
     },
     {
       title: 'Setting',
       key: 'setting',
       icon: 'icmn icmn-cog utils__spin-delayed--pseudo-selector',
-      children: [
-        {
-          key: 'e3',
-          title: 'Example3',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-        {
-          key: 'e4',
-          title: 'Example4',
-          url: '/dashboard/alpha',
-          pro: true,
-        },
-      ],
     },
   ]
 }
@@ -121,9 +51,9 @@ export async function getTopMenuData() {
       icon: 'icmn icmn-books',
     },
     {
-      title: 'Dashboard Alpha',
+      title: 'Dashboard',
       key: 'dashboardAlpha',
-      url: '/dashboard/alpha',
+      url: '/dashboard',
       icon: 'icmn icmn-home',
     },
     {
