@@ -2,7 +2,7 @@ export async function getLeftMenuData() {
   return [
     {
       title: 'Home',
-      key: 'dashboardAlpha',
+      key: 'Dashboard',
       url: '/dashboard',
       icon: 'icmn icmn-home',
     },
@@ -12,27 +12,27 @@ export async function getLeftMenuData() {
     {
       title: 'Realtime',
       key: 'realtime',
-      icon: 'icmn icmn-menu',
+      icon: 'icmn icmn-clock',
     },
     {
       title: 'Acquisition',
       key: 'acquisition',
-      icon: 'icmn icmn-menu',
+      icon: 'icmn icmn-share2',
     },
     {
       title: 'Behavior',
       key: 'behavior',
-      icon: 'icmn icmn-menu',
+      icon: 'icmn icmn-stats-dots',
     },
     {
       title: 'Audience',
       key: 'audience',
-      icon: 'icmn icmn-menu',
+      icon: 'icmn icmn-user',
     },
     {
       title: 'Setting',
       key: 'setting',
-      icon: 'icmn icmn-cog utils__spin-delayed--pseudo-selector',
+      icon: 'icmn icmn-cog',
     },
   ]
 }
@@ -42,17 +42,10 @@ export async function getTopMenuData() {
       title: 'Settings',
       key: 'settings',
       icon: 'icmn icmn-cog utils__spin-delayed--pseudo-selector',
-    },
-    {
-      title: 'Docs',
-      key: 'documentation',
-      url: 'https://docs.cleanuitemplate.com/react/getting-started',
-      target: '_blank',
-      icon: 'icmn icmn-books',
-    },
+    },    
     {
       title: 'Dashboard',
-      key: 'dashboardAlpha',
+      key: 'Dashboard',
       url: '/dashboard',
       icon: 'icmn icmn-home',
     },

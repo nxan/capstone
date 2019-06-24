@@ -1,30 +1,27 @@
 {
   "supportCasesTableData": [{
     "key": "1",
-    "type": "Facebook",
-    "amount": "+12,42%"
+    "type": "Social",
+    "amount": "25%"
   }, {
     "key": "2",
     "type": "Search",
-    "amount": "21,700"
+    "amount": "25%"
   }, {
     "key": "3",
-    "type": "Email",
-    "amount": "Negative"
+    "type": "Direct",
+    "amount": "25%"
   }, {
     "key": "4",
-    "type": "Something",
-    "amount": "+235,200"
-  }, {
-    "key": "5",
     "type": "Others",
-    "amount": "$19,235,516"
+    "amount": "25%"
   }],
   "supportCasesPieData": {
     "series": [
-      {"name": "Facebook", "value": 65},
-      {"name": "Email", "value": 25},
-      {"name": "Others", "value": 10}
+      {"name": "Social", "value": 25},
+      {"name": "Search", "value": 25},
+      {"name": "Direct", "value": 25},
+      {"name": "Others", "value": 25}
     ]
   },
   "weekChartistData": {

@@ -12,7 +12,7 @@ import { supportCasesPieData, supportCasesTableData } from './data.json'
 
 const colors = {
   primary: '#01a8fe',
-  def: '#acb7bf',
+  def: '#d17905',
   success: '#46be8a',
   danger: '#fb434a',
 }
@@ -58,8 +58,8 @@ const pie = {
 const spline = {
   data: {
     columns: [
-      ['Primary', 100, 165, 140, 270, 200, 140, 220],
-      ['Danger', 110, 80, 100, 85, 125, 90, 100],
+      ['New Visitors', 100, 165, 140, 270, 200, 140, 220],
+      ['Old Visitors', 110, 80, 100, 85, 125, 90, 100],
     ],
     type: 'spline',
   },
@@ -91,7 +91,7 @@ const spline = {
     },
   },
 }
-class DashboardAlpha extends React.Component {
+class Dashboard extends React.Component {
   render() {
     return (
       <Authorize roles={['admin']}>
@@ -119,7 +119,7 @@ class DashboardAlpha extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Total visitors"
-              amount="$1,240.00"
+              amount="2,654"
               chartProps={{
                 width: 180,
                 height: 107,
@@ -138,7 +138,7 @@ class DashboardAlpha extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Avg. Session duration"
-              amount="$240.56"
+              amount="00:04:08"
               chartProps={{
                 width: 180,
                 height: 107,
@@ -156,8 +156,8 @@ class DashboardAlpha extends React.Component {
           </div>
           <div className="col-xl-3">
             <ChartCard
-              title="Online visitors"
-              amount="$240.56"
+              title="Total Pageview"
+              amount="3,309"
               chartProps={{
                 width: 180,
                 height: 107,
@@ -179,7 +179,7 @@ class DashboardAlpha extends React.Component {
             <div className="card">
               <div className="card-header">
                 <h5 className="text-black">
-                  <strong>Spline</strong>
+                  <strong>Visitors</strong>
                 </h5>
               </div>
               <div className="card-body">
@@ -198,7 +198,7 @@ class DashboardAlpha extends React.Component {
             <div className="card card--fullHeight">
               <div className="card-header">
                 <div className="utils__title utils__title--flat">
-                  <strong className="text-uppercase font-size-16">Trafic sources</strong>
+                  <strong className="text-uppercase font-size-16">Traffic Sources</strong>
                 </div>
               </div>
               <div className="card-body">
@@ -227,13 +227,16 @@ class DashboardAlpha extends React.Component {
                       />
                       <div className="text-center">
                         <span className="mr-2">
-                          <Donut type="success" name="Facebook" />
+                          <Donut type="success" name="Social" />
                         </span>
                         <span className="mr-2">
-                          <Donut type="primary" name="Email" />
+                          <Donut type="primary" name="Search" />
                         </span>
                         <span className="mr-2">
-                          <Donut type="danger" name="Others" />
+                          <Donut type="danger" name="Direct" />
+                        </span>
+                        <span className="mr-2">
+                          <Donut type="warning" name="Others" />
                         </span>
                       </div>
                     </div>
@@ -262,4 +265,4 @@ class DashboardAlpha extends React.Component {
   }
 }
 
-export default DashboardAlpha
+export default Dashboard
