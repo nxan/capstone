@@ -1,11 +1,13 @@
 const Shop = require('../model/Shop')
 module.exports = {
     getShop: async (url) => {
-        var shop = await Shop.findOne({
+        return Shop.findOne({
             where:{
                 shop_url: url
             }
+        }).then((result)=>{
+            return result
         })
-        return shop
+        
     }
 }
