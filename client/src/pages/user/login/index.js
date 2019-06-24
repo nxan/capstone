@@ -31,15 +31,14 @@ class Login extends Component {
         <Helmet title="Login" />
         <div className={`${styles.title} login-heading`}>
           <h1>
-            <strong>WELCOME TO CLEAN UI REACT - REACT REDUX ADMIN TEMPLATE</strong>
+            <strong>WELCOME TO SHOPIFY ANALYTICS</strong>
           </h1>
           <p>
-            Pluggable enterprise-level react application framework.
+          Shopify analytics and reports give you the means to review your store recent activity,
             <br />
-            An excellent front-end solution for web applications built upon Ant Design and UmiJS.
+            get insight into your visitors, and analyze your store transactions.
             <br />
-            Credentials for testing purposes - <strong>admin@mediatec.org</strong> /{' '}
-            <strong>cleanui</strong>
+            Best of all, you get this functionality for free! Contact: - <strong>admin@shopify.com</strong>{' '}
           </p>
         </div>
         <div className={styles.block}>
