@@ -1,19 +1,22 @@
 const express = require('express')
 const router = express.Router()
-const axios = require('axios')
-router.get('/',async (req, res) => {
-    var ip = "203.205.35.142"
-    var api_Key = process.env.IPIFY_API_KEY;
-    var location
-    var city_id
-    await axios.get(`https://geo.ipify.org/api/v1?apiKey=${api_Key}&ipAddress=${ip}`)
-        .then((response) =>{
-           location = response.data
-        })
-    await axios.post(process.env.DOMAIN + '/api/city', location)
-        .then(response => {
-            city_id = response.data.id
-        })
-    res.json(city_id)
+const page_db = require('../../db/page_db')
+const shop_db = require('../../db/shop_db')
+const Page = require('../../model/Page')
+const country_db = require('../../db/country_db')
+router.get('/', async (req, res) => {
+   location = {
+      "country": "VN",
+      "region": "Ho Chi Minh",
+      "city": "Ho Chi Minh City",
+      "lat": 10.8142,
+      "lng": 106.6438,
+      "postalCode": "",
+      "timezone": "+07:00",
+      "geonameId": 1566083
+  }
+   var domain = 'freestylefootballasd.myshopify.com'
+   shop = await shop_db.getShop(domain)
+   res.json(shop)
 })
 module.exports = router

@@ -11,6 +11,12 @@ const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
 const axios = require('axios')
 
+const func = require('../../func/check')
+
+const shop_db = require('../../db/shop_db')
+const page_db = require('../../db/page_db')
+const city_db = require('../../db/city_db')
+const session_page_db = require('../../db/session_page_db')
 City.hasMany(Session, { foreignKey: 'city_id', sourceKey: 'id' });
 Session.belongsTo(City, { foreignKey: 'city_id', targetKey: 'id' });
 
@@ -91,7 +97,7 @@ router.post('/', [
         }
     })
     if (session == null) {
-        const { jsession_id, user_id, session_start_time, session_end_time, url, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
+        const { jsession_id, user_id, session_start_time, session_end_time, url, domain, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
         var sessionFields = {};
 
         //Get location by IPIFY api
@@ -99,27 +105,32 @@ router.post('/', [
         var api_Key = process.env.IPIFY_API_KEY;
         var location
         await axios.get(`https://geo.ipify.org/api/v1?apiKey=${api_Key}&ipAddress=${ip}`)
-            .then((response) =>{
-               location = response.data
+            .then((response) => {
+                location = response.data.location
             })
         //Get done
 
         //Save location and get id to save to session
-        await axios.post(process.env.DOMAIN + '/api/city',location)
-        .then(response=>{
-            sessionFields.city_id = response.data.id
-        })
+        city_db.addCity(location)
+        var city = await city_db.getCity(location)                
+        sessionFields.city_id = city.id
         //Save done
 
         //get entrance page
-        await axios.get(process.env.DOMAIN + '/api/page/page_url/'+url,)
-        .then(response=>{
-            sessionFields.entrance_page_id = response.data.id
-        })
+        var productUrl = domain + url   
+        var shop_infor = await shop_db.getShop(domain)
+        var shop_id = shop_infor.id
+        await page_db.addPage(productUrl, shop_id)
+        entrance_page = await page_db.getPage(productUrl)
+        sessionFields.entrance_page_id = entrance_page.id
         //get done
         sessionFields.jsession_id = req.session.id;
         if (user_id) sessionFields.user_id = user_id;
-        if (session_start_time) sessionFields.session_start_time = session_start_time;
+        //date
+        date = new Date(Date.now()).toISOString()
+        console.log(date)
+        sessionFields.session_start_time = date
+        //
         if (session_end_time) sessionFields.session_end_time = session_end_time;
         // if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
         if (exit_page_id) sessionFields.exit_page_id = exit_page_id;
@@ -135,28 +146,15 @@ router.post('/', [
         try {
             session = new Session(sessionFields);
             await session.save();
-            var session_page = {}
-            session_page.session_id = session.id
-            session_page.page_id = session.entrance_page_id
-            await axios.post(process.env.DOMAIN + '/api/session_page/',session_page)
-            .then((response=>{
-                console.log(response)
-            }))
-            res.json(session);
+            res.sendStatus(200);
         } catch (err) {
             console.log(err.message);
             res.status(500).send('Server Error');
         }
     }
-    
+
     else {
-        var session_page = {}
-        session_page.session_id = session.id
-        session_page.page_id = session.entrance_page_id
-        await axios.post(process.env.DOMAIN + '/api/session_page/',session_page)
-        .then((response)=>{
-            console.log(response)
-        })
+        res.sendStatus(200)
     }
 });
 

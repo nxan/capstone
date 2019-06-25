@@ -5,6 +5,8 @@ const path = require('path');
 const request = require('request-promise');
 const nonce = require('nonce')();
 const axios = require('axios')
+const shop_db = require('../../db/shop_db')
+const page_db = require('../../db/page_db')
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
@@ -61,7 +63,7 @@ router.get('/addScript', async (req, res) => {
                 'X-Shopify-Access-Token': accessToken,
                 "Content-Type": "application/json",
                 "Accept": "application/json"
-            };            
+            };
             const scriptTagBody = {
                 "script_tag": {
                     "event": "onload",
@@ -73,22 +75,16 @@ router.get('/addScript', async (req, res) => {
             getProductsField.accessToken = accessToken
             console.log(getProductsField)
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
-            .then(async (responses)=>{                
-               await axios.post(process.env.DOMAIN + '/api/shopify/products',getProductsField)
-                .then((response)=>{        
-                    var products = response.data.products            
-                    products.forEach(element => {
-                        url = shop + '/products/' + element.handle
-                        axios.post(process.env.DOMAIN + '/api/page',{page_url:url})
-                    });
+                .then(async (responses) => {
+                    await axios.post(process.env.DOMAIN + '/api/shopify/products', getProductsField)
+                        .then((response) => {
+                            res.send("Done")
+                        })
+                        .catch((error) => {
+                            // handle error
+                            console.log(error);
+                        })
                 })
-                .catch((error) => {
-                  // handle error
-                  console.log(error);
-                }).finally(()=>{
-                    res.send('Done')
-                })   
-            })
         })
         .catch((error) => {
             res.status(403).send(error.error.error_description);
@@ -98,14 +94,18 @@ router.get('/addScript', async (req, res) => {
   @route  GET api/shopify/getScript
   @desc   get script file
 -----*/
-router.get('/getScript',async(req,res)=>{    
-    res.sendFile(path.join(__dirname,'..','..','public','js','tracking.js'));    
+router.get('/getScript', async (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'public', 'js', 'tracking.js'));
 })
 /* ----- 
   @route  POST api/shopify/saveInformation
   @desc   save information
 -----*/
-router.post('/saveInformation',async(req,res)=>{
+router.get('/getScript', async (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'public', 'js', 'tracking.js'));
+})
+
+router.post('/saveInformation', async (req, res) => {
     // var ip = req.headers['x-forwarded-for'];
     // var location = func.getLocation(ip);
     // var location = {ip:ip}    
@@ -113,8 +113,8 @@ router.post('/saveInformation',async(req,res)=>{
 })
 
 router.post('/products', function (req, res, next) {
-    
-    let url = 'https://' + req.body.shop + '/admin/products.json';
+    let shop = req.body.shop
+    let url = 'https://' + shop + '/admin/products.json';
 
     let options = {
         method: 'GET',
@@ -127,8 +127,19 @@ router.post('/products', function (req, res, next) {
     };
 
     request(options)
-        .then(function (parsedBody) {
-            res.json(parsedBody);
+        .then(async function (response) {
+            var products = response.products
+            console.log(shop)
+            var shop_infor = await shop_db.getShop(shop)
+            var shopId = shop_infor.id
+            console.log(shopId)
+            Array.from(products).forEach((element) => {
+                url = shop + '/products/' + element.handle
+                console.log(url)                
+                console.log(shopId)
+                page_db.addPage(url, shopId)
+            });
+            res.end()
         })
         .catch(function (err) {
             console.log(err);
