@@ -73,6 +73,7 @@ router.get('/addScript', async (req, res) => {
             var getProductsField = {}
             getProductsField.shop = shop
             getProductsField.accessToken = accessToken
+            console.log(accessToken)
             console.log(getProductsField)
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
                 .then(async (responses) => {

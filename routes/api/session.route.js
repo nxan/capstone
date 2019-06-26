@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 const dotenv = require('dotenv')
+
 dotenv.config();
 
 const Session = require('../../model/Session');
@@ -90,20 +91,25 @@ router.post('/', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    const { user_id, session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
     jsession = req.session.id
+    // cookies = req.cookies
+    // if(cookies.user == null){
+        
+    // }
     let session = await Session.findOne({
         where: {
             jsession_id: jsession
         }
     })
+
     if (session == null) {
-        const { jsession_id, user_id, session_start_time, session_end_time, url, domain, exit_page_id, city_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
-        var sessionFields = {};
+        let sessionFields = {};
 
         //Get location by IPIFY api
-        var ip = req.headers['x-forwarded-for'];
-        var api_Key = process.env.IPIFY_API_KEY;
-        var location
+        let ip = req.headers['x-forwarded-for'];
+        let api_Key = process.env.IPIFY_API_KEY;
+        let location
         await axios.get(`https://geo.ipify.org/api/v1?apiKey=${api_Key}&ipAddress=${ip}`)
             .then((response) => {
                 location = response.data.location
@@ -112,14 +118,14 @@ router.post('/', [
 
         //Save location and get id to save to session
         city_db.addCity(location)
-        var city = await city_db.getCity(location)                
+        let city = await city_db.getCity(location)                
         sessionFields.city_id = city.id
         //Save done
 
         //get entrance page
-        var productUrl = domain + url   
-        var shop_infor = await shop_db.getShop(domain)
-        var shop_id = shop_infor.id
+        let productUrl = domain + url   
+        let shop_infor = await shop_db.getShop(domain)
+        let shop_id = shop_infor.id
         await page_db.addPage(productUrl, shop_id)
         entrance_page = await page_db.getPage(productUrl)
         sessionFields.entrance_page_id = entrance_page.id
@@ -146,7 +152,12 @@ router.post('/', [
         try {
             session = new Session(sessionFields);
             await session.save();
-            res.sendStatus(200);
+            let session_page_infor = {
+                session_id:session.id,
+                page_id: entrance_page.id
+            }
+            session_page_db.add_session_page(session_page_infor)
+            res.status(200).send({stt:'Session saved'});
         } catch (err) {
             console.log(err.message);
             res.status(500).send('Server Error');
@@ -154,7 +165,14 @@ router.post('/', [
     }
 
     else {
-        res.sendStatus(200)
+        let productUrl = domain + url
+        let page = await page_db.getPage(productUrl)
+        let session_page_infor = {
+            session_id:session.id,
+            page_id: page.id
+        }
+        session_page_db.add_session_page(session_page_infor)
+        res.status(200).send('Done')
     }
 });
 
@@ -185,7 +203,7 @@ router.put('/', [
     if (is_first_visit) sessionFields.is_first_visit = is_first_visit;
 
     try {
-        var session = await Session.findOne({
+        let session = await Session.findOne({
             where: { id: sessionFields.id }
         });
         if (session) {
