@@ -1,54 +1,44 @@
-import firebase from 'firebase/app'
+import axios from "axios";
 import { notification } from 'antd'
-import 'firebase/auth'
-import 'firebase/database'
-import 'firebase/storage'
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAGdFzEG4PBY29m3ipBRGtU0fZhYlV1o7Y",
-    authDomain: "capstone-1bdf2.firebaseapp.com",
-    databaseURL: "https://capstone-1bdf2.firebaseio.com",
-    projectId: "capstone-1bdf2",
-    storageBucket: "capstone-1bdf2.appsot.com",
-    messagingSenderId: "151157023949",
-    appId: "1:151157023949:web:3538bd13518bd8e7"
-}
-
-const firebaseApp = firebase.initializeApp(firebaseConfig)
-const firebaseAuth = firebase.auth
-export default firebaseApp
 
 export async function login(email, password) {
-  return firebaseAuth()
-    .signInWithEmailAndPassword(email, password)
-    .then(() => true)
-    .catch(error => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const body = JSON.stringify({ email, password });
+  return axios.post('https://capstone-shopify.herokuapp.com/api/auth', body, config)
+    .then((result) => {
+      return result.data
+    })
+    .catch(() => {
       notification.warning({
-        message: error.code,
-        description: error.message,
+        message: "Login Failed",
+        description: "Invalid email or password",
       })
     })
+
 }
 
-export async function currentAccount() {
-  let userLoaded = false
-  function getCurrentUser(auth) {
-    return new Promise((resolve, reject) => {
-      if (userLoaded) {
-        resolve(firebaseAuth.currentUser)
-      }
-      const unsubscribe = auth.onAuthStateChanged(user => {
-        userLoaded = true
-        unsubscribe()
-        resolve(user)
-      }, reject)
-    })
+export async function loadProfile() {
+  const setAuthToken = token => {
+    if (token) {
+      axios.defaults.headers.common['x-auth-token'] = token;
+    } else {
+      delete axios.defaults.headers.common['x-auth-token'];
+    }
   }
-  return getCurrentUser(firebaseAuth())
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+    return axios.get('https://capstone-shopify.herokuapp.com/api/shop/me')
+      .then((result) => {
+        return result.data
+      })
+  }
+  return false;
 }
 
 export async function logout() {
-  return firebaseAuth()
-    .signOut()
-    .then(() => true)
+  localStorage.removeItem('token');
 }

@@ -36,15 +36,15 @@ class ProfileMenu extends React.Component {
           </strong>
           <div>
             <strong className="mr-1">
-              <FormattedMessage id="topBar.profileMenu.billingPlan" />:{' '}
+              <FormattedMessage id="topBar.profileMenu.shopName" />:{' '}
             </strong>
-            Professional
+            {user.shopName}
           </div>
           <div>
             <strong>
-              <FormattedMessage id="topBar.profileMenu.role" />:{' '}
+              <FormattedMessage id="topBar.profileMenu.shopUrl" />:{' '}
             </strong>
-            {user.role}
+            {user.shopUrl}
           </div>
         </Menu.Item>
         <Menu.Divider />

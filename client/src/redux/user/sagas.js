@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
-import { login, currentAccount, logout } from 'services/user'
+import { login, loadProfile, logout } from 'services/user'
 import actions from './actions'
 
 export function* LOGIN({ payload }) {
@@ -8,11 +8,14 @@ export function* LOGIN({ payload }) {
   yield put({
     type: 'user/SET_STATE',
     payload: {
+      token: localStorage.getItem('token'),
       loading: true,
     },
   })
   const success = yield call(login, email, password)
   if (success) {
+    localStorage.setItem('token', success.token);
+    console.log(success.token);
     notification.success({
       message: 'Logged In',
       description: 'You have successfully logged in to Shopify Analytics!',
@@ -30,16 +33,15 @@ export function* LOAD_CURRENT_ACCOUNT() {
       loading: true,
     },
   })
-  const response = yield call(currentAccount)
+  const response = yield call(loadProfile)
   if (response) {
-    const { uid: id, email, photoURL: avatar } = response
     yield put({
       type: 'user/SET_STATE',
       payload: {
-        id,
-        name: 'Administrator',
-        email,
-        avatar,
+        name: response.user.name,
+        email: response.user.email,
+        shopName: response.name_shop,
+        shopUrl: response.shop_url,
         role: 'admin',
         authorized: true,
       },
@@ -58,11 +60,9 @@ export function* LOGOUT() {
   yield put({
     type: 'user/SET_STATE',
     payload: {
-      id: '',
       name: '',
       role: '',
       email: '',
-      avatar: '',
       authorized: false,
       loading: false,
     },

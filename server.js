@@ -47,8 +47,8 @@ app.use('/api/shop', require('./routes/api/shop.route'));
 app.use('/api/city', require('./routes/api/city.route'));
 app.use('/api/country', require('./routes/api/country.route'));
 app.use('/api/test', require('./routes/api/test.route'));
-app.use('/api/page',require('./routes/api/page.route'))
-app.use('/api/session_page',require('./routes/api/session_page.route'))
-const PORT = process.env.PORT || 3000;
+app.use('/api/page', require('./routes/api/page.route'))
+app.use('/api/session_page', require('./routes/api/session_page.route'))
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

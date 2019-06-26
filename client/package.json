@@ -27,6 +27,7 @@
   "dependencies": {
     "@rowno/sparkline": "^3.0.1",
     "antd": "^3.13.2",
+    "axios": "^0.19.0",
     "bootstrap-css-only": "^4.2.1",
     "browserslist": "4.6.3",
     "chart.js": "^2.7.3",
