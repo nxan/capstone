@@ -1,11 +1,11 @@
 import actions from './actions'
 
 const initialState = {
-  id: '',
   name: '',
+  shopUrl: '',
+  shopName: '',
   role: '',
   email: '',
-  avatar: '',
   authorized: false,
   loading: false,
 }
