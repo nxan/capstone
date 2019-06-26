@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server",
+    "server": "concurrently \"npm run server\" \"yarn run client\"",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"yarn run client\""
   },
