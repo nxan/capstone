@@ -26,11 +26,21 @@ const routes = [
     component: loadable(() => import('pages/user/forgot')),
     exact: true,
   },
+  {
+    path: '/user/register',
+    component: loadable(() => import('pages/user/register')),
+    exact: true,
+  },
 
   // Dashboards
   {
     path: '/dashboard',
     component: loadable(() => import('pages/dashboard')),
+  },
+  // Menu
+  {
+    path: '/realtime',
+    component: loadable(() => import('pages/realtime')),
   },
   // AntDesign
   {

@@ -84,13 +84,14 @@ class Login extends Component {
                       >
                         Login
                       </Button>
-                      <span className="ml-3 register-link">
-                        <a
-                          href="javascript: void(0);"
-                          className="text-primary utils__link--underlined"
+                      <span className="ml-3 register-link">                        
+                        <Link
+                          to="/user/register"
+                          className="utils__link--blue utils__link--underlined"
                         >
                           Register
-                        </a>{' '}
+                        </Link>
+                        {' '}
                         if you don&#39;t have account
                       </span>
                     </div>

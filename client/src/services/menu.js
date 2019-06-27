@@ -12,6 +12,7 @@ export async function getLeftMenuData() {
     {
       title: 'Realtime',
       key: 'realtime',
+      url: '/realtime',
       icon: 'icmn icmn-clock',
     },
     {
