@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
-import { login, loadProfile, logout } from 'services/user'
+import { login, register, loadProfile, logout } from 'services/user'
 import actions from './actions'
 
 export function* LOGIN({ payload }) {
@@ -22,6 +22,24 @@ export function* LOGIN({ payload }) {
     })
     yield put({
       type: 'user/LOAD_CURRENT_ACCOUNT',
+    })
+  }
+}
+
+export function* REGISTER({ payload }) {
+  const { email, password } = payload
+  yield put({
+    type: 'user/SET_STATE',
+    payload: {
+      token: localStorage.getItem('token'),
+      loading: true,
+    },
+  })
+  const success = yield call(register, email, password)
+  if (success) {
+    notification.success({
+      message: 'Registered',
+      description: 'You have successfully logged in to Shopify Analytics!',
     })
   }
 }
@@ -72,6 +90,7 @@ export function* LOGOUT() {
 export default function* rootSaga() {
   yield all([
     takeEvery(actions.LOGIN, LOGIN),
+    takeEvery(actions.REGISTER, REGISTER),
     takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
     takeEvery(actions.LOGOUT, LOGOUT),
     LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth

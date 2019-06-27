@@ -1,45 +1,27 @@
-$(document).ready(function () {
-    // $.ajax({
-    //     url: 'https://capstone-man.herokuapp.com/api/session',
-    //     method: 'post',
-    //     crossDomain: true,
-    //     xhrFields: {
-    //         withCredentials: 'include'
-    //      },
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(getInfor()),
-    //     success: function (e) {
-
-    //     }
-    // })
-    var url = window.location.pathname;
-    var host = window.location.host;
-
-    fetch('https://1e346827.ngrok.io/api/session', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, cors, *same-origin
-        credentials: 'include', // include, *same-origin, omit
-        body: JSON.stringify(getInfor()),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
-    })
-        .then((e) => {
-            fetch('https://1e346827.ngrok.io/api/session_page', {
+var save = false
+$(document).ready(save_session())
+document.addEventListener('visibilitychange', ()=>{
+    save_session()
+});
+function save_session() {    
+    if (!save) {
+        if (document.visibilityState === 'visible') {
+            fetch('https://f3cfa8c7.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'no-cors', // no-cors, cors, *same-origin
                 credentials: 'include', // include, *same-origin, omit
-                body: {
-                    url:window.location.hostname + window.location.pathname,                    
-                },
+                body: JSON.stringify(getInfor()),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 }
+            }).then((res) => {
+                console.log("OK")
             })
-        })
-})
+            save = true
+        }
+    }
+}
 function getInfor() {
     var infor = {
         url: window.location.pathname,
@@ -56,7 +38,7 @@ function getReference() {
     var res;
     if (/facebook.com|twitter.com/.test(ref)) res = 1 //'Social'
     else if (/google.com|bing.com/.test(ref)) res = 2 //'Search'
-    else if ('' == ref) res = 3 //'Direct'
+    else if ('' == ref || (ref.indexOf(window.location.hostname) > 0)) res = 3 //'Direct'
     else res = 4 //'Other'
     return res;
 }
@@ -96,7 +78,7 @@ function getBrowser() {
     var ua = window.navigator.userAgent
     var browser = null
     if (/OPR\/|OPERA\//i.test(ua)) browser = 1 //'Opera'
-    else if (/Edge\//i.test(ua)) browser = 2 //'Edge'
+    else if (/Edge\/|EdgA\//i.test(ua)) browser = 2 //'Edge'
     else if (/Firefox\//i.test(ua)) browser = 3 //'Firefox'
     else if (/Chrome\/|CriOS\//i.test(ua)) browser = 4 //'Chrome or chromium' //CriOS on ios
     else if ((getOS() == 'iOS' || getOS() == 'MacOS')) {

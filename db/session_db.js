@@ -37,5 +37,8 @@ module.exports = {
             }
         });
         return session
+    },
+    create_user_id: async function(){
+        Math.random().toString(36).substring(2)
     }
 }
