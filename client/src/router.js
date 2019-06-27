@@ -32,6 +32,11 @@ const routes = [
     path: '/dashboard',
     component: loadable(() => import('pages/dashboard')),
   },
+  // Menu
+  {
+    path: '/realtime',
+    component: loadable(() => import('pages/realtime')),
+  },
   // AntDesign
   {
     path: '/antd',
