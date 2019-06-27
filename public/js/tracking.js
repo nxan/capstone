@@ -1,58 +1,58 @@
-var positions = [];
-var shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLeft: 0, action: '', s: [], datetime: new Date(), page: '' };
-var send = 0;
-var check_redirect;
-$(document).ready(function () {
-    // $.ajax({
-    //     url: 'https://capstone-man.herokuapp.com/api/session',
-    //     method: 'post',
-    //     crossDomain: true,
-    //     xhrFields: {
-    //         withCredentials: 'include'
-    //      },
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(getInfor()),
-    //     success: function (e) {
-
-    //     }
-    // })
-    var url = window.location.pathname;
-    var host = window.location.host;
-
-    fetch('https://1e346827.ngrok.io/api/session', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, cors, *same-origin
-        credentials: 'include', // include, *same-origin, omit
-        body: JSON.stringify(getInfor()),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
-    }).then((e) => {
-        fetch('https://1e346827.ngrok.io/api/session_page', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
-            credentials: 'include', // include, *same-origin, omit
-            body: {
-                url: window.location.hostname + window.location.pathname,
-            },
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        })
-    })
-    $(document).mousemove(function (event) {
-        trackEvent(event, 1);
-    });
-    $(document).click(function (event) {
-        trackEvent(event, 2)
-    });
-    $("select").on('change', function (i, e) {
-        trackEvent(e, 4);
-    });
-    trackChangePage();
+var save = false
+$(document).ready(() => {
+    save_session();
+    /*
+    socket init and sendTo server
+     */
+    var socket = io("http://localhost:3000");
+    var json = {
+        session_id: sessionId,
+        session_page_id: sessionPageID
+    }
+    socket.emit("client-send-session", JSON.stringify(json));
+    //track event
+    // $(document).mousemove(function (event) {
+    //     trackEvent(event, 1);
+    // });
+    // $(document).click(function (event) {
+    //     trackEvent(event, 2)
+    // });
+    // trackEvent(e, 4);
+    // $("select").on('change', function (i, e) {
+    // });
+    // trackChangePage();
 })
+document.addEventListener('visibilitychange', () => {
+    save_session();
+
+});
+function loadAdditionJs() {
+    var script = document.createElement("script");  // create a script DOM node
+    script.src = 'socket.io/socket.io.js';  // set its src to the provided URL
+
+    document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+
+}
+function save_session() {
+    if (!save) {
+        if (document.visibilityState === 'visible') {
+            fetch('https://f3cfa8c7.ngrok.io/api/session', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'no-cors', // no-cors, cors, *same-origin
+                credentials: 'include', // include, *same-origin, omit
+                body: JSON.stringify(getInfor()),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }).then((res) => {
+                console.log("OK")
+            })
+            save = true
+        }
+    }
+}
+
 function getInfor() {
     var infor = {
         url: window.location.pathname,
@@ -69,7 +69,7 @@ function getReference() {
     var res;
     if (/facebook.com|twitter.com/.test(ref)) res = 1 //'Social'
     else if (/google.com|bing.com/.test(ref)) res = 2 //'Search'
-    else if ('' == ref) res = 3 //'Direct'
+    else if ('' == ref || (ref.indexOf(window.location.hostname) > 0)) res = 3 //'Direct'
     else res = 4 //'Other'
     return res;
 }
@@ -109,7 +109,7 @@ function getBrowser() {
     var ua = window.navigator.userAgent
     var browser = null
     if (/OPR\/|OPERA\//i.test(ua)) browser = 1 //'Opera'
-    else if (/Edge\//i.test(ua)) browser = 2 //'Edge'
+    else if (/Edge\/|EdgA\//i.test(ua)) browser = 2 //'Edge'
     else if (/Firefox\//i.test(ua)) browser = 3 //'Firefox'
     else if (/Chrome\/|CriOS\//i.test(ua)) browser = 4 //'Chrome or chromium' //CriOS on ios
     else if ((getOS() == 'iOS' || getOS() == 'MacOS')) {
