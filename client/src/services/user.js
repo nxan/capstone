@@ -1,6 +1,28 @@
 import axios from "axios";
 import { notification } from 'antd'
 
+export async function register(email, password) {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const body = JSON.stringify({ email, password });
+  return axios.post('https://capstone-shopify.herokuapp.com/api/user', body, config)
+    .then((result) => {
+      return result.data
+    })
+    .catch((errors) => {
+      const error = errors.response.data.errors[0];
+      console.log(error.msg);
+      notification.warning({
+        message: "Login Failed",
+        description: error.msg,
+      })
+    })
+
+}
+
 export async function login(email, password) {
   const config = {
     headers: {
