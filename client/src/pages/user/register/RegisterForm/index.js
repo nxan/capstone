@@ -57,9 +57,9 @@ class RegisterFormComponent extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem validateStatus="validating">
-          {form.getFieldDecorator('Nickname', {
-            initialValue: 'nxan',
-            rules: [{ required: true, message: 'Please input your Nickname!' }],
+          {form.getFieldDecorator('email', {
+            initialValue: '',
+            rules: [{ required: true, message: 'Please input your email!' }],
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -69,7 +69,7 @@ class RegisterFormComponent extends React.Component {
         </FormItem>
         <FormItem>
           {form.getFieldDecorator('password', {
-            initialValue: '123456',
+            initialValue: '',
             rules: [
               {
                 required: true,
@@ -88,7 +88,7 @@ class RegisterFormComponent extends React.Component {
         </FormItem>
         <FormItem>
           {form.getFieldDecorator('confirm', {
-            initialValue: '123456',
+            initialValue: '',
             rules: [
               {
                 required: true,

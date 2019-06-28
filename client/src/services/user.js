@@ -8,13 +8,14 @@ export async function register(email, password) {
     }
   };
   const body = JSON.stringify({ email, password });
-  return axios.post('https://capstone-shopify.herokuapp.com/api/user', body, config)
+  console.log(body);
+  return axios.post('http://localhost:5000/api/user', body, config)
     .then((result) => {
       return result.data
     })
     .catch((errors) => {
-      const error = errors.response.data.errors[0];
-      console.log(error.msg);
+      const error = errors.response;
+      console.log(error);
       notification.warning({
         message: "Login Failed",
         description: error.msg,
@@ -30,7 +31,7 @@ export async function login(email, password) {
     }
   };
   const body = JSON.stringify({ email, password });
-  return axios.post('https://capstone-shopify.herokuapp.com/api/auth', body, config)
+  return axios.post('http://localhost:5000/api/auth', body, config)
     .then((result) => {
       return result.data
     })
@@ -53,9 +54,12 @@ export async function loadProfile() {
   }
   if (localStorage.token) {
     setAuthToken(localStorage.token);
-    return axios.get('https://capstone-shopify.herokuapp.com/api/shop/me')
+    return axios.get('http://localhost:5000/api/shop/me')
       .then((result) => {
         return result.data
+      }).catch((errors) => {
+        const error = errors.response;
+        console.log(error);
       })
   }
   return false;

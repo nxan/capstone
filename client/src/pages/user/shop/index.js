@@ -7,18 +7,10 @@ import styles from './style.module.scss'
 
 @Form.create()
 @connect(({ user }) => ({ user }))
-class Login extends Component {
+class Profile extends Component {
   onSubmit = event => {
-    event.preventDefault()
-    const { form, dispatch } = this.props
-    form.validateFields((error, values) => {
-      if (!error) {
-        dispatch({
-          type: 'user/LOGIN',
-          payload: values,
-        })
-      }
-    })
+    event.preventDefault()   
+    
   }
 
   render() {
@@ -28,7 +20,7 @@ class Login extends Component {
     } = this.props
     return (
       <div>
-        <Helmet title="Login" />
+        <Helmet title="Profile" />
         <div className={`${styles.title} login-heading`}>
           <h1>
             <strong>WELCOME TO SHOPIFY ANALYTICS</strong>
@@ -47,19 +39,17 @@ class Login extends Component {
               <div className={styles.inner}>
                 <div className={styles.form}>
                   <h4 className="text-uppercase">
-                    <strong>Please log in</strong>
+                    <strong>Please input information your shopify</strong>
                   </h4>
                   <br />
                   <Form layout="vertical" hideRequiredMark onSubmit={this.onSubmit}>
-                    <Form.Item label="Email">
+                    <Form.Item label="Shop">
                       {form.getFieldDecorator('email', {
-                        initialValue: 'nxan@gmail.com',
                         rules: [{ required: true, message: 'Please input your e-mail address' }],
                       })(<Input size="default" />)}
                     </Form.Item>
-                    <Form.Item label="Password">
+                    <Form.Item label="Full Name">
                       {form.getFieldDecorator('password', {
-                        initialValue: '123456',
                         rules: [{ required: true, message: 'Please input your password' }],
                       })(<Input size="default" type="password" />)}
                     </Form.Item>
@@ -123,4 +113,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default Profile

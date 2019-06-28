@@ -16,16 +16,16 @@ const { check, validationResult } = require('express-validator/check');
 router.post(
   '/',
   [
-    check('name', 'Name is required')
-      .not()
-      .isEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more character'
-    ).isLength({
-      min: 6
-    })
+    // check('name', 'Name is required')
+    //   .not()
+    //   .isEmpty(),
+    // check('email', 'Please include a valid email').isEmail(),
+    // check(
+    //   'password',
+    //   'Please enter a password with 6 or more character'
+    // ).isLength({
+    //   min: 6
+    // })
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -35,7 +35,7 @@ router.post(
       });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
       console.log(req.body);
@@ -50,11 +50,12 @@ router.post(
       }
 
       user = new User({
-        email, password, name
+        email, password
       });
 
-      // const salt = await bcrypt.genSalt(10);
-      // user.password = await bcrypt.hash(password, salt);
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      console.log(user.password);
       await user.save();
 
       const payload = {

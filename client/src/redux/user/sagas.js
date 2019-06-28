@@ -1,6 +1,7 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { login, register, loadProfile, logout } from 'services/user'
+import { push } from 'react-router-redux';
 import actions from './actions'
 
 export function* LOGIN({ payload }) {
@@ -31,7 +32,6 @@ export function* REGISTER({ payload }) {
   yield put({
     type: 'user/SET_STATE',
     payload: {
-      token: localStorage.getItem('token'),
       loading: true,
     },
   })
@@ -39,9 +39,10 @@ export function* REGISTER({ payload }) {
   if (success) {
     notification.success({
       message: 'Registered',
-      description: 'You have successfully logged in to Shopify Analytics!',
+      description: 'You have successfully logged in to Shopify Analytics!',      
     })
-  }
+    yield put(push('/user/login'));
+  }  
 }
 
 export function* LOAD_CURRENT_ACCOUNT() {
@@ -64,7 +65,8 @@ export function* LOAD_CURRENT_ACCOUNT() {
         authorized: true,
       },
     })
-  }
+  } 
+  
   yield put({
     type: 'user/SET_STATE',
     payload: {
