@@ -48,51 +48,51 @@ class Realtime extends React.Component {
     const title = chart.titles.create();
     title.text = "[bold font-size: 20]Population of the World in 2011[/]\nsource: Gapminder";
     title.textAlign = "middle";
-    
-    // const latlong = {
-    //   "AD": {"latitude":42.5, "longitude":1.5},
-    //   "AE": {"latitude":24, "longitude":54}
-    // };
-    
-    // const mapData = [
-    //   { "id":"AF", "name":"Afghanistan", "value":32358260, "color": chart.colors.getIndex(0) },
-    //   { "id":"AL", "name":"Albania", "value":3215988, "color":chart.colors.getIndex(1) }
-    // ];
-    
+
+    const latlong = {
+      "AD": { "latitude": 42.5, "longitude": 1.5 },
+      //   "AE": {"latitude":24, "longitude":54}
+    };
+
+    const mapData = [
+      { "id": "AD", "name": "Afghanistan", "value": 32358260, "color": chart.colors.getIndex(0) },
+      //   { "id":"AL", "name":"Albania", "value":3215988, "color":chart.colors.getIndex(1) }
+    ];
+
     // Add lat/long information to data
-    // for(let i = 0; i < mapData.length; i) {
-    //   mapData[i].latitude = latlong[mapData[i].id].latitude;
-    //   mapData[i].longitude = latlong[mapData[i].id].longitude;
-    // }
-    
+    for (let i = 0; i < mapData.length; i+=1) {
+      mapData[i].latitude = latlong[mapData[i].id].latitude;
+      mapData[i].longitude = latlong[mapData[i].id].longitude;
+    }
+
     // Set map definition
     // eslint-disable-next-line camelcase
     chart.geodata = am4geodata_worldLow;
-    
+
     // Set projection
     chart.projection = new am4maps.projections.Miller();
-    
+
     // Create map polygon series
     const polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
     polygonSeries.exclude = ["AQ"];
     polygonSeries.useGeodata = true;
     polygonSeries.nonScalingStroke = true;
     polygonSeries.strokeWidth = 0.5;
-    
+
     const imageSeries = chart.series.push(new am4maps.MapImageSeries());
-    // imageSeries.data = mapData;
+    imageSeries.data = mapData;
     imageSeries.dataFields.value = "value";
-    
+
     const imageTemplate = imageSeries.mapImages.template;
     imageTemplate.propertyFields.latitude = "latitude";
     imageTemplate.propertyFields.longitude = "longitude";
     imageTemplate.nonScaling = true
-    
+
     const circle = imageTemplate.createChild(am4core.Circle);
     circle.fillOpacity = 0.7;
     circle.propertyFields.fill = "color";
     circle.tooltipText = "{name}: [bold]{value}[/]";
-    
+
     imageSeries.heatRules.push({
       "target": circle,
       "property": "radius",
