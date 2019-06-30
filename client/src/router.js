@@ -41,6 +41,12 @@ const routes = [
   {
     path: '/realtime',
     component: loadable(() => import('pages/realtime')),
+    exact: true,
+  },
+  {
+    path: '/audience',
+    component: loadable(() => import('pages/audience')),
+    exact: true,
   },
   // AntDesign
   {
