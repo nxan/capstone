@@ -28,21 +28,21 @@ export function* LOGIN({ payload }) {
 }
 
 export function* REGISTER({ payload }) {
-  const { email, password } = payload
+  const { email, password, shop } = payload
   yield put({
     type: 'user/SET_STATE',
     payload: {
       loading: true,
     },
   })
-  const success = yield call(register, email, password)
+  const success = yield call(register, email, password, shop)
   if (success) {
     notification.success({
       message: 'Registered',
-      description: 'You have successfully logged in to Shopify Analytics!',      
+      description: 'You have successfully logged in to Shopify Analytics!',
     })
     yield put(push('/user/login'));
-  }  
+  }
 }
 
 export function* LOAD_CURRENT_ACCOUNT() {
@@ -65,8 +65,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
         authorized: true,
       },
     })
-  } 
-  
+  }
   yield put({
     type: 'user/SET_STATE',
     payload: {
@@ -95,6 +94,6 @@ export default function* rootSaga() {
     takeEvery(actions.REGISTER, REGISTER),
     takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
     takeEvery(actions.LOGOUT, LOGOUT),
-    LOAD_CURRENT_ACCOUNT(), // run once on app load to check user auth
+    LOAD_CURRENT_ACCOUNT(),
   ])
 }

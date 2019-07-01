@@ -21,7 +21,7 @@ class RegisterFormComponent extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault()
-    const { form, dispatch } = this.props    
+    const { form, dispatch } = this.props
     form.validateFields((error, values) => {
       if (!error) {
         dispatch({
@@ -58,7 +58,6 @@ class RegisterFormComponent extends React.Component {
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem validateStatus="validating">
           {form.getFieldDecorator('email', {
-            initialValue: '',
             rules: [{ required: true, message: 'Please input your email!' }],
           })(
             <Input
@@ -69,7 +68,6 @@ class RegisterFormComponent extends React.Component {
         </FormItem>
         <FormItem>
           {form.getFieldDecorator('password', {
-            initialValue: '',
             rules: [
               {
                 required: true,
@@ -88,7 +86,6 @@ class RegisterFormComponent extends React.Component {
         </FormItem>
         <FormItem>
           {form.getFieldDecorator('confirm', {
-            initialValue: '',
             rules: [
               {
                 required: true,
@@ -106,19 +103,29 @@ class RegisterFormComponent extends React.Component {
             />,
           )}
         </FormItem>
+        <FormItem validateStatus="validating">
+          {form.getFieldDecorator('shop', {
+            rules: [{ required: true, message: 'Please input your shop!' }],
+          })(
+            <Input
+              prefix={<Icon type="shop" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Example: nxan.shopify.com"
+            />,
+          )}
+        </FormItem>
 
         <div className="form-actions">
           <Button type="primary" htmlType="submit" className="login-form-button">
             Sign Up
           </Button>
           <span className="ml-3">
-            {form.getFieldDecorator('mailsubscription', {              
+            {form.getFieldDecorator('mailsubscription', {
               valuePropName: 'checked',
               initialValue: true,
             })(<Checkbox>Mail Subscription</Checkbox>)}
           </span>
           <span className="ml-3 register-link">
-            Back to {' '}                      
+            Back to {' '}
             <Link
               to="/user/login"
               className="utils__link--blue utils__link--underlined"

@@ -60,7 +60,7 @@ class Realtime extends React.Component {
     ];
 
     // Add lat/long information to data
-    for (let i = 0; i < mapData.length; i+=1) {
+    for (let i = 0; i < mapData.length; i += 1) {
       mapData[i].latitude = latlong[mapData[i].id].latitude;
       mapData[i].longitude = latlong[mapData[i].id].longitude;
     }

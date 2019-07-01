@@ -38,7 +38,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
-// app.use('/api/profile', require('./routes/api/shop.route'));
 app.use('/api/os', require('./routes/api/os.route'));
 app.use('/api/device', require('./routes/api/device.route'));
 app.use('/api/browser', require('./routes/api/browser.route'));
@@ -51,6 +50,6 @@ app.use('/api/country', require('./routes/api/country.route'));
 app.use('/api/test', require('./routes/api/test.route'));
 app.use('/api/page', require('./routes/api/page.route'))
 app.use('/api/session_page', require('./routes/api/session_page.route'))
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8888;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

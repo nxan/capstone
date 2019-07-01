@@ -1,23 +1,23 @@
 import axios from "axios";
 import { notification } from 'antd'
 
-export async function register(email, password) {
+// eslint-disable-next-line camelcase
+export async function register(email, password, shop_url) {
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
-  const body = JSON.stringify({ email, password });
+  const body = JSON.stringify({ email, password, shop_url });
   console.log(body);
-  return axios.post('http://localhost:5000/api/user', body, config)
+  return axios.post('http://localhost:8888/api/user', body, config)
     .then((result) => {
       return result.data
     })
     .catch((errors) => {
       const error = errors.response;
-      console.log(error);
       notification.warning({
-        message: "Login Failed",
+        message: "Register Failed",
         description: error.msg,
       })
     })
@@ -31,7 +31,7 @@ export async function login(email, password) {
     }
   };
   const body = JSON.stringify({ email, password });
-  return axios.post('http://localhost:5000/api/auth', body, config)
+  return axios.post('http://localhost:8888/api/auth', body, config)
     .then((result) => {
       return result.data
     })
@@ -54,12 +54,11 @@ export async function loadProfile() {
   }
   if (localStorage.token) {
     setAuthToken(localStorage.token);
-    return axios.get('http://localhost:5000/api/shop/me')
+    return axios.get('http://localhost:8888/api/shop/me')
       .then((result) => {
         return result.data
-      }).catch((errors) => {
-        const error = errors.response;
-        console.log(error);
+      }).catch((err) => {
+        console.log(err.response.statusText)
       })
   }
   return false;
