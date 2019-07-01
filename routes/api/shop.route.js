@@ -97,7 +97,7 @@ router.get('/', async (req, res) => {
 });
 
 /* ----- 
-  @route  GET api/Shop//user/:user_id
+  @route  GET api/Shop/user/:user_id
   @desc   Get user Shop
 -----*/
 router.get('/user/:user_id', async (req, res) => {

@@ -6,8 +6,29 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 const User = require('../../model/User');
+var Shop = require('../../model/Shop');
 
 const { check, validationResult } = require('express-validator/check');
+
+
+/* ----- 
+  @route  get api/user/:user_id
+  @desc   Get User
+-----*/
+router.get('/:email', async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: { email: req.params.email }
+    });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+    res.json(user)
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 /* ----- 
   @route  POST api/user
@@ -35,7 +56,7 @@ router.post(
       });
     }
 
-    const { email, password } = req.body;
+    const { email, password, shop_url } = req.body;
 
     try {
       console.log(req.body);
@@ -58,11 +79,20 @@ router.post(
       console.log(user.password);
       await user.save();
 
-      const payload = {
+      var payload = {
         user: {
+          id: user.id,
           email: user.email
         }
       }
+      var user_id = payload.user.id
+
+      shop = new Shop({
+        user_id, shop_url
+      });
+
+      await shop.save();
+
       jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 360000 }, (err, token) => {
         if (err) throw err;
         res.json({ token });
