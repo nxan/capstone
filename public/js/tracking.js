@@ -1,22 +1,44 @@
 var save = false
-$(document).ready(save_session())
-document.addEventListener('visibilitychange', ()=>{
+
+$(document).ready(() => {
+    save_session()
+    while(infor_tab!=null){
+        console.log(infor_tab)
+    }
+    setInterval(function () {
+        fetch('https://ea49b576.ngrok.io/api/session/save/resave', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            console.log("OK")
+        })
+    }, 1000 * 15);
+})
+document.addEventListener('visibilitychange', () => {
     save_session()
 });
-function save_session() {    
+function save_session() {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://f3cfa8c7.ngrok.io/api/session', {
+            fetch('https://ea49b576.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'no-cors', // no-cors, cors, *same-origin
-                credentials: 'include', // include, *same-origin, omit
                 body: JSON.stringify(getInfor()),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 }
-            }).then((res) => {
-                console.log("OK")
+            }).then(data=>data.json())
+            .then(json=>{
+                let infor_tab = {
+                    session_id: json.session_id,
+                    session_page_id: json.session_page_id
+                }
+                /*socket here
+
+                */
             })
             save = true
         }
