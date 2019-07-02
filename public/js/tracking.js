@@ -1,35 +1,23 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
 var send = 0; check_redirect = false;
 $(document).ready(() => {
-    save_session();
-    var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>' 
+
+    var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-
-    setTimeout(function () {
-        var socket = io("http://2698bed1.ngrok.io");
-        var json = {
-            session_id: sessionId,
-            session_page_id: sessionPageID
-        }
-        socket.emit("client-send-session", JSON.stringify(json));
-    }, 2000);
+    save_session();
 
 
-    while (infor_tab != null) {
-        console.log(infor_tab)
-    }
-    socket.emit("client-send-session", JSON.stringify(json));
-    //track event
-    // $(document).mousemove(function (event) {
-    //     trackEvent(event, 1);
-    // });
-    // $(document).click(function (event) {
-    //     trackEvent(event, 2)
-    // });
-    // trackEvent(e, 4);
-    // $("select").on('change', function (i, e) {
-    // });
-    // trackChangePage();
+    // track event
+    $(document).mousemove(function (event) {
+        trackEvent(event, 1);
+    });
+    $(document).click(function (event) {
+        trackEvent(event, 2)
+    });
+    trackEvent(null, 4);
+    $("select").on('change', function (i, e) {
+    });
+    trackChangePage();
 })
 document.addEventListener('visibilitychange', () => {
     save_session();
@@ -41,7 +29,7 @@ function loadAdditionJs() {
 function save_session() {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://f3cfa8c7.ngrok.io/api/session', {
+            fetch('https://2698bed1.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'no-cors', // no-cors, cors, *same-origin
                 credentials: 'include', // include, *same-origin, omit
@@ -56,6 +44,8 @@ function save_session() {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id
                     }
+                    var socket = io("http://2698bed1.ngrok.io");
+                    socket.emit("client-send-session", JSON.stringify(infor_tab));
                     /*socket here
     
                     */
@@ -143,7 +133,7 @@ function startRecord(data) {
 
         // sendImage();
         $.ajax({
-            url: 'http://localhost:10093/shopify/sendFilev2',
+            url: 'http://2698bed1.ngrok.io/shopify/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -207,7 +197,7 @@ function trackChangePage() {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'http://localhost:10093/shopify/sendFilev2',
+            url: 'http://2698bed1.ngrok.io/api/shopify/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
