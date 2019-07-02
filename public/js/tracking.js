@@ -1,13 +1,15 @@
-var save = false
+var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
+var send = 0; check_redirect;
 $(document).ready(() => {
     save_session();
-    /*
-    socket init and sendTo server
-     */
     var socket = io("http://localhost:3000");
     var json = {
         session_id: sessionId,
         session_page_id: sessionPageID
+    }
+    socket.emit("client-send-session", JSON.stringify(json));
+    while (infor_tab != null) {
+        console.log(infor_tab)
     }
     socket.emit("client-send-session", JSON.stringify(json));
     //track event
@@ -45,9 +47,16 @@ function save_session() {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 }
-            }).then((res) => {
-                console.log("OK")
-            })
+            }).then(data => data.json())
+                .then(json => {
+                    let infor_tab = {
+                        session_id: json.session_id,
+                        session_page_id: json.session_page_id
+                    }
+                    /*socket here
+    
+                    */
+                })
             save = true
         }
     }
