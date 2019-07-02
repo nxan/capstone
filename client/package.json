@@ -3,7 +3,7 @@
   "version": "2.1.1",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "lint-staged": "lint-staged",
@@ -25,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.5.3",
+    "@amcharts/amcharts4-geodata": "^4.1.6",
     "@rowno/sparkline": "^3.0.1",
     "antd": "^3.13.2",
     "axios": "^0.19.0",

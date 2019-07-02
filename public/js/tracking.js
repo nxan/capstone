@@ -1,52 +1,44 @@
 var save = false
+
 $(document).ready(() => {
-    save_session();
-    /*
-    socket init and sendTo server
-     */
-    var socket = io("http://localhost:3000");
-    var json = {
-        session_id: sessionId,
-        session_page_id: sessionPageID
+    save_session()
+    while(infor_tab!=null){
+        console.log(infor_tab)
     }
-    socket.emit("client-send-session", JSON.stringify(json));
-    //track event
-    // $(document).mousemove(function (event) {
-    //     trackEvent(event, 1);
-    // });
-    // $(document).click(function (event) {
-    //     trackEvent(event, 2)
-    // });
-    // trackEvent(e, 4);
-    // $("select").on('change', function (i, e) {
-    // });
-    // trackChangePage();
+    setInterval(function () {
+        fetch('https://ea49b576.ngrok.io/api/session/save/resave', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            console.log("OK")
+        })
+    }, 1000 * 15);
 })
 document.addEventListener('visibilitychange', () => {
-    save_session();
-
+    save_session()
 });
-function loadAdditionJs() {
-    var script = document.createElement("script");  // create a script DOM node
-    script.src = 'socket.io/socket.io.js';  // set its src to the provided URL
-
-    document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-
-}
 function save_session() {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://f3cfa8c7.ngrok.io/api/session', {
+            fetch('https://ea49b576.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'no-cors', // no-cors, cors, *same-origin
-                credentials: 'include', // include, *same-origin, omit
                 body: JSON.stringify(getInfor()),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 }
-            }).then((res) => {
-                console.log("OK")
+            }).then(data=>data.json())
+            .then(json=>{
+                let infor_tab = {
+                    session_id: json.session_id,
+                    session_page_id: json.session_page_id
+                }
+                /*socket here
+
+                */
             })
             save = true
         }
