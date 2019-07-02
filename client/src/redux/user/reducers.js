@@ -8,7 +8,6 @@ const initialState = {
   email: '',
   authorized: false,
   loading: false,
-  error: false,
 }
 
 export default function userReducer(state = initialState, action) {

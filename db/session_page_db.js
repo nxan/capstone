@@ -23,7 +23,7 @@ module.exports = {
         session_page_field.start_time = new Date(Date.now()).toISOString()
         try {
             session_page = new Session_page(session_page_field)
-            await session_page.save()
+            session_page.save()
         } catch (error) {
             console.log(error)
         }

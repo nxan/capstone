@@ -11,8 +11,9 @@ var cookieParser = require('cookie-parser')
 var allClients = [];
 const session_db = require('../../db/session');
 const app = express();
-app.use(cors({credentials: true}))
-app.use(cookieParser("secret"))
+const session_page_db = require('../../db/session_page_db');
+app.use(cors())
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,13 +27,11 @@ app.use(express.json({ type: ['application/json', 'text/plain'] }));
 app.set('trust proxy', 1)
 app.use(session({
     secret: '123',
-    resave: true,
-    httpOnly: true, 
+    resave: false,
     saveUninitialized: true,
-    rolling: true,
     cookie: {
-        maxAge: 1000*20 ,
-        secure: true
+        maxAge: 300000,
+        secure: false
     }
 }))
 
@@ -71,6 +70,7 @@ io.on("connection", function (socket) {
 });
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
+// app.use('/api/profile', require('./routes/api/shop.route'));
 app.use('/api/os', require('./routes/api/os.route'));
 app.use('/api/device', require('./routes/api/device.route'));
 app.use('/api/browser', require('./routes/api/browser.route'));
