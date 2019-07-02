@@ -2,6 +2,8 @@ var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scroll
 var send = 0; check_redirect;
 $(document).ready(() => {
     save_session();
+    $('head').prepend('https://cdn.socket.io/socket.io-1.0.0.js');  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+
     var socket = io("http://localhost:3000");
     var json = {
         session_id: sessionId,
@@ -29,10 +31,6 @@ document.addEventListener('visibilitychange', () => {
 
 });
 function loadAdditionJs() {
-    var script = document.createElement("script");  // create a script DOM node
-    script.src = 'socket.io/socket.io.js';  // set its src to the provided URL
-
-    document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
 
 }
 function save_session() {
