@@ -34,7 +34,7 @@ Session.belongsTo(Browser, { foreignKey: 'browser_id', targetKey: 'id' });
  @desc Check visitor live through session
 --------*/
 router.get('/session_live', (req, res) => {
-    
+
 })
 
 /* ----- 
@@ -162,7 +162,7 @@ router.post('/', [
                 session_id: session.id,
                 page_id: entrance_page.id
             }
-            session_page_db.add_session_page(session_page_infor)
+            await session_page_db.add_session_page(session_page_infor)
             res.status(200).send({ stt: 'Session saved' });
         } catch (err) {
             console.log(err.message);
@@ -177,7 +177,7 @@ router.post('/', [
             session_id: session.id,
             page_id: page.id
         }
-        session_page_db.add_session_page(session_page_infor)
+        await session_page_db.add_session_page(session_page_infor)
         res.status(200).send('Done')
     }
 });

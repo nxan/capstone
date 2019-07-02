@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    save_session();
+   // save_session();
 
 
     // track event
@@ -14,8 +14,9 @@ $(document).ready(() => {
     $(document).click(function (event) {
         trackEvent(event, 2)
     });
-    trackEvent(null, 4);
+
     $("select").on('change', function (i, e) {
+        trackEvent(null, 4);
     });
     trackChangePage();
 })
@@ -40,6 +41,7 @@ function save_session() {
                 }
             }).then(data => data.json())
                 .then(json => {
+                    var json = JSON.parse(data);
                     let infor_tab = {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id
@@ -47,7 +49,7 @@ function save_session() {
                     var socket = io("http://2698bed1.ngrok.io");
                     socket.emit("client-send-session", JSON.stringify(infor_tab));
                     /*socket here
-    
+     
                     */
                 })
             save = true
@@ -163,10 +165,22 @@ function startRecord(data) {
         window.positions = [];
     }
 }
+function trackSelect() {
+    console.log($("select option:selected").text() + "-");
+    // var text = "1,2,3";
+    var text = [];
+    $("select option:selected").each(function (i, e) {
+        if ($(this).length) {
+            text.push($(this).val());
+        }
+    });
+    console.log(text);
+    return text;
+}
 function trackEvent(event, action) {
     // get pageX, pageY of visitors
-    shopEvent["x"] = event.pageX;
-    shopEvent["y"] = event.pageY;
+    shopEvent["x"] = event == null ? 0 : event.pageX;
+    shopEvent["y"] = event == null ? 0 : event.pageY;
     //action-1: mousemove, action-2: click, action-4: change select
     if (action == 2 || action == 4) {
         shopEvent["x"] = 0;
