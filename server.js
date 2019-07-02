@@ -11,6 +11,9 @@ var cookieParser = require('cookie-parser')
 var allClients = [];
 const session_db = require('../../db/session');
 const app = express();
+var http = require("http").createServer(app);
+var io = require("socket.io")(http);
+http.listen(8080, "127.0.0.1");
 const session_page_db = require('../../db/session_page_db');
 app.use(cors())
 app.use(cookieParser())
@@ -49,7 +52,7 @@ io.on("connection", function (socket) {
                 session_page_db.pdate_session_page(date, allClients[i].session_page_id)
                 allClients.splice(i, 1);
             }
-            if(allClients[i].socket_id == socket.id && allClients.length == 1){
+            if (allClients[i].socket_id == socket.id && allClients.length == 1) {
                 session_db.updateSession(date, allClients[i].session_id);
                 allClients.splice(i, 1);
             }
@@ -86,4 +89,4 @@ app.use('/api/session_page', require('./routes/api/session_page.route'))
 const PORT = process.env.PORT || 3000;
 app.use('/api/video', require('./routes/api/video.route'))
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+//app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

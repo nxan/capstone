@@ -6,7 +6,7 @@ module.exports = {
         })
     },
     getVideo: async (condition) => {
-        return Shop.findOne(
+        return Video.findOne(
             condition
         ).then((result) => {
             return result
@@ -14,6 +14,6 @@ module.exports = {
 
     },
     updateVideo: async(data, id) => {
-        await Session_page.update(dataUpdate, { where: { id: id } });
+        await Video.update(data, { where: { id: id } });
     }
 }

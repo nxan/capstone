@@ -30,7 +30,7 @@ router.post('/sendVideo', async (req, res) => {
             is_parent: true
         }
     };
-    var video = video_db.getVideo(condition);
+    var video = await video_db.getVideo(condition);
     if (video == null) {
         var parentId;
         var newVideoFields = {};
@@ -47,17 +47,17 @@ router.post('/sendVideo', async (req, res) => {
         newVideoFields.is_redirect = json.is_redirect;
         newVideo = new Video(newVideoFields);
         try {
-            var item = video_db.addVideo(newVideo);
+            var item = await video_db.addVideo(newVideo);
             item.folder_url = item.id;
             parentId = item.id;
-            function_path = '../server_side_record/function/' + item.id + '.txt';
+            function_path = './function/' + item.id + '.txt';
             if (!fs.existsSync(function_path)) {
                 fs.writeFileSync(function_path, "", (err) => {
                     if (err) console.log(err);
                 });
             }
             updateFolder = { folder_url: item.id };
-            Video.update(updateFolder, { where: { id: item.id } });
+            await Video.update(updateFolder, { where: { id: item.id } });
         } catch (error) {
 
         }
@@ -68,7 +68,7 @@ router.post('/sendVideo', async (req, res) => {
                 is_next_page: false
             }
         };
-        var childVideo = video_db.getVideo(condition);
+        var childVideo = await video_db.getVideo(condition);
         var check_parent = false;
         if (childVideo == null) {
             var newVideoFields = {};
@@ -94,8 +94,8 @@ router.post('/sendVideo', async (req, res) => {
                     ],
                     attributes: ['id']
                 }
-                var childParent = video_db.getVideo(condition);
-                var item = video_db.addVideo(newVideo);
+                var chidParent = await video_db.getVideo(condition);
+                var item = await video_db.addVideo(newVideo);
                 function_path = '../server_side_record/function/' + item.id + '.txt';
 
                 let child_path = '../server_side_record/function/' + item.id + '.txt';
@@ -115,11 +115,11 @@ router.post('/sendVideo', async (req, res) => {
                     folder_url: item.id
                 }
                 if (video.next_page == 0) {
-                    video_db.updateVideo(updateChild_Parent, video.id);
+                    await video_db.updateVideo(updateChild_Parent, video.id);
                 } else {
-                    video_db.updateVideo(updateChild_Parent, chidParent.id);
+                    await video_db.updateVideo(updateChild_Parent, chidParent.id);
                 }
-                video_db.updateVideo(updateChild, item.id);
+                await video_db.updateVideo(updateChild, item.id);
             } catch (err) {
 
             }
@@ -129,7 +129,7 @@ router.post('/sendVideo', async (req, res) => {
         else if (childVideo != null || check_parent) {
             // positionData = readFunctionData(video.folder_url);
             condition = { where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] };
-            var getLastVideo = video_db.getVideo(condition);
+            var getLastVideo = await video_db.getVideo(condition);
             //var getLastVideo = await Video.findOne({ where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] });
             var path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt'
             if (!fs.existsSync(path)) {
@@ -142,7 +142,7 @@ router.post('/sendVideo', async (req, res) => {
                 var updateLastVideo = {
                     is_next_page: true
                 }
-                video_db.updateVideo(updateLastVideo, getLastVideo.id);
+                await video_db.updateVideo(updateLastVideo, getLastVideo.id);
             }
             //positionData = fs.readFileSync(path);
             function_path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt';
@@ -196,7 +196,7 @@ router.post('/sendCart', async (req, res) => {
             is_parent: true
         }
     }
-    var video = video_db.getVideo(condition);
+    var video = await video_db.getVideo(condition);
     var video_id = 0;
     if (video == null) {
         var parentId;
@@ -214,7 +214,7 @@ router.post('/sendCart', async (req, res) => {
         newVideoFields.is_redirect = json.is_redirect;
         newVideo = new Video(newVideoFields);
         try {
-            var item = video_db.addVideo(newVideo);
+            var item = await video_db.addVideo(newVideo);
             video_id = item.id
             item.folder_url = item.id;
             parentId = item.id;
@@ -225,7 +225,7 @@ router.post('/sendCart', async (req, res) => {
                 });
             }
             updateFolder = { folder_url: item.id };
-            video_db.updateVideo(updateFolder, item.id);
+            await video_db.updateVideo(updateFolder, item.id);
 
         } catch (error) {
 
@@ -238,7 +238,7 @@ router.post('/sendCart', async (req, res) => {
                 is_next_page: false
             }
         }
-        var childVideo = video_db.getVideo(condition);
+        var childVideo = await video_db.getVideo(condition);
         var check_parent = false;
         if (childVideo == null) {
             var newVideoFields = {};
@@ -264,8 +264,8 @@ router.post('/sendCart', async (req, res) => {
                     ],
                     attributes: ['id']
                 }
-                var chidParent = video_db.getVideo(condition);
-                var item = video_db.addVideo(newVideo);
+                var chidParent = await video_db.getVideo(condition);
+                var item = await video_db.addVideo(newVideo);
                 video_id = item.id
                 function_path = '../server_side_record/function/' + item.id + '.txt';
 
@@ -286,11 +286,11 @@ router.post('/sendCart', async (req, res) => {
                     folder_url: item.id
                 }
                 if (video.next_page == 0) {
-                    video_db.updateVideo(updateChild_Parent, video.id);
+                    await video_db.updateVideo(updateChild_Parent, video.id);
                 } else {
-                    video_db.updateVideo(updateChild_Parent, chidParent.id);
+                    await video_db.updateVideo(updateChild_Parent, chidParent.id);
                 }
-                video_db.updateVideo(updateChild, item.id);
+                await video_db.updateVideo(updateChild, item.id);
             } catch (err) {
 
             }
@@ -302,7 +302,7 @@ router.post('/sendCart', async (req, res) => {
             condition = {
                 where: { session_id: json.session_id, is_next_page: false }
             }, { order: [['createdAt', 'DESC']] };
-            var getLastVideo = video_db.getVideo(condition);
+            var getLastVideo = await video_db.getVideo(condition);
             var path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt'
             if (!fs.existsSync(path)) {
                 fs.writeFileSync(path, positionData, (err) => {
@@ -314,7 +314,7 @@ router.post('/sendCart', async (req, res) => {
                 var updateLastVideo = {
                     is_next_page: true
                 }
-                video_db.updateVideo(updateLastVideo, getLastVideo.id);
+                await video_db.updateVideo(updateLastVideo, getLastVideo.id);
             }
             //positionData = fs.readFileSync(path);
             function_path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt';
@@ -376,7 +376,7 @@ router.post('/sendImage', async (req, res) => {
             is_parent: true
         }
     };
-    var video = video_db.getVideo(condition);
+    var video = await video_db.getVideo(condition);
     var video_id = 0;
     if (video == null) {
         var parentId;
@@ -394,7 +394,7 @@ router.post('/sendImage', async (req, res) => {
         newVideoFields.is_redirect = json.is_redirect;
         newVideo = new Video(newVideoFields);
         try {
-            var item = video_db.addVideo(newVideo);
+            var item = await video_db.addVideo(newVideo);
             video_id = item.id
             item.folder_url = item.id;
             parentId = item.id;
@@ -405,7 +405,7 @@ router.post('/sendImage', async (req, res) => {
                 });
             }
             updateFolder = { folder_url: item.id };
-            video_db.updateVideo(updateFolder, item.id);
+            await video_db.updateVideo(updateFolder, item.id);
         } catch (error) {
 
         }
@@ -417,7 +417,7 @@ router.post('/sendImage', async (req, res) => {
                 is_next_page: false
             }
         };
-        var childVideo = video_db.getVideo(condition);
+        var childVideo = await video_db.getVideo(condition);
         var check_parent = false;
         if (childVideo == null) {
             var newVideoFields = {};
@@ -443,8 +443,8 @@ router.post('/sendImage', async (req, res) => {
                     ],
                     attributes: ['id']
                 };
-                var chidParent = video_db.getVideo(condition);
-                var item = video_db.addVideo(newVideo);
+                var chidParent = await video_db.getVideo(condition);
+                var item = await video_db.addVideo(newVideo);
                 video_id = item.id
                 function_path = '../server_side_record/function/' + item.id + '.txt';
 
@@ -465,11 +465,11 @@ router.post('/sendImage', async (req, res) => {
                     folder_url: item.id
                 }
                 if (video.next_page == 0) {
-                    video_db.updateVideo(updateChild_Parent, video.id);
+                    await video_db.updateVideo(updateChild_Parent, video.id);
                 } else {
-                    video_db.updateVideo(updateChild_Parent, chidParent.id);
+                    await video_db.updateVideo(updateChild_Parent, chidParent.id);
                 }
-                video_db.updateVideo(updateChild, item.id);
+                await video_db.updateVideo(updateChild, item.id);
 
             } catch (err) {
 
@@ -495,7 +495,7 @@ router.post('/sendImage', async (req, res) => {
                 var updateLastVideo = {
                     is_next_page: true
                 }
-                video_db.updateVideo(updateLastVideo, getLastVideo.id);
+                await video_db.updateVideo(updateLastVideo, getLastVideo.id);
             }
             //positionData = fs.readFileSync(path);
             function_path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt';
