@@ -135,7 +135,7 @@ function startRecord(data) {
 
         // sendImage();
         $.ajax({
-            url: 'http://2698bed1.ngrok.io/shopify/video/sendVideo',
+            url: 'http://2698bed1.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -211,7 +211,7 @@ function trackChangePage() {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'http://2698bed1.ngrok.io/api/shopify/video/sendVideo',
+            url: 'http://2698bed1.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
