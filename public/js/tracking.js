@@ -1,15 +1,20 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
-var send = 0; check_redirect;
+var send = 0; check_redirect = false;
 $(document).ready(() => {
     save_session();
-    $('head').prepend('https://cdn.socket.io/socket.io-1.0.0.js');  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>' 
+    $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
 
-    var socket = io("http://localhost:3000");
-    var json = {
-        session_id: sessionId,
-        session_page_id: sessionPageID
-    }
-    socket.emit("client-send-session", JSON.stringify(json));
+    setTimeout(function () {
+        var socket = io("http://2698bed1.ngrok.io");
+        var json = {
+            session_id: sessionId,
+            session_page_id: sessionPageID
+        }
+        socket.emit("client-send-session", JSON.stringify(json));
+    }, 2000);
+
+
     while (infor_tab != null) {
         console.log(infor_tab)
     }
