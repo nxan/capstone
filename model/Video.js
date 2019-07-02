@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = require('../db');
+const db = require('../config/db');
 
 
 const Video = db.define('video', {
@@ -17,9 +17,6 @@ const Video = db.define('video', {
     },
     is_parent: {
         type: Sequelize.BOOLEAN
-    },
-    page_order: {
-        type: Sequelize.INTEGER
     },
     next_page: {
         type: Sequelize.INTEGER

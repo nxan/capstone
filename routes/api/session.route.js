@@ -11,8 +11,6 @@ const Device = require('../../model/Device');
 const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
 const axios = require('axios')
-const server = require("http").Server(app);
-const io = require("socket.io")(server);
 const func = require('../../func/check')
 
 const shop_db = require('../../db/shop_db')

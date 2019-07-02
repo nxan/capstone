@@ -9,12 +9,12 @@ const db = require('./config/db');
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var allClients = [];
-const session_db = require('../../db/session');
+const session_db = require('./db/session_db');
 const app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
-http.listen(8080, "127.0.0.1");
-const session_page_db = require('../../db/session_page_db');
+http.listen(3000, "127.0.0.1");
+const session_page_db = require('./db/session_page_db');
 app.use(cors())
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')));

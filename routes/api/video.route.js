@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Video = require('../../model/Video');
 const video_db = require('../../db/video_db')
-Session.hasMany(Video, { foreignKey: 'video_id', sourceKey: 'id' });
-Video.belongsTo(Session, { foreignKey: 'video_id', targetKey: 'id' });
+// Session.hasMany(Video, { foreignKey: 'video_id', sourceKey: 'id' });
+// Video.belongsTo(Session, { foreignKey: 'video_id', targetKey: 'id' });
 
 router.get('/:session_id', async (req, res) => {
     session_id = req.params.session_id

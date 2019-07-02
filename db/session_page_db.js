@@ -31,7 +31,7 @@ module.exports = {
     },
     update_session_page: async (data, session_page_id) => {
         var dataUpdate = {
-            end_time = data
+            end_time : data
         }
         await Session_page.update(dataUpdate, { where: { session_id: session_id } });
     }
