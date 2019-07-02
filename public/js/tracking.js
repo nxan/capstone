@@ -4,7 +4,7 @@ $(document).ready(() => {
 
     var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-   // save_session();
+    save_session();
 
 
     // track event
@@ -32,8 +32,8 @@ function save_session() {
         if (document.visibilityState === 'visible') {
             fetch('https://2698bed1.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'no-cors', // no-cors, cors, *same-origin
-                credentials: 'include', // include, *same-origin, omit
+                // mode: 'no-cors', // no-cors, cors, *same-origin
+                // credentials: 'include', // include, *same-origin, omit
                 body: JSON.stringify(getInfor()),
                 headers: {
                     'Accept': 'application/json',
@@ -41,7 +41,6 @@ function save_session() {
                 }
             }).then(data => data.json())
                 .then(json => {
-                    var json = JSON.parse(data);
                     let infor_tab = {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id

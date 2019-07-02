@@ -15,8 +15,8 @@ var http = require("http").createServer(app);
 var io = require("socket.io")(http);
 http.listen(3000, "127.0.0.1");
 const session_page_db = require('./db/session_page_db');
-app.use(cors())
-app.use(cookieParser())
+app.use(cors({credentials: true}))
+app.use(cookieParser("secret"))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,11 +30,12 @@ app.use(express.json({ type: ['application/json', 'text/plain'] }));
 app.set('trust proxy', 1)
 app.use(session({
     secret: '123',
-    resave: false,
+    resave: true,
+    httpOnly: true, 
     saveUninitialized: true,
     cookie: {
-        maxAge: 300000,
-        secure: false
+        maxAge: 1000*20 ,
+        secure: true
     }
 }))
 

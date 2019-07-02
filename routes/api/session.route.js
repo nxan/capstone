@@ -103,6 +103,12 @@ router.post('/', [
     // if(cookies.user == null){
 
     // }
+    cookies = req.signedCookies
+    uids = await Session.findAll({
+        attributes: ['user_id'],
+        group: ['user_id']
+    })
+
     let session = await Session.findOne({
         where: {
             jsession_id: jsession
@@ -111,7 +117,19 @@ router.post('/', [
 
     if (session == null) {
         let sessionFields = {};
-
+        //user_id cookies and check first time
+        if (cookies.uid == null) {
+            let uid
+            do {
+                uid = Math.random().toString(36).substring(2)
+            } while (uids.some(user_id => user_id.user_id === 'uid'))
+            sessionFields.user_id = uid
+            sessionFields.is_first_visit = true
+            res.cookie('uid', uid, { expires: new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * 365 * 20), signed: true })
+        } else {
+            sessionFields.user_id = cookies.uid
+            sessionFields.is_first_visit = false
+        }
         //Get location by IPIFY api
         let ip = req.headers['x-forwarded-for'];
         let api_Key = process.env.IPIFY_API_KEY;
@@ -123,7 +141,7 @@ router.post('/', [
         //Get done
 
         //Save location and get id to save to session
-        city_db.addCity(location)
+        await city_db.addCity(location)
         let city = await city_db.getCity(location)
         sessionFields.city_id = city.id
         //Save done
@@ -136,8 +154,7 @@ router.post('/', [
         entrance_page = await page_db.getPage(productUrl)
         sessionFields.entrance_page_id = entrance_page.id
         //get done
-        sessionFields.jsession_id = req.session.id;
-        if (user_id) sessionFields.user_id = user_id;
+        sessionFields.jsession_id = jsession;
         //date
         date = new Date(Date.now()).toISOString()
         console.log(date)
@@ -162,8 +179,14 @@ router.post('/', [
                 session_id: session.id,
                 page_id: entrance_page.id
             }
-            await session_page_db.add_session_page(session_page_infor)
-            res.status(200).send({ stt: 'Session saved' });
+            let session_page = await session_page_db.add_session_page(session_page_infor)
+            infor_tab = {
+                session_id: session_page.session_id,
+                session_page_id: session_page.id
+            }
+            console.log(infor_tab)
+            res.status(200).json(infor_tab)
+            // res.status(200).send({ stt: 'Session saved' });
         } catch (err) {
             console.log(err.message);
             res.status(500).send('Server Error');
@@ -177,8 +200,14 @@ router.post('/', [
             session_id: session.id,
             page_id: page.id
         }
-        await session_page_db.add_session_page(session_page_infor)
-        res.status(200).send('Done')
+        let session_page = await session_page_db.add_session_page(session_page_infor)
+        infor_tab = {
+            session_id: session_page.id,
+            session_page_id: session_page.id
+        }
+        console.log(infor_tab)
+        res.status(200).json(infor_tab)
+
     }
 });
 
