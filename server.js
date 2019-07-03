@@ -11,11 +11,12 @@ var cookieParser = require('cookie-parser')
 var allClients = [];
 const session_db = require('./db/session_db');
 const app = express();
-var http = require("http").createServer(app);
+var http = require("http").Server(app);
 var io = require("socket.io")(http);
-http.listen(3000, "127.0.0.1");
+http.listen(3000);
 const session_page_db = require('./db/session_page_db');
-app.use(cors({credentials: true}))
+app.use(cors({ credentials: true }))
+app.options('*', cors());
 app.use(cookieParser("secret"))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
@@ -31,30 +32,52 @@ app.set('trust proxy', 1)
 app.use(session({
     secret: '123',
     resave: true,
-    httpOnly: true, 
+    httpOnly: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000*20 ,
+        maxAge: 1000 * 20,
         secure: true
     }
 }))
 
 app.get('/', (req, res) => {
-    res.send('API running');
+    res.send("API running");
+});
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
 });
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
-    socket.on("disconnect", function () {
+    console.log("model:" + allClients);
+    socket.on("disconnect", async function () {
         for (var i = 0; i < allClients.length; i++) {
             console.log("c:" + allClients[i].socket_id);
             if (allClients[i].socket_id == socket.id) {
                 console.log(true);
-                var date = new Date().getTime() / 1000;
-                session_page_db.pdate_session_page(date, allClients[i].session_page_id)
+                var date = new Date(Date.now()).toISOString();
+                await session_page_db.update_session_page(date, allClients[i].session_page_id)
+                if (allClients.length == 1) {
+                    await session_db.updateSession(date, allClients[i].session_id);
+                }
                 allClients.splice(i, 1);
             }
-            if (allClients[i].socket_id == socket.id && allClients.length == 1) {
-                session_db.updateSession(date, allClients[i].session_id);
+            else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
+                await session_db.updateSession(date, allClients[i].session_id);
                 allClients.splice(i, 1);
             }
         }

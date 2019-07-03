@@ -1,10 +1,14 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
 var send = 0; check_redirect = false;
+var set = false; var socket;
 $(document).ready(() => {
 
-    var script = '<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>'
+    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    save_session();
+    if (!set) {
+        save_session(set);
+    }
+
 
 
     // track event
@@ -27,10 +31,10 @@ document.addEventListener('visibilitychange', () => {
 function loadAdditionJs() {
 
 }
-function save_session() {
+function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://2698bed1.ngrok.io/api/session', {
+            fetch('https://e9544bd1.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -45,8 +49,8 @@ function save_session() {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id
                     }
-                    var socket = io("http://2698bed1.ngrok.io");
-                    socket.emit("client-send-session", JSON.stringify(infor_tab));
+                    connect_socket(infor_tab);
+
                     /*socket here
      
                     */
@@ -55,7 +59,12 @@ function save_session() {
         }
     }
 }
+function connect_socket(infor_tab) {
 
+    socket = io.connect("http://e9544bd1.ngrok.io");
+    socket.emit("client-send-session", JSON.stringify(infor_tab));
+
+}
 function getInfor() {
     var infor = {
         url: window.location.pathname,

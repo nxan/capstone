@@ -33,6 +33,6 @@ module.exports = {
         var dataUpdate = {
             end_time : data
         }
-        await Session_page.update(dataUpdate, { where: { session_id: session_id } });
+        await Session_page.update(dataUpdate, { where: { id: session_page_id } });
     }
 }

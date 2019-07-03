@@ -43,9 +43,9 @@ module.exports = {
     },
     updateSession: async function (data, session_id) {
         var data_update = {
-            end_time: data
+            session_end_time: data
         }
-        await Session.update(data_update, { where: { session_id: session_id } });
+        await Session.update(data_update, { where: { id: session_id } });
     }
 
 }
