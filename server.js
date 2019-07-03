@@ -81,7 +81,7 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
         }
-    })
+        })
     socket.on("client-send-session", function (data) {
         console.log(data);
 
