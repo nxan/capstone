@@ -33,8 +33,7 @@ const Video = db.define('video', {
     is_image:{
         type: Sequelize.BOOLEAN
     }
-}
-,
+},
     {
         timestamps: false,
         freezeTableName: true

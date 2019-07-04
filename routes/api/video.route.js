@@ -4,7 +4,7 @@ const Video = require('../../model/Video');
 const video_db = require('../../db/video_db')
 // Session.hasMany(Video, { foreignKey: 'video_id', sourceKey: 'id' });
 // Video.belongsTo(Session, { foreignKey: 'video_id', targetKey: 'id' });
-
+const fs = require("fs");
 router.get('/:session_id', async (req, res) => {
     session_id = req.params.session_id
     try {
@@ -20,7 +20,8 @@ router.get('/:session_id', async (req, res) => {
     }
 })
 router.post('/sendVideo', async (req, res) => {
-    var fileName = '';
+    var fileName = '', positionData;
+    var function_path = '';
     var string = JSON.stringify(req.body);
     console.log("Connecting tracking server !!! ");
     var json = JSON.parse(string);
@@ -41,21 +42,24 @@ router.post('/sendVideo', async (req, res) => {
         newVideoFields.parent_id = null;
         newVideoFields.is_parent = true;
         newVideoFields.is_image = json.is_image;
-        newVideoFields.page_order = 1;
         newVideoFields.next_page = 0;
         newVideoFields.is_next_page = json.is_change_page;
         newVideoFields.is_redirect = json.is_redirect;
-        newVideo = new Video(newVideoFields);
+        //newVideo = new Video(newVideoFields);
         try {
-            var item = await video_db.addVideo(newVideo);
+            var item = await video_db.addVideo(newVideoFields);
             item.folder_url = item.id;
             parentId = item.id;
-            function_path = './function/' + item.id + '.txt';
+            function_path = './function/' + json.shop
             if (!fs.existsSync(function_path)) {
                 fs.writeFileSync(function_path, "", (err) => {
                     if (err) console.log(err);
+                    else function_path += item.id + '.txt';
                 });
             }
+
+            //await video_db.addVideo(newVideo);
+
             updateFolder = { folder_url: item.id };
             await Video.update(updateFolder, { where: { id: item.id } });
         } catch (error) {
@@ -78,7 +82,6 @@ router.post('/sendVideo', async (req, res) => {
             newVideoFields.parent_id = video.id;
             newVideoFields.is_image = json.is_image;
             newVideoFields.is_parent = false;
-            newVideoFields.page_order = 0;
             newVideoFields.next_page = 0;
             newVideoFields.url = json.url;
             newVideoFields.is_next_page = json.is_change_page;
@@ -96,12 +99,13 @@ router.post('/sendVideo', async (req, res) => {
                 }
                 var chidParent = await video_db.getVideo(condition);
                 var item = await video_db.addVideo(newVideo);
-                function_path = '../server_side_record/function/' + item.id + '.txt';
+                function_path = './function/' + item.id + '.txt';
 
-                let child_path = '../server_side_record/function/' + item.id + '.txt';
+                let child_path = './function/' + json.shop;
                 if (!fs.existsSync(child_path)) {
                     fs.writeFileSync(child_path, "", (err) => {
                         if (err) console.log(err);
+                        else child_path += item.id + '.txt';
                     });
                 }
 
@@ -131,11 +135,13 @@ router.post('/sendVideo', async (req, res) => {
             condition = { where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] };
             var getLastVideo = await video_db.getVideo(condition);
             //var getLastVideo = await Video.findOne({ where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] });
-            var path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt'
+            var path = './function/' + json.shop
             if (!fs.existsSync(path)) {
                 fs.writeFileSync(path, positionData, (err) => {
                     if (err) console.log(err);
-                    else console.log("Successfully Written to File.");
+                    else {
+                        path += getLastVideo.folder_url + '.txt'
+                    }
                 });
             }
             if (json.is_change_page) {
@@ -145,7 +151,7 @@ router.post('/sendVideo', async (req, res) => {
                 await video_db.updateVideo(updateLastVideo, getLastVideo.id);
             }
             //positionData = fs.readFileSync(path);
-            function_path = '../server_side_record/function/' + getLastVideo.folder_url + '.txt';
+            function_path = './function/' + json.shop + getLastVideo.folder_url + '.txt';
         }
 
     }
@@ -163,7 +169,7 @@ router.post('/sendVideo', async (req, res) => {
     //positionData += "]";
 
     //var path = '../server_side_record/function/test.txt';
-    var dir = '../server_side_record/function/' + json.url;
+    var dir = './function/' + json.url;
     console.log("URL:" + json.url);
     var mkdirp = require('mkdirp');
     if (!fs.existsSync(dir)) {

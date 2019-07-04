@@ -6,7 +6,7 @@ $(document).ready(() => {
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     if (!set) {
-        save_session(set);
+        // save_session(set);
     }
 
 
@@ -34,7 +34,7 @@ function loadAdditionJs() {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://e9544bd1.ngrok.io/api/session', {
+            fetch('https://70415383.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -61,7 +61,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("http://e9544bd1.ngrok.io");
+    socket = io.connect("http://70415383.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -143,7 +143,7 @@ function startRecord(data) {
 
         // sendImage();
         $.ajax({
-            url: 'http://2698bed1.ngrok.io/api/video/sendVideo',
+            url: 'http://70415383.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -151,9 +151,10 @@ function startRecord(data) {
                 // web_page: document.getElementsByTagName('html')[0].innerHTML,
                 //web_page:"",
                 url: window.location.pathname == '/' ? '' : window.location.pathname,
-                session_id: 3,
+                shop: window.location.hostname,
+                session_id: 767,
                 is_image: false,
-                session_page_id: 3,
+                session_page_id: 357,
                 is_change_page: false,
                 is_redirect: check_redirect
                 //script: scripts
@@ -219,7 +220,7 @@ function trackChangePage() {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'http://2698bed1.ngrok.io/api/video/sendVideo',
+            url: 'http://70415383.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
