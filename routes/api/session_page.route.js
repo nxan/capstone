@@ -17,13 +17,13 @@ router.post('/', [], async (req, res) => {
     let url = req.body.url
     let page = await page_db.getPage(url)
     session_page_infor = {
-        session_id:session_id,
+        session_id: session_id,
         page_id: page.id
     }
     let result = await session_page_db.add_session_page(session_page_infor)
-    res.status(200).send('CAAAC')
+    res.status(200).send('Done')
 })
-router.get('/',async (req,res)=>{
-res.send("123")
+router.get('/', async (req, res) => {
+    res.send("123")
 })
 module.exports = router
