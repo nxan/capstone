@@ -19,5 +19,19 @@ module.exports = {
             return result
         })
 
+    },
+
+    getAllPage: async (shop_id) => {
+        console.log(shop_id)
+        return Page.findAll({
+            where: {
+                shop_id: shop_id
+            }
+        }).then((result) => {
+            return result
+        })
+
+    },
+
     }
 }
