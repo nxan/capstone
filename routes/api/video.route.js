@@ -32,6 +32,17 @@ router.post('/sendVideo', async (req, res) => {
         }
     };
     var video = await video_db.getVideo(condition);
+    var dir = './function/' + json.shop;
+    console.log("URL:" + json.shop);
+    var mkdirp = require('mkdirp');
+    if (!fs.existsSync(dir)) {
+
+        mkdirp(dir, function (err) {
+
+            console.log('ok,');
+
+        });
+    }
     if (video == null) {
         var parentId;
         var newVideoFields = {};
@@ -50,13 +61,13 @@ router.post('/sendVideo', async (req, res) => {
             var item = await video_db.addVideo(newVideoFields);
             item.folder_url = item.id;
             parentId = item.id;
-            function_path = './function/' + json.shop
-            if (!fs.existsSync(function_path)) {
-                fs.writeFileSync(function_path, "", (err) => {
-                    if (err) console.log(err);
-                    else function_path += item.id + '.txt';
-                });
-            }
+            function_path = './function/' + json.shop + '/' + item.id + '.txt';
+            fs.writeFileSync(function_path, "", (err) => {
+                if (err) console.log(err);
+            });
+
+
+
 
             //await video_db.addVideo(newVideo);
 
@@ -99,15 +110,13 @@ router.post('/sendVideo', async (req, res) => {
                 }
                 var chidParent = await video_db.getVideo(condition);
                 var item = await video_db.addVideo(newVideo);
-                function_path = './function/' + item.id + '.txt';
+                function_path = './function/' + json.shop + '/' + item.id + '.txt';
 
-                let child_path = './function/' + json.shop;
-                if (!fs.existsSync(child_path)) {
-                    fs.writeFileSync(child_path, "", (err) => {
-                        if (err) console.log(err);
-                        else child_path += item.id + '.txt';
-                    });
-                }
+                let child_path = './function/' + json.shop + '/' + item.id + '.txt';;
+
+                fs.writeFileSync(child_path, "", (err) => {
+                    if (err) console.log(err);
+                });
 
                 console.log("FUNCTION_PATH: " + function_path);
 
@@ -135,15 +144,15 @@ router.post('/sendVideo', async (req, res) => {
             condition = { where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] };
             var getLastVideo = await video_db.getVideo(condition);
             //var getLastVideo = await Video.findOne({ where: { session_id: json.session_id, is_next_page: false } }, { order: [['createdAt', 'DESC']] });
-            var path = './function/' + json.shop
-            if (!fs.existsSync(path)) {
-                fs.writeFileSync(path, positionData, (err) => {
-                    if (err) console.log(err);
-                    else {
-                        path += getLastVideo.folder_url + '.txt'
-                    }
-                });
-            }
+            var path = './function/' + json.shop + '/' + getLastVideo.folder_url + '.txt'
+
+            fs.writeFileSync(path, positionData, (err) => {
+                if (err) console.log(err);
+                else {
+
+                }
+            });
+
             if (json.is_change_page) {
                 var updateLastVideo = {
                     is_next_page: true
@@ -151,7 +160,7 @@ router.post('/sendVideo', async (req, res) => {
                 await video_db.updateVideo(updateLastVideo, getLastVideo.id);
             }
             //positionData = fs.readFileSync(path);
-            function_path = './function/' + json.shop + getLastVideo.folder_url + '.txt';
+            function_path = './function/' + json.shop + '/' + getLastVideo.folder_url + '.txt';
         }
 
     }
@@ -169,17 +178,7 @@ router.post('/sendVideo', async (req, res) => {
     //positionData += "]";
 
     //var path = '../server_side_record/function/test.txt';
-    var dir = './function/' + json.url;
-    console.log("URL:" + json.url);
-    var mkdirp = require('mkdirp');
-    if (!fs.existsSync(dir)) {
 
-        mkdirp(dir, function (err) {
-
-            console.log('ok,');
-
-        });
-    }
     // if (!video) {
     //   var path = '../server_side_record/function/' + newVideo.folder_url + '.txt';
     // } else {

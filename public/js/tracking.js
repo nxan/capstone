@@ -6,23 +6,11 @@ $(document).ready(() => {
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     if (!set) {
-        // save_session(set);
+        save_session(set);
     }
 
 
 
-    // track event
-    $(document).mousemove(function (event) {
-        trackEvent(event, 1);
-    });
-    $(document).click(function (event) {
-        trackEvent(event, 2)
-    });
-
-    $("select").on('change', function (i, e) {
-        trackEvent(null, 4);
-    });
-    trackChangePage();
 })
 document.addEventListener('visibilitychange', () => {
     save_session();
@@ -34,7 +22,7 @@ function loadAdditionJs() {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://70415383.ngrok.io/api/session', {
+            fetch('https://6006cdf4.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -51,6 +39,18 @@ function save_session(set) {
                     }
                     connect_socket(infor_tab);
 
+                    // track event
+                    $(document).mousemove(function (event) {
+                        trackEvent(event, 1, json.session_id, json.session_page_id);
+                    });
+                    $(document).click(function (event) {
+                        trackEvent(event, 2, json.session_id, json.session_page_id)
+                    });
+
+                    $("select").on('change', function (i, e) {
+                        trackEvent(null, 4, json.session_id, json.session_page_id);
+                    });
+                    trackChangePage(json.session_id, json.session_page_id);
                     /*socket here
      
                     */
@@ -61,7 +61,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("http://70415383.ngrok.io");
+    socket = io.connect("http://d6354222.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -131,7 +131,7 @@ function getBrowser() {
     else browser = 7 //'Others'
     return browser;
 }
-function startRecord(data) {
+function startRecord(data, session_id, session_page_id) {
     //console.log("length of positions:" + data.length);
     if (positions.length == 500) {
         var scripts = "";
@@ -143,7 +143,7 @@ function startRecord(data) {
 
         // sendImage();
         $.ajax({
-            url: 'http://70415383.ngrok.io/api/video/sendVideo',
+            url: 'http://6006cdf4.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -152,9 +152,9 @@ function startRecord(data) {
                 //web_page:"",
                 url: window.location.pathname == '/' ? '' : window.location.pathname,
                 shop: window.location.hostname,
-                session_id: 767,
+                session_id: session_id,
                 is_image: false,
-                session_page_id: 357,
+                session_page_id: session_page_id,
                 is_change_page: false,
                 is_redirect: check_redirect
                 //script: scripts
@@ -186,7 +186,7 @@ function trackSelect() {
     console.log(text);
     return text;
 }
-function trackEvent(event, action) {
+function trackEvent(event, action, session_id, session_page_id) {
     // get pageX, pageY of visitors
     shopEvent["x"] = event == null ? 0 : event.pageX;
     shopEvent["y"] = event == null ? 0 : event.pageY;
@@ -205,9 +205,9 @@ function trackEvent(event, action) {
     positions.push(shopEvent);
     //console.log(positions);
     shopEvent = {};
-    startRecord(positions);
+    startRecord(positions, session_id, session_page_id);
 }
-function trackChangePage() {
+function trackChangePage(session_id, session_page_id) {
     var url_redirect;
     $("body a").click(function () {
         url_redirect = $(this).attr('href');
@@ -220,14 +220,14 @@ function trackChangePage() {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'http://70415383.ngrok.io/api/video/sendVideo',
+            url: 'http://6006cdf4.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
                 positions: positions,
                 url_redirect: url_redirect,
-                session_id: 3,
-                session_page_id: 3,
+                session_id: session_id,
+                session_page_id: session_page_id,
                 is_image: false,
                 is_change_page: true,
                 is_redirect: check_redirect,
