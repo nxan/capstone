@@ -34,7 +34,7 @@ class Login extends Component {
             <strong>WELCOME TO SHOPIFY ANALYTICS</strong>
           </h1>
           <p>
-            Shopify analytics and reports give you the means to review your store recent activity,
+          Shopify analytics and reports give you the means to review your store recent activity,
             <br />
             get insight into your visitors, and analyze your store transactions.
             <br />
@@ -53,11 +53,13 @@ class Login extends Component {
                   <Form layout="vertical" hideRequiredMark onSubmit={this.onSubmit}>
                     <Form.Item label="Email">
                       {form.getFieldDecorator('email', {
+                        initialValue: 'nxan.developer@gmail.com',
                         rules: [{ required: true, message: 'Please input your e-mail address' }],
                       })(<Input size="default" />)}
                     </Form.Item>
                     <Form.Item label="Password">
                       {form.getFieldDecorator('password', {
+                        initialValue: 'nxan.developer@gmail.com',
                         rules: [{ required: true, message: 'Please input your password' }],
                       })(<Input size="default" type="password" />)}
                     </Form.Item>
@@ -83,13 +85,12 @@ class Login extends Component {
                         Login
                       </Button>
                       <span className="ml-3 register-link">
-                        <Link
-                          to="/user/register"
-                          className="utils__link--blue utils__link--underlined"
+                        <a
+                          href="javascript: void(0);"
+                          className="text-primary utils__link--underlined"
                         >
                           Register
-                        </Link>
-                        {' '}
+                        </a>{' '}
                         if you don&#39;t have account
                       </span>
                     </div>

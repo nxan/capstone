@@ -5,19 +5,19 @@ module.exports = {
     add_session_page: async (page_infor) => {
         let session_page
         let session_page_field = {}
-        let record = await Session_page.max('page_order',{
+        let record = await Session_page.max('page_order', {
             where: {
                 session_id: page_infor.session_id
             }
         })
-        console.log("AL: "+record)
+        console.log("AL: " + record)
         if (isNaN(record)) {
             session_page_field.page_order = 1
         }
         else {
             session_page_field.page_order = record + 1
         }
-        
+
         session_page_field.page_id = page_infor.page_id
         session_page_field.session_id = page_infor.session_id
         session_page_field.start_time = new Date(Date.now()).toISOString()
@@ -28,5 +28,11 @@ module.exports = {
             console.log(error)
         }
         return session_page
+    },
+    update_session_page: async (data, session_page_id) => {
+        var dataUpdate = {
+            end_time : data
+        }
+        await Session_page.update(dataUpdate, { where: { id: session_page_id } });
     }
 }
