@@ -100,12 +100,12 @@ router.post('/', [
     }
     const { session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
     jsession = req.session.id
-    cookies = req.signedCookies
+    cookies = req.cookies
     uids = await Session.findAll({
         attributes: ['user_id'],
         group: ['user_id']
     })
-
+    console.log("Jsession: "+jsession)
     let session = await Session.findOne({
         where: {
             jsession_id: jsession
@@ -122,7 +122,7 @@ router.post('/', [
             } while (uids.some(user_id => user_id.user_id === 'uid'))
             sessionFields.user_id = uid
             sessionFields.is_first_visit = true
-            res.cookie('uid', uid, { expires: new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * 365 * 20), signed: true })
+            res.cookie('uid', uid, { expires: new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * 365 * 20)})
         } else {
             sessionFields.user_id = cookies.uid
             sessionFields.is_first_visit = false
@@ -196,7 +196,7 @@ router.post('/', [
         }
         let session_page = await session_page_db.add_session_page(session_page_infor)
         infor_tab = {
-            session_id: session_page.id,
+            session_id: session_page.session_id,
             session_page_id: session_page.id
         }
         console.log(infor_tab)

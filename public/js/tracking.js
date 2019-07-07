@@ -2,12 +2,11 @@ var save = false
 
 $(document).ready(() => {
     save_session()
-    while(infor_tab!=null){
-        console.log(infor_tab)
-    }
     setInterval(function () {
-        fetch('https://ea49b576.ngrok.io/api/session/save/resave', {
+        fetch('https://a671ad91.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            // mode: 'cors', // no-cors, cors, *same-origin
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -15,7 +14,7 @@ $(document).ready(() => {
         }).then((res) => {
             console.log("OK")
         })
-    }, 1000 * 15);
+    }, 1000 * 3555);
 })
 document.addEventListener('visibilitychange', () => {
     save_session()
@@ -23,9 +22,11 @@ document.addEventListener('visibilitychange', () => {
 function save_session() {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://ea49b576.ngrok.io/api/session', {
+            fetch('https://a671ad91.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 body: JSON.stringify(getInfor()),
+                // mode: 'no-cors',
+                credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -39,6 +40,7 @@ function save_session() {
                 /*socket here
 
                 */
+               console.log(infor_tab)
             })
             save = true
         }
