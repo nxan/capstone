@@ -1,14 +1,14 @@
 const Sequelize = require('sequelize');
 const db = require('../config/db');
 
-const Device = db.define('page', {
+const Page = db.define('page', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     page_url: {
-        type: String
+        type: Sequelize.STRING
     },
     shop_id: {
         type: Sequelize.INTEGER
@@ -19,4 +19,4 @@ const Device = db.define('page', {
     }
 );
 
-module.exports = Device;
+module.exports = Page;

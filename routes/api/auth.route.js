@@ -65,11 +65,11 @@ router.post(
                 return res.status(400).json({ errors: [{ message: 'Invalid email or password' }] })
             }
 
-            const isMatch = await bcrypt.compare(password, user.password);
+            // const isMatch = await bcrypt.compare(password, user.password);
 
-            if (!isMatch) {
-                return res.status(400).json({ errors: [{ message: 'Invalid email or password' }] })
-            }
+            // if (!isMatch) {
+            //     return res.status(400).json({ errors: [{ message: 'Invalid email or password' }] })
+            // }
 
             const payload = {
                 user: {

@@ -1,6 +1,8 @@
 const Sequelize = require('sequelize');
 const db = require('../config/db');
-
+Sequelize.DATE.prototype._stringify = function _stringify(date, options) {
+    return this._applyTimezone(date, options).format('YYYY-MM-DD HH:mm:ss.SSS');
+  };
 
 const Session = db.define('session', {
     // id: {

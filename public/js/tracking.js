@@ -1,46 +1,59 @@
-$(document).ready(function () {
-    // $.ajax({
-    //     url: 'https://capstone-man.herokuapp.com/api/session',
-    //     method: 'post',
-    //     crossDomain: true,
-    //     xhrFields: {
-    //         withCredentials: 'include'
-    //      },
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(getInfor()),
-    //     success: function (e) {
+var save = false
 
-    //     }
-    // })
-    var url = window.location.pathname;
-    let reqBody = {
-        url: url,
+$(document).ready(() => {
+    save_session()
+    setInterval(function () {
+        fetch('https://a671ad91.ngrok.io/api/session/save/resave', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            // mode: 'cors', // no-cors, cors, *same-origin
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            console.log("OK")
+        })
+    }, 1000 * 3555);
+})
+document.addEventListener('visibilitychange', () => {
+    save_session()
+});
+function save_session() {
+    if (!save) {
+        if (document.visibilityState === 'visible') {
+            fetch('https://a671ad91.ngrok.io/api/session', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                body: JSON.stringify(getInfor()),
+                // mode: 'no-cors',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }).then(data=>data.json())
+            .then(json=>{
+                let infor_tab = {
+                    session_id: json.session_id,
+                    session_page_id: json.session_page_id
+                }
+                /*socket here
+
+                */
+               console.log(infor_tab)
+            })
+            save = true
+        }
+    }
+}
+function getInfor() {
+    var infor = {
+        url: window.location.pathname,
+        domain: window.location.hostname,
         operating_system_id: getOS(),
         device_type_id: getDevice(),
         browser_id: getBrowser(),
         acquistion_id: getReference()
-      };
-
-    fetch('https://capstone-man.herokuapp.com/api/session', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, cors, *same-origin
-        credentials: 'include', // include, *same-origin, omit
-        body: JSON.stringify(getInfor()),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(e=>{})
-})
-function getInfor() {
-    var url = window.location.pathname;
-    var infor = {
-        url: url,
-        operating_system_id: getOS(),
-        device_type_id: getDevice(),
-        browser_id: getBrowser(),
-        referrer: getReference()
     }
     return infor
 }
@@ -49,7 +62,7 @@ function getReference() {
     var res;
     if (/facebook.com|twitter.com/.test(ref)) res = 1 //'Social'
     else if (/google.com|bing.com/.test(ref)) res = 2 //'Search'
-    else if ('' == ref) res = 3 //'Direct'
+    else if ('' == ref || (ref.indexOf(window.location.hostname) > 0)) res = 3 //'Direct'
     else res = 4 //'Other'
     return res;
 }
@@ -89,7 +102,7 @@ function getBrowser() {
     var ua = window.navigator.userAgent
     var browser = null
     if (/OPR\/|OPERA\//i.test(ua)) browser = 1 //'Opera'
-    else if (/Edge\//i.test(ua)) browser = 2 //'Edge'
+    else if (/Edge\/|EdgA\//i.test(ua)) browser = 2 //'Edge'
     else if (/Firefox\//i.test(ua)) browser = 3 //'Firefox'
     else if (/Chrome\/|CriOS\//i.test(ua)) browser = 4 //'Chrome or chromium' //CriOS on ios
     else if ((getOS() == 'iOS' || getOS() == 'MacOS')) {

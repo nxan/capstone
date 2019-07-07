@@ -1,0 +1,59 @@
+{
+  "supportCasesTableData": [{
+    "key": "1",
+    "type": "Social",
+    "amount": "25%"
+  }, {
+    "key": "2",
+    "type": "Search",
+    "amount": "25%"
+  }, {
+    "key": "3",
+    "type": "Direct",
+    "amount": "25%"
+  }, {
+    "key": "4",
+    "type": "Others",
+    "amount": "25%"
+  }],
+  "supportCasesPieData": {
+    "series": [
+      {"name": "Social", "value": 25},
+      {"name": "Search", "value": 25},
+      {"name": "Direct", "value": 25},
+      {"name": "Others", "value": 25}
+    ]
+  },
+  "weekChartistData": {
+    "labels": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri"
+    ],
+    "series": [
+      [
+        5,
+        2,
+        4,
+        2,
+        5
+      ],
+      [
+        3,
+        1,
+        5,
+        4,
+        2
+      ],
+      [
+        0,
+        4,
+        3,
+        5,
+        1
+      ]
+    ]
+  }
+}
