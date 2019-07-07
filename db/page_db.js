@@ -14,9 +14,9 @@ module.exports = {
                 page_url: page_url
             }
         }).then((result) => {
-            res = result.dataValues
-            console.log(res)
-            return res
+            // res = result.dataValues
+            // console.log(res)
+            return result
         })
 
     },
@@ -32,4 +32,6 @@ module.exports = {
         })
 
     },
+
+    }
 }

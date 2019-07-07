@@ -17,7 +17,7 @@ Session.belongsTo(Os, { foreignKey: 'operating_system_id', targetKey: 'id' });
 Browser.hasMany(Session, { foreignKey: 'browser_id', sourceKey: 'id' });
 Session.belongsTo(Browser, { foreignKey: 'browser_id', targetKey: 'id' });
 module.exports = {
-    getAllSessions: async function (){
+    getAllSessions: async function () {
         const session = await Session.findAll({
             include: [{
                 model: Browser
@@ -38,7 +38,14 @@ module.exports = {
         });
         return session
     },
-    create_user_id: async function(){
+    create_user_id: async function () {
         Math.random().toString(36).substring(2)
+    },
+    updateSession: async function (data, session_id) {
+        var data_update = {
+            session_end_time: data
+        }
+        await Session.update(data_update, { where: { id: session_id } });
     }
+
 }

@@ -31,6 +31,13 @@ Session.belongsTo(Os, { foreignKey: 'operating_system_id', targetKey: 'id' });
 Browser.hasMany(Session, { foreignKey: 'browser_id', sourceKey: 'id' });
 Session.belongsTo(Browser, { foreignKey: 'browser_id', targetKey: 'id' });
 
+/* -------
+ @route GET api/session
+ @desc Check visitor live through session
+--------*/
+router.get('/session_live', (req, res) => {
+
+})
 
 /* ----- 
   @route  GET api/session
@@ -91,6 +98,7 @@ router.get('/save/resave', async (req, res) => {
   @route  POST api/session
   @desc   Create session
 -----*/
+
 router.post('/', [
     // check('session_start_time', 'Thời gian bắt đầu session is required').not().isEmpty()
 ], async (req, res) => {
@@ -98,7 +106,7 @@ router.post('/', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
+    const { user_id, session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
     jsession = req.session.id
     cookies = req.cookies
     uids = await Session.findAll({
@@ -158,13 +166,16 @@ router.post('/', [
         sessionFields.session_start_time = date
         //
         if (session_end_time) sessionFields.session_end_time = session_end_time;
+        // if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
         if (exit_page_id) sessionFields.exit_page_id = exit_page_id;
+        // if (city_id) sessionFields.city_id = city_id;
         if (device_type_id) sessionFields.device_type_id = device_type_id;
         if (browser_id) sessionFields.browser_id = browser_id;
         if (operating_system_id) sessionFields.operating_system_id = operating_system_id;
         if (acquistion_id) sessionFields.acquistion_id = acquistion_id;
         if (age_id) sessionFields.age_id = age_id;
         if (gender_id) sessionFields.gender_id = gender_id;
+        if (is_first_visit) sessionFields.is_first_visit = is_first_visit;
 
         try {
             session = new Session(sessionFields);
@@ -201,7 +212,7 @@ router.post('/', [
         }
         console.log(infor_tab)
         res.status(200).json(infor_tab)
-        // res.status(200).send('Done')
+
     }
 });
 
