@@ -155,6 +155,7 @@ router.post('/', [
         let productUrl = domain + url
         let shop_infor = await shop_db.getShop(domain)
         let shop_id = shop_infor.id
+        sessionFields.shop_id = shop_id
         await page_db.addPage(productUrl, shop_id)
         entrance_page = await page_db.getPage(productUrl)
         sessionFields.entrance_page_id = entrance_page.id
@@ -187,7 +188,8 @@ router.post('/', [
             let session_page = await session_page_db.add_session_page(session_page_infor)
             infor_tab = {
                 session_id: session_page.session_id,
-                session_page_id: session_page.id
+                session_page_id: session_page.id,
+                page_id: session_page.page_id
             }
             console.log(infor_tab)
             res.status(200).json(infor_tab)
@@ -200,6 +202,9 @@ router.post('/', [
 
     else {
         let productUrl = domain + url
+        let shop_infor = await shop_db.getShop(domain)
+        let shop_id = shop_infor.id
+        await page_db.addPage(productUrl, shop_id)
         let page = await page_db.getPage(productUrl)
         let session_page_infor = {
             session_id: session.id,
@@ -208,7 +213,8 @@ router.post('/', [
         let session_page = await session_page_db.add_session_page(session_page_infor)
         infor_tab = {
             session_id: session_page.session_id,
-            session_page_id: session_page.id
+            session_page_id: session_page.id,
+            page_id: session_page.page_id
         }
         console.log(infor_tab)
         res.status(200).json(infor_tab)

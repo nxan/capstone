@@ -45,10 +45,12 @@ function save_session(set) {
                 .then(json => {
                     let infor_tab = {
                         session_id: json.session_id,
-                        session_page_id: json.session_page_id
+                        session_page_id: json.session_page_id,
+                        page_id: json.page_id
                     }
+                    console.log(infor_tab);
                     connect_socket(infor_tab);
-
+                    
                     // track event
                     $(document).mousemove(function (event) {
                         trackEvent(event, 1, json.session_id, json.session_page_id);
@@ -71,7 +73,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("http://d6354222.ngrok.io");
+    socket = io.connect("https://a671ad91.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -153,7 +155,7 @@ function startRecord(data, session_id, session_page_id) {
 
         // sendImage();
         $.ajax({
-            url: 'http://6006cdf4.ngrok.io/api/video/sendVideo',
+            url: 'https://a671ad91.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -230,7 +232,7 @@ function trackChangePage(session_id, session_page_id) {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'http://6006cdf4.ngrok.io/api/video/sendVideo',
+            url: 'https://a671ad91.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
