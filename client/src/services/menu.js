@@ -18,11 +18,13 @@ export async function getLeftMenuData() {
     {
       title: 'Acquisition',
       key: 'acquisition',
+      url: '/acquisition',
       icon: 'icmn icmn-share2',
     },
     {
       title: 'Behavior',
       key: 'behavior',
+      url: '/behaviors',
       icon: 'icmn icmn-stats-dots',
     },
     {
