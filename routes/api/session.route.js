@@ -11,7 +11,6 @@ const Device = require('../../model/Device');
 const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
 const axios = require('axios')
-const SessionPage = require('../../model/Session_page');
 
 const func = require('../../func/check')
 
@@ -266,32 +265,6 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server Error');
-    }
-});
-
-/* ----- 
-  @route  Get api/session/count/:shop_url
-  @desc   Count session 1 shop
------*/
-
-router.get('/count/:shop_url', async (req, res) => {
-    try {
-        const shop_url = req.params.shop_url
-        let shop = await shop_db.getShop(shop_url)
-        let page = await page_db.getAllPage(shop.id)
-        var json_pages = JSON.parse(JSON.stringify(page))
-        var i
-        var count
-        for (i = 0; i < json_pages.length; i++) {
-            count = await SessionPage.count({
-                distinct: true,
-                col: 'session_id'
-            });
-        }
-        res.json(count)
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server error');
     }
 });
 
