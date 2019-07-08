@@ -12,6 +12,7 @@ export async function getLeftMenuData() {
     {
       title: 'Realtime',
       key: 'realtime',
+      url: '/realtime',
       icon: 'icmn icmn-clock',
     },
     {
@@ -44,7 +45,7 @@ export async function getTopMenuData() {
       title: 'Settings',
       key: 'settings',
       icon: 'icmn icmn-cog utils__spin-delayed--pseudo-selector',
-    },    
+    },
     {
       title: 'Dashboard',
       key: 'Dashboard',
