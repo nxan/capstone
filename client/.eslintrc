@@ -1,19 +1,7 @@
 {
-  "extends": [
-    "react-app",
-    "airbnb",
-    "prettier"
-  ],
+  "extends": ["react-app", "airbnb", "prettier"],
   "rules": {
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
-      }
-    ],
+    "react/jsx-filename-extension": [1, { "extensions": [".js",".jsx"] }],
     "no-useless-escape": "off",
     "no-script-url": "off",
     "jsx-a11y/anchor-has-content": "off",

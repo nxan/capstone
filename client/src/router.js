@@ -26,11 +26,6 @@ const routes = [
     component: loadable(() => import('pages/user/forgot')),
     exact: true,
   },
-  {
-    path: '/user/register',
-    component: loadable(() => import('pages/user/register')),
-    exact: true,
-  },
 
   // Dashboards
   {
@@ -46,6 +41,16 @@ const routes = [
   {
     path: '/audience',
     component: loadable(() => import('pages/audience')),
+    exact: true,
+  },
+  {
+    path: '/acquisition',
+    component: loadable(() => import('pages/acquisition')),
+    exact: true,
+  },
+  {
+    path: '/behaviors',
+    component: loadable(() => import('pages/behaviors')),
     exact: true,
   },
   // AntDesign

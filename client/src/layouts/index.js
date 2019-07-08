@@ -74,7 +74,6 @@ class IndexLayout extends React.PureComponent {
       if (isLoginLayout && isUserAuthorized) {
         return <Redirect to="/dashboard" />
       }
-
       // in other case render previously set layout
       return <Container>{children}</Container>
     }

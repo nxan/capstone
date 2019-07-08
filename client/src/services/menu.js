@@ -12,23 +12,23 @@ export async function getLeftMenuData() {
     {
       title: 'Realtime',
       key: 'realtime',
-      url: '/realtime',
       icon: 'icmn icmn-clock',
     },
     {
       title: 'Acquisition',
       key: 'acquisition',
+      url: '/acquisition',
       icon: 'icmn icmn-share2',
     },
     {
       title: 'Behavior',
       key: 'behavior',
+      url: '/behaviors',
       icon: 'icmn icmn-stats-dots',
     },
     {
       title: 'Audience',
       key: 'audience',
-      url: '/audience',
       icon: 'icmn icmn-user',
     },
     {

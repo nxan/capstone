@@ -130,7 +130,7 @@ class Audience extends React.Component {
   render() {
     return (
       <Authorize roles={['admin']}>
-        <Helmet title="Acquisition" />
+        <Helmet title="Audience" />
         <div className="row">
           <div className="col-lg-12">
             <div className="card">
