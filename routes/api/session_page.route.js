@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const dotenv = require('dotenv')
 const { check, validationResult } = require('express-validator/check');
-const axios = require('axios')
 
 const session_page_db = require('../../db/session_page_db')
 const page_db = require('../../db/page_db')
@@ -23,7 +22,6 @@ router.post('/', [], async (req, res) => {
     let result = await session_page_db.add_session_page(session_page_infor)
     res.status(200).send('Done')
 })
-router.get('/', async (req, res) => {
-    res.send("123")
-})
+
+
 module.exports = router

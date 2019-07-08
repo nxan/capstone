@@ -23,7 +23,7 @@ export default class Index extends PureComponent {
             borderRadius: '10px',
             flex: '1',
           }}
-        > 
+        >
           <div
             style={{
               maxWidth: '400px',

@@ -1,6 +1,26 @@
 import axios from "axios";
 import { notification } from 'antd'
 
+export async function login(email, password) {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const body = JSON.stringify({ email, password });
+  return axios.post('http://localhost:8888/api/auth', body, config)
+    .then((result) => {
+      return result.data
+    })
+    .catch(() => {
+      notification.warning({
+        message: "Login Failed",
+        description: "Invalid email or password",
+      })
+    })
+
+}
+
 // eslint-disable-next-line camelcase
 export async function register(email, password, shop_url) {
   const config = {
@@ -24,26 +44,6 @@ export async function register(email, password, shop_url) {
 
 }
 
-export async function login(email, password) {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-  const body = JSON.stringify({ email, password });
-  return axios.post('http://localhost:8888/api/auth', body, config)
-    .then((result) => {
-      return result.data
-    })
-    .catch(() => {
-      notification.warning({
-        message: "Login Failed",
-        description: "Invalid email or password",
-      })
-    })
-
-}
-
 export async function loadProfile() {
   const setAuthToken = token => {
     if (token) {
@@ -57,8 +57,6 @@ export async function loadProfile() {
     return axios.get('http://localhost:8888/api/shop/me')
       .then((result) => {
         return result.data
-      }).catch((err) => {
-        console.log(err.response.statusText)
       })
   }
   return false;

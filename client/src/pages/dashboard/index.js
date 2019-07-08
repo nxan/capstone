@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import ChartCard from 'components/Components/ChartCard'
 import Authorize from 'components/LayoutComponents/Authorize'
@@ -91,8 +92,11 @@ const spline = {
     },
   },
 }
+
+@connect(({ user }) => ({ user }))
 class Dashboard extends React.Component {
   render() {
+    const { user } = this.props
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Dashboard" />
@@ -100,7 +104,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Total Sessions"
-              amount="1240"
+              amount={user.session}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -119,7 +123,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Total visitors"
-              amount="2,654"
+              amount={user.visitor}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -218,7 +222,7 @@ class Dashboard extends React.Component {
                     <div
                       className={`h-100 d-flex flex-column justify-content-center align-items-center ${
                         styles.chartPieExample
-                      }`}
+                        }`}
                     >
                       <ChartistGraph
                         data={supportCasesPieData}

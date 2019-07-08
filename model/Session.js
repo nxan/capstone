@@ -51,6 +51,9 @@ const Session = db.define('session', {
     is_first_visit: {
         type: Sequelize.INTEGER
     },
+    shop_id:{
+        type: Sequelize.INTEGER
+    }
 }, {
         timestamps: false,
         freezeTableName: true

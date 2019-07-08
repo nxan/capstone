@@ -26,6 +26,7 @@ const routes = [
     component: loadable(() => import('pages/user/forgot')),
     exact: true,
   },
+
   {
     path: '/user/register',
     component: loadable(() => import('pages/user/register')),

@@ -11,7 +11,6 @@ const Device = require('../../model/Device');
 const Os = require('../../model/OperatingSystem');
 const Browser = require('../../model/Browser');
 const axios = require('axios')
-const SessionPage = require('../../model/Session_page');
 
 const func = require('../../func/check')
 
@@ -31,6 +30,13 @@ Session.belongsTo(Os, { foreignKey: 'operating_system_id', targetKey: 'id' });
 Browser.hasMany(Session, { foreignKey: 'browser_id', sourceKey: 'id' });
 Session.belongsTo(Browser, { foreignKey: 'browser_id', targetKey: 'id' });
 
+/* -------
+ @route GET api/session
+ @desc Check visitor live through session
+--------*/
+router.get('/session_live', (req, res) => {
+
+})
 
 /* ----- 
   @route  GET api/session
@@ -91,6 +97,7 @@ router.get('/save/resave', async (req, res) => {
   @route  POST api/session
   @desc   Create session
 -----*/
+
 router.post('/', [
     // check('session_start_time', 'Thời gian bắt đầu session is required').not().isEmpty()
 ], async (req, res) => {
@@ -98,14 +105,14 @@ router.post('/', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
+    const { user_id, session_end_time, url, domain, exit_page_id, device_type_id, operating_system_id, browser_id, acquistion_id, age_id, gender_id, is_first_visit } = req.body;
     jsession = req.session.id
-    cookies = req.signedCookies
+    cookies = req.cookies
     uids = await Session.findAll({
         attributes: ['user_id'],
         group: ['user_id']
     })
-
+    console.log("Jsession: "+jsession)
     let session = await Session.findOne({
         where: {
             jsession_id: jsession
@@ -122,7 +129,7 @@ router.post('/', [
             } while (uids.some(user_id => user_id.user_id === 'uid'))
             sessionFields.user_id = uid
             sessionFields.is_first_visit = true
-            res.cookie('uid', uid, { expires: new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * 365 * 20), signed: true })
+            res.cookie('uid', uid, { expires: new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * 365 * 20)})
         } else {
             sessionFields.user_id = cookies.uid
             sessionFields.is_first_visit = false
@@ -147,6 +154,7 @@ router.post('/', [
         let productUrl = domain + url
         let shop_infor = await shop_db.getShop(domain)
         let shop_id = shop_infor.id
+        sessionFields.shop_id = shop_id
         await page_db.addPage(productUrl, shop_id)
         entrance_page = await page_db.getPage(productUrl)
         sessionFields.entrance_page_id = entrance_page.id
@@ -158,13 +166,16 @@ router.post('/', [
         sessionFields.session_start_time = date
         //
         if (session_end_time) sessionFields.session_end_time = session_end_time;
+        // if (entrance_page_id) sessionFields.entrance_page_id = entrance_page_id;
         if (exit_page_id) sessionFields.exit_page_id = exit_page_id;
+        // if (city_id) sessionFields.city_id = city_id;
         if (device_type_id) sessionFields.device_type_id = device_type_id;
         if (browser_id) sessionFields.browser_id = browser_id;
         if (operating_system_id) sessionFields.operating_system_id = operating_system_id;
         if (acquistion_id) sessionFields.acquistion_id = acquistion_id;
         if (age_id) sessionFields.age_id = age_id;
         if (gender_id) sessionFields.gender_id = gender_id;
+        if (is_first_visit) sessionFields.is_first_visit = is_first_visit;
 
         try {
             session = new Session(sessionFields);
@@ -176,7 +187,8 @@ router.post('/', [
             let session_page = await session_page_db.add_session_page(session_page_infor)
             infor_tab = {
                 session_id: session_page.session_id,
-                session_page_id: session_page.id
+                session_page_id: session_page.id,
+                page_id: session_page.page_id
             }
             console.log(infor_tab)
             res.status(200).json(infor_tab)
@@ -189,6 +201,9 @@ router.post('/', [
 
     else {
         let productUrl = domain + url
+        let shop_infor = await shop_db.getShop(domain)
+        let shop_id = shop_infor.id
+        await page_db.addPage(productUrl, shop_id)
         let page = await page_db.getPage(productUrl)
         let session_page_infor = {
             session_id: session.id,
@@ -196,12 +211,13 @@ router.post('/', [
         }
         let session_page = await session_page_db.add_session_page(session_page_infor)
         infor_tab = {
-            session_id: session_page.id,
-            session_page_id: session_page.id
+            session_id: session_page.session_id,
+            session_page_id: session_page.id,
+            page_id: session_page.page_id
         }
         console.log(infor_tab)
         res.status(200).json(infor_tab)
-        // res.status(200).send('Done')
+
     }
 });
 
@@ -266,32 +282,6 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server Error');
-    }
-});
-
-/* ----- 
-  @route  Get api/session/count/:shop_url
-  @desc   Count session 1 shop
------*/
-
-router.get('/count/:shop_url', async (req, res) => {
-    try {
-        const shop_url = req.params.shop_url
-        let shop = await shop_db.getShop(shop_url)
-        let page = await page_db.getAllPage(shop.id)
-        var json_pages = JSON.parse(JSON.stringify(page))
-        var i
-        var count
-        for (i = 0; i < json_pages.length; i++) {
-            count = await SessionPage.count({
-                distinct: true,
-                col: 'session_id'
-            });
-        }
-        res.json(count)
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server error');
     }
 });
 
