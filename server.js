@@ -15,6 +15,7 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+http.listen(8888)
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
@@ -63,6 +64,13 @@ io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
     console.log("model:" + allClients);
     socket.on("disconnect", async function () {
+        socket.on("session_live", function () {
+            if (io.sockets.adapter.rooms[process.env.ROOM]) {
+                // result
+                console.log(io.sockets.adapter.rooms['rooms'].length);
+            }
+
+        })
         for (var i = 0; i < allClients.length; i++) {
             console.log("c:" + allClients[i].socket_id);
             if (allClients[i].socket_id == socket.id) {
@@ -75,7 +83,11 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
             else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
-                await session_db.updateSession(date, allClients[i].session_id);
+                var data_update = {
+                    session_end_time: data,
+                    exit_page_id: allClients[i].page_id
+                }
+                await session_db.updateSession(data_update, allClients[i].session_id);
                 allClients.splice(i, 1);
             }
         }
@@ -84,12 +96,13 @@ io.on("connection", function (socket) {
         console.log(data);
 
         var json = JSON.parse(data);
-        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0 };
+        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0 , page_id: 0};
         socketModel['session_id'] = json.session_id;
         socketModel['session_page_id'] = json.session_page_id;
         socketModel['socket_id'] = socket.id;
+        socketModel['page_id'] = json.page_id;
         allClients.push(socketModel);
-        socket.join(json.session_id);
+        socket.join(process.env.ROOM);
         io.sockets.emit("Server-send-data", data + ". This is server ");
     })
 });
