@@ -11,11 +11,10 @@ var cookieParser = require('cookie-parser')
 var allClients = [];
 const session_db = require('./db/session_db');
 const app = express();
-app.use(cors({credentials: true, origin: true}));
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
-http.listen(3000);
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
@@ -31,10 +30,10 @@ app.set('trust proxy', 1)
 app.use(session({
     secret: '123',
     resave: false,
-    httpOnly: true, 
+    httpOnly: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000*3600 ,
+        maxAge: 1000 * 3600,
         secure: false
     }
 }))
@@ -80,7 +79,7 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
         }
-        })
+    })
     socket.on("client-send-session", function (data) {
         console.log(data);
 
@@ -113,4 +112,4 @@ app.use('/api/stats', require('./routes/api/stats.route'))
 
 const PORT = process.env.PORT || 8888;
 
-//app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
