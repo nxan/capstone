@@ -552,6 +552,14 @@ router.post('/sendImage', async (req, res) => {
     }
     return fileName;
 })
+router.get('', async (req, res) => {
+    var condition = {
+        parent_id: null,
+        is_parent: true
+    }
+    var result = await video_db.getVideo(condition);
+    res.json(result);
+})
 async function takeScreenShot(pathWeb, pathServer) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -578,4 +586,5 @@ function decodeBase64Image(dataString) {
 
     return response;
 }
+
 module.exports = router;

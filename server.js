@@ -15,7 +15,7 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
-http.listen(8888)
+//http.listen(8888)
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
