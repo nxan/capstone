@@ -1,7 +1,10 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { login, register, loadProfile, logout } from 'services/user'
-import { getSession, getVisitor } from 'services/dashboard'
+import { getSession, getVisitor, getAvgDurationSession, getTotalPageView,
+    getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
+    getDeviceDesktop, getDeviceMobile, getDeviceTablet, getDeviceOther
+} from 'services/dashboard'
 import { push } from 'react-router-redux';
 import actions from './actions'
 import * as selectors from './selectors';
@@ -69,16 +72,16 @@ export function* LOAD_CURRENT_ACCOUNT() {
                 authorized: true,
             },
         })
+        yield put({
+            type: 'user/LOAD_DASHBOARD',
+        })
     }
     yield put({
         type: 'user/SET_STATE',
         payload: {
             loading: false,
         },
-    })
-    yield put({
-        type: 'user/LOAD_DASHBOARD',
-    })
+    })    
 }
 
 export function* LOGOUT() {
@@ -97,13 +100,33 @@ export function* LOGOUT() {
 
 export function* LOAD_DASHBOARD() {
     const shopUrl = yield select(selectors.shopUrl);
-    const session = yield call(getSession, shopUrl)
-    const visitor = yield call(getVisitor, shopUrl)
+    const session = yield call(getSession, shopUrl);
+    const visitor = yield call(getVisitor, shopUrl);
+    const avgDurationSession = yield call(getAvgDurationSession, shopUrl)    
+    const pageview = yield call(getTotalPageView, shopUrl)
+    const acquistionSocial = yield call(getAcquistionSocial, shopUrl)
+    const acquistionSearch = yield call(getAcquistionSearch, shopUrl)
+    const acquistionDirect = yield call(getAcquistionDirect, shopUrl)
+    const acquistionOther = yield call(getAcquistionOther, shopUrl)
+    const deviceDesktop = yield call(getDeviceDesktop, shopUrl)
+    const deviceMobile = yield call(getDeviceMobile, shopUrl)
+    const deviceTablet = yield call(getDeviceTablet, shopUrl)
+    const deviceOther = yield call(getDeviceOther, shopUrl)
     yield put({
         type: 'user/SET_STATE',
         payload: {
             session,
             visitor,
+            avgDurationSession,
+            pageview,
+            acquistionSocial,
+            acquistionSearch,
+            acquistionDirect,
+            acquistionOther,
+            deviceDesktop, 
+            deviceMobile,
+            deviceTablet,
+            deviceOther,
         },
     })
 }

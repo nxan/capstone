@@ -1,11 +1,18 @@
 const express = require('express')
 const router = express.Router()
+const sequelize = require('sequelize');
 
 const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
 
 const shop_db = require('../../db/shop_db')
 
+
+function formatSeconds(seconds) {
+    const date = new Date(1970,0,1);
+    date.setSeconds(seconds);
+    return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
+}
 
 /* ----- 
   @route  Count api/stats/count/:shop_url
@@ -48,16 +55,16 @@ router.get('/count/visitors/:shop_url', async (req, res) => {
 });
 
 /* ----- 
-  @route  Count api/stats/count/oldvisitors/:shop_url
+  @route  Count api/stats/count/newvisitors/:shop_url
   @desc   Count visitors 1 shop
 -----*/
 
-router.get('/count/oldvisitors/:shop_url', async (req, res) => {
+router.get('/count/newvisitors/:shop_url', async (req, res) => {
     try {
         const shop_url = req.params.shop_url
         let shop = await shop_db.getShop(shop_url)
         const count = await Session.count({
-            where: { shop_id: shop.id, is_first_visit: false }
+            where: { shop_id: shop.id, is_first_visit: true }
         })
         res.json(count)
     } catch (err) {
@@ -71,8 +78,14 @@ router.get('/count/oldvisitors/:shop_url', async (req, res) => {
   @desc   Count avgduration 1 shop
 -----*/
 
-router.get('/avgduration/:shop_url', async (req, res) => {
-
+router.get('/count/avgduration/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id,
+    { type: sequelize.QueryTypes.SELECT}
+    ).then(function(result) {
+        res.json(formatSeconds(result[0].Avg))
+    })
 });
 
 /* ----- 
@@ -296,5 +309,8 @@ router.get('/count/device/other/:shop_url', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+
+
 
 module.exports = router;

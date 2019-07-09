@@ -9,7 +9,6 @@ import Donut from 'components/Components/Donut'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import styles from './style.module.scss'
-import { supportCasesPieData, supportCasesTableData } from './data.json'
 
 const colors = {
   primary: '#01a8fe',
@@ -17,6 +16,38 @@ const colors = {
   success: '#46be8a',
   danger: '#fb434a',
 }
+
+function fetchDataTrafficSource(social, search, direct, other) {
+  const total = social + search + direct + other
+  return [{
+        "key": "1",
+        "type": "Social",
+        "amount": `${((social / total) * 100)}%`
+      }, {
+        "key": "2",
+        "type": "Search",
+        "amount": `${((search / total) * 100)}%`
+      }, {
+        "key": "3", 
+        "type": "Direct",
+        "amount": `${((direct / total) * 100)}%`
+      }, {
+        "key": "4",
+        "type": "Others",
+        "amount": `${((other / total) * 100)}%`
+      }]
+}
+
+function fetchDataTrafficSourcePie(social, search, direct, other) {
+  const total = social + search + direct + other
+  return {"series": [
+    {"name": "Social", "value": (social / total) * 100},
+    {"name": "Search", "value": (search / total) * 100},
+    {"name": "Direct", "value": (direct / total) * 100},
+    {"name": "Others", "value": (other / total) * 100}
+  ]}
+}
+
 const supportCasesTableColumns = [
   {
     title: 'Type',
@@ -47,14 +78,16 @@ const supportCasesPieOptions = {
     }),
   ],
 }
-const pie = {
-  data: {
-    columns: [['Mobile', 30], ['PC', 120]],
-    type: 'pie',
-  },
-  color: {
-    pattern: [colors.primary, colors.success],
-  },
+function pie(desktop, mobile, tablet, other) {
+  return {
+    data: {
+      columns: [['Desktop', desktop], ['Mobile', mobile], ['Tablet', tablet], ['Others', other]],
+      type: 'pie',
+    }, 
+    color: {
+      pattern: [colors.primary, colors.danger, colors.success, colors.def],
+    },
+  }  
 }
 const spline = {
   data: {
@@ -71,6 +104,7 @@ const spline = {
     x: {
       tick: {
         outer: !1,
+        count: 7,
       },
     },
     y: {
@@ -142,7 +176,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Avg. Session duration"
-              amount="00:04:08"
+              amount={user.avgDurationSession}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -161,7 +195,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Total Pageview"
-              amount="3,309"
+              amount={user.pageview}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -212,7 +246,7 @@ class Dashboard extends React.Component {
                       <Table
                         className="utils__scrollTable"
                         scroll={{ x: '100%' }}
-                        dataSource={supportCasesTableData}
+                        dataSource={fetchDataTrafficSource(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther)}
                         columns={supportCasesTableColumns}
                         pagination={false}
                       />
@@ -225,7 +259,7 @@ class Dashboard extends React.Component {
                         }`}
                     >
                       <ChartistGraph
-                        data={supportCasesPieData}
+                        data={fetchDataTrafficSourcePie(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther)}
                         type="Pie"
                         options={supportCasesPieOptions}
                       />
@@ -258,7 +292,7 @@ class Dashboard extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <C3Chart data={pie.data} color={pie.color} />
+                  <C3Chart data={pie([user.deviceDesktop],[user.deviceMobile], [user.deviceTablet], [user.deviceOther]).data} color={pie().color} />
                 </div>
               </div>
             </div>

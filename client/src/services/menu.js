@@ -30,6 +30,7 @@ export async function getLeftMenuData() {
     {
       title: 'Audience',
       key: 'audience',
+      url: '/audience',
       icon: 'icmn icmn-user',
     },
     {
