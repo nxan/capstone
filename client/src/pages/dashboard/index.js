@@ -9,7 +9,6 @@ import Donut from 'components/Components/Donut'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import styles from './style.module.scss'
-import { supportCasesPieData, supportCasesTableData } from './data.json'
 
 const colors = {
   primary: '#01a8fe',
@@ -17,6 +16,39 @@ const colors = {
   success: '#46be8a',
   danger: '#fb434a',
 }
+
+
+function fetchDataTrafficSource(social, search, direct, other) {
+  const total = social + search + direct + other
+  return [{
+        "key": "1",
+        "type": "Social",
+        "amount": `${((social / total) * 100)}%`
+      }, {
+        "key": "2",
+        "type": "Search",
+        "amount": `${((search / total) * 100)}%`
+      }, {
+        "key": "3", 
+        "type": "Direct",
+        "amount": `${((direct / total) * 100)}%`
+      }, {
+        "key": "4",
+        "type": "Others",
+        "amount": `${((other / total) * 100)}%`
+      }]
+}
+
+function fetchDataTrafficSourcePie(social, search, direct, other) {
+  const total = social + search + direct + other
+  return {"series": [
+    {"name": "Social", "value": (social / total) * 100},
+    {"name": "Search", "value": (search / total) * 100},
+    {"name": "Direct", "value": (direct / total) * 100},
+    {"name": "Others", "value": (other / total) * 100}
+  ]}
+}
+
 const supportCasesTableColumns = [
   {
     title: 'Type',
@@ -47,50 +79,60 @@ const supportCasesPieOptions = {
     }),
   ],
 }
-const pie = {
-  data: {
-    columns: [['Mobile', 30], ['PC', 120]],
-    type: 'pie',
-  },
-  color: {
-    pattern: [colors.primary, colors.success],
-  },
+function pie(desktop, mobile, tablet, other) {
+  return {
+    data: {
+      columns: [['Desktop', desktop], ['Mobile', mobile], ['Tablet', tablet], ['Others', other]],
+      type: 'pie',
+    }, 
+    color: {
+      pattern: [colors.primary, colors.danger, colors.success, colors.def],
+    },
+  }  
 }
-const spline = {
-  data: {
-    columns: [
-      ['New Visitors', 100, 165, 140, 270, 200, 140, 220],
-      ['Old Visitors', 110, 80, 100, 85, 125, 90, 100],
-    ],
-    type: 'spline',
-  },
-  color: {
-    pattern: [colors.primary, colors.danger],
-  },
-  axis: {
-    x: {
-      tick: {
-        outer: !1,
+
+const day = ['7 ngày trước', '6 ngày trước', '5 ngày trước', '4 ngày trước', '3 ngày trước', '2 ngày trước', 'Hôm qua']
+
+function fetchDataSpline(a, b) {  
+  return {
+    data: {
+      columns: [
+        ["New Visitors", [a[0]],[a[1]],[a[2]],[a[3]],[a[4]],[a[5]],[a[6]]],
+        ["Old Visitors", [b[0]],[b[1]],[b[2]],[b[3]],[b[4]],[b[5]],[b[6]]],
+      ]  
+    },
+  }  
+}
+
+function spline() {
+  return {  
+    color: {
+      pattern: [colors.primary, colors.danger],
+    },  
+    axis: {
+      x: {
+        type: 'category',
+        categories: day
+      },
+      y: {
+        max: 50,
+        min: 0,
+        tick: {
+          outer: !1,
+          count: 7,
+          values: [0, 10, 20, 30, 40, 50],
+        },
       },
     },
-    y: {
-      max: 300,
-      min: 0,
-      tick: {
-        outer: !1,
-        count: 7,
-        values: [0, 50, 100, 150, 200, 250, 300],
+    grid: {
+      x: {
+        show: !1,
+      },
+      y: {
+        show: !0,
       },
     },
-  },
-  grid: {
-    x: {
-      show: !1,
-    },
-    y: {
-      show: !0,
-    },
-  },
+  }
 }
 
 @connect(({ user }) => ({ user }))
@@ -142,7 +184,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Avg. Session duration"
-              amount="00:04:08"
+              amount={user.avgDurationSession}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -161,7 +203,7 @@ class Dashboard extends React.Component {
           <div className="col-xl-3">
             <ChartCard
               title="Total Pageview"
-              amount="3,309"
+              amount={user.pageview}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -188,10 +230,10 @@ class Dashboard extends React.Component {
               </div>
               <div className="card-body">
                 <C3Chart
-                  data={spline.data}
-                  color={spline.color}
-                  axis={spline.axis}
-                  grid={spline.grid}
+                  data={fetchDataSpline(user.newVisitorLastWeek, user.oldVisitorLastWeek).data}
+                  color={spline().color}
+                  axis={spline().axis}
+                  grid={spline().grid}
                 />
               </div>
             </div>
@@ -212,7 +254,7 @@ class Dashboard extends React.Component {
                       <Table
                         className="utils__scrollTable"
                         scroll={{ x: '100%' }}
-                        dataSource={supportCasesTableData}
+                        dataSource={fetchDataTrafficSource(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther)}
                         columns={supportCasesTableColumns}
                         pagination={false}
                       />
@@ -225,7 +267,7 @@ class Dashboard extends React.Component {
                         }`}
                     >
                       <ChartistGraph
-                        data={supportCasesPieData}
+                        data={fetchDataTrafficSourcePie(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther)}
                         type="Pie"
                         options={supportCasesPieOptions}
                       />
@@ -258,7 +300,7 @@ class Dashboard extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <C3Chart data={pie.data} color={pie.color} />
+                  <C3Chart data={pie([user.deviceDesktop],[user.deviceMobile], [user.deviceTablet], [user.deviceOther]).data} color={pie().color} />
                 </div>
               </div>
             </div>

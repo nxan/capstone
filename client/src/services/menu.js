@@ -29,7 +29,8 @@ export async function getLeftMenuData() {
     },
     {
       title: 'Audience',
-      key: '/audience',
+      key: 'audience',
+      url: '/audience',
       icon: 'icmn icmn-user',
     }, 
     {
