@@ -17,3 +17,158 @@
     vertical-align: middle;
   }
 }
+#video {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  margin-top: 100px;
+  border: 1px solid black;
+  width: 75%;
+  margin-left: 150px;
+  text-align: center;
+  background: transparent;
+  height: 500px;
+  left: 0px;
+  display: block;
+  position: fixed;
+  top: 0px;
+  z-index: 2147483647;
+  cursor: pointer;
+
+}
+
+.video>img {
+  height: 100%;
+  width: 100%;
+  /* double width image to show only first quarter */
+  vertical-align: bottom;
+
+  /* moves image to true text bottom */
+}
+
+#frame {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+}
+
+/* 
+#mouse {
+  z-index: 101;
+  position: absolute;
+  left: 0px;
+  width: 20px;
+  height: 20px;
+  background-image: url("../img/mouse.png");
+  top: 324px;
+  padding: 0px;
+  border: 0px;
+} */
+
+/*  #mouse {
+  position: absolute;
+  width: 20px;
+
+  height: 20px;
+  background-image: url('../img/mouse.png');
+}
+*/
+#cursor {
+  width: 32px;
+  height: 32px;
+}
+
+
+
+/* #spy_frame {
+  width: 100%;
+  height: 500px;
+  display: block;
+  backface-visibility: hidden;
+  overflow: hidden;
+  /* //pointer-events: none; 
+} */
+
+
+#spy_frame {
+  display: block;
+  width: 100%;
+  /* RESPONSIVE WIDTH */
+  /* max-width: 400px;
+  height: 300px; */
+
+  height: 100%;
+  overflow: auto;
+  /* EDIT TO hidden FOR NO SCROLLBAR */
+  border: #999999 1px solid;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+
+#click {
+  width: 25px;
+  height: 25px;
+  background-color: red;
+
+  position: absolute;
+  display: none;
+}
+
+#mouse {
+  background-image: url("../img/mouse.png");
+  width: 20px;
+  height: 20px;
+  background-color: coral;
+  position: absolute;
+  display: none;
+}
+
+#videoImg {
+  /* display: none;
+  margin-top: 100px;
+  overflow: scroll;
+  height: 500px;
+  position: relative;
+  width: 80%; */
+  /* 
+  overflow-y: hidden;
+  overflow-x: hidden; */
+  overflow: scroll;
+  transition: all 0.2s ease-in;
+  transform: scale(1.0);
+  margin-top: 100px;
+  border: 1px solid black;
+  width: 75%;
+  margin-left: 150px;
+  text-align: center;
+  background: transparent;
+  height: 500px;
+  left: 0px;
+  display: block;
+  position: fixed;
+  top: 0px;
+  z-index: 2147483647;
+  cursor: pointer;
+}
+
+#videoImg>img {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  height: 150%;
+  /* display: block;
+
+  /* probably looks neater if auto */
+  width: 100%;
+  /* text-align: center;
+  /* double width image to show only first quarter */
+  vertical-align: bottom; 
+
+}
+
+videoImg:hover #frame {
+  transform: scale(1.1);
+}

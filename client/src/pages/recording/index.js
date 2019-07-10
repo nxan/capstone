@@ -1,16 +1,19 @@
 import React from 'react'
 import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
+import Modal from 'react-awesome-modal';
 import table from './data.json'
-import styles from './style.module.scss'
 
+@connect(({ video }) => ({ video }))
 class ProductsList extends React.Component {
   state = {
     tableData: table.data,
-    data: table.data,
+    video: this.props,
     filterDropdownVisible: false,
     searchText: '',
     filtered: false,
+    visibled: false,
   }
 
   onInputChange = e => {
@@ -23,7 +26,7 @@ class ProductsList extends React.Component {
     this.setState({
       filterDropdownVisible: false,
       filtered: !!searchText,
-      data: tableData
+      video: tableData
         .map(record => {
           const match = record.name.match(reg)
           if (!match) {
@@ -50,8 +53,23 @@ class ProductsList extends React.Component {
     this.searchInput = node
   }
 
+  openModal() {
+    this.setState({
+      visibled: true
+    });
+  }
+
+  closeModal() {
+    this.setState({
+      visibled: false
+    });
+  }
+
   render() {
-    const { data, searchText, filtered, filterDropdownVisible } = this.state
+    const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
+    const videoData = Object.values(video.video);
+
+    console.log(videoData);
 
     const columns = [
       {
@@ -60,26 +78,39 @@ class ProductsList extends React.Component {
         key: 'id',
         render: text => (
           <a className="utils__link--underlined" href="javascript: void(0);">
-            {`#${text}`}
+            {text.id}
           </a>
         ),
         sorter: (a, b) => a.id - b.id,
       },
       {
-        title: 'Thumbnail',
-        dataIndex: 'thumbnail',
-        key: 'thumbnail',
-        render: text => (
-          <a href="javascript: void(0);" className={styles.thumbnail}>
-            <img src={text} alt="" />
-          </a>
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'play',
+        render: () => (
+          <span>
+            <Button onClick={() => this.openModal()}>Play</Button>
+            <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
+              <div>
+                <div id='videoImg'>
+                  <img id="frame" alt="Fake Child Education Site Label" />
+                  <div id="click" />
+                  <div id="mouse" />
+                </div>
+                <div id="video">
+                  <iframe id="spy_frame" title="myFrame">video</iframe>
+                </div>
+                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+              </div>
+            </Modal>
+          </span>
         ),
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        sorter: (a, b) => a.name.length - b.name.length,
+        title: 'Date',
+        dataIndex: 'video_time',
+        key: 'video_time',
+        sorter: (a, b) => a.video_time.length - b.video_time.length,
         render: text => (
           <a className="utils__link--underlined" href="javascript: void(0);">
             {text}
@@ -111,20 +142,10 @@ class ProductsList extends React.Component {
         },
       },
       {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-        sorter: (a, b) => a.status.length - b.status.length,
-        render: record => <span className="font-size-12 badge badge-success">{record}</span>,
-      },
-      {
         title: 'Action',
-        key: 'action',
+        key: 'remove',
         render: () => (
           <span>
-            <Button icon="edit" className="mr-1" size="small">
-              View
-            </Button>
             <Button icon="cross" size="small">
               Remove
             </Button>
@@ -134,12 +155,13 @@ class ProductsList extends React.Component {
     ]
 
     return (
+
       <div>
-        <Helmet title="Products List" />
+        <Helmet title="Video List" />
         <div className="card">
           <div className="card-header">
             <div className="utils__title">
-              <strong>Products List</strong>
+              <strong>Video List</strong>
             </div>
           </div>
           <div className="card-body">
@@ -147,7 +169,7 @@ class ProductsList extends React.Component {
               className="utils__scrollTable"
               scroll={{ x: '100%' }}
               columns={columns}
-              dataSource={data}
+              dataSource={videoData[0].video}
             />
           </div>
         </div>

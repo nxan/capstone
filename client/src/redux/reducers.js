@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
 import user from './user/reducers'
+import video from './video/reducers'
 import menu from './menu/reducers'
 import settings from './settings/reducers'
 
@@ -10,5 +11,6 @@ export default history =>
     router: connectRouter(history),
     user,
     menu,
+    video,
     settings,
   })

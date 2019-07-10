@@ -2,7 +2,7 @@
   "data": [{
     "key": "1",
     "thumbnail": "resources/images/ecommerce/001.jpg",
-    "name": "Rounded Chair",
+    "date": "7/9/2019 14:00:00",
     "id": 2412,
     "type": "Furniture",
     "attribute": "Home",
@@ -13,7 +13,7 @@
   }, {
     "key": "2",
     "thumbnail": "resources/images/ecommerce/002.jpg",
-    "name": "Scoop",
+    "date": "7/8/2019 14:00:00",
     "id": 262,
     "type": "Cleaning",
     "attribute": "Home",
@@ -24,7 +24,7 @@
   }, {
     "key": "3",
     "thumbnail": "resources/images/ecommerce/003.jpg",
-    "name": "Pure Wooden chair",
+    "date": "Pure Wooden chair",
     "id": 3255,
     "type": "Furniture",
     "attribute": "Home",
@@ -35,7 +35,7 @@
   }, {
     "key": "4",
     "thumbnail": "resources/images/ecommerce/004.jpg",
-    "name": "Gray Chair",
+    "date": "Gray Chair",
     "id": 2362,
     "type": "Furniture",
     "attribute": "Home",
