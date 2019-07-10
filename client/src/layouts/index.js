@@ -43,7 +43,7 @@ class IndexLayout extends React.PureComponent {
     setTimeout(() => {
       NProgress.done()
       this.previousPath = currentPath
-    }, 300)
+    }, 1000)
 
     // Layout Rendering
     const getLayout = () => {

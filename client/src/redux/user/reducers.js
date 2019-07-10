@@ -8,6 +8,8 @@ const initialState = {
   email: '',
   authorized: false,
   loading: false,
+  newVisitorLastWeek: [],
+  oldVisitorLastWeek: []
 }
 
 export default function userReducer(state = initialState, action) {
