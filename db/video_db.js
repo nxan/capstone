@@ -40,6 +40,13 @@ module.exports = {
         })
 
     },
+    getAll: async (condition) => {
+        return Video.findAll(
+            condition
+        ).then((result) => {
+            return result
+        })
+    },
     updateVideo: async (data, id) => {
         await Video.update(data, { where: { id: id } });
     }

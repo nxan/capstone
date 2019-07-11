@@ -32,6 +32,9 @@ const Video = db.define('video', {
     },
     is_image:{
         type: Sequelize.BOOLEAN
+    },
+    video_time:{
+        type: Sequelize.DATE
     }
 },
     {

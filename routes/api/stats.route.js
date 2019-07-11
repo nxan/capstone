@@ -310,6 +310,46 @@ router.get('/count/device/other/:shop_url', async (req, res) => {
     }
 });
 
+/* ----- 
+  @route  Count api/stats/count/newvisitor/days/:shop_url/:day
+  @desc   Count new visitor last n day
+-----*/
+
+router.get('/count/newvisitor/lastweek/:shop_url/', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_lastweek = []
+    for(var i = 1; i < 8; i++) {
+        var sql = 'select count(user_id) as visitor from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) ='  + i + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT}
+            ).then(function(result) {
+                array_visitor_lastweek.unshift(result[0].visitor)
+            })
+    }
+    res.json(array_visitor_lastweek)    
+});
+
+/* ----- 
+  @route  Count api/stats/count/oldvisitor/days/:shop_url/:day
+  @desc   Count old visitor last n day
+-----*/
+
+router.get('/count/oldvisitor/lastweek/:shop_url/', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_lastweek = []
+    for(var i = 1; i < 8; i++) {
+        var sql = 'select user_id from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id + 'group by user_id having count(user_id) > 1';
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT}
+            ).then(function(result) {
+                array_visitor_lastweek.unshift(result.length)
+            })
+    }
+    res.json(array_visitor_lastweek)    
+});
+
 
 
 

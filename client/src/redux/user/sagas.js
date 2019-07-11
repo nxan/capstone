@@ -3,7 +3,8 @@ import { notification } from 'antd'
 import { login, register, loadProfile, logout } from 'services/user'
 import { getSession, getVisitor, getAvgDurationSession, getTotalPageView,
     getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
-    getDeviceDesktop, getDeviceMobile, getDeviceTablet, getDeviceOther
+    getDeviceDesktop, getDeviceMobile, getDeviceTablet, getDeviceOther, getNewVisiorLastWeek,
+    getOldVisiorLastWeek
 } from 'services/dashboard'
 import { push } from 'react-router-redux';
 import actions from './actions'
@@ -59,7 +60,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
             loading: true,
         },
     })
-    const response = yield call(loadProfile)
+    const response = yield call(loadProfile)    
     if (response) {
         yield put({
             type: 'user/SET_STATE',
@@ -73,7 +74,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
             },
         })
         yield put({
-            type: 'user/LOAD_DASHBOARD',
+            type: 'user/LOAD_DASHBOARD',            
         })
     }
     yield put({
@@ -111,7 +112,9 @@ export function* LOAD_DASHBOARD() {
     const deviceDesktop = yield call(getDeviceDesktop, shopUrl)
     const deviceMobile = yield call(getDeviceMobile, shopUrl)
     const deviceTablet = yield call(getDeviceTablet, shopUrl)
-    const deviceOther = yield call(getDeviceOther, shopUrl)
+    const deviceOther = yield call(getDeviceOther, shopUrl)   
+    const newVisitorLastWeek = yield call(getNewVisiorLastWeek, shopUrl); 
+    const oldVisitorLastWeek = yield call(getOldVisiorLastWeek, shopUrl); 
     yield put({
         type: 'user/SET_STATE',
         payload: {
@@ -127,10 +130,11 @@ export function* LOAD_DASHBOARD() {
             deviceMobile,
             deviceTablet,
             deviceOther,
+            newVisitorLastWeek,
+            oldVisitorLastWeek
         },
     })
 }
-
 
 export default function* rootSaga() {
     yield all([

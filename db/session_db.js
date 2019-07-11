@@ -41,10 +41,8 @@ module.exports = {
     create_user_id: async function () {
         Math.random().toString(36).substring(2)
     },
-    updateSession: async function (data, session_id) {
-        var data_update = {
-            session_end_time: data
-        }
+    updateSession: async function (data_update, session_id) {
+        
         await Session.update(data_update, { where: { id: session_id } });
     }
 

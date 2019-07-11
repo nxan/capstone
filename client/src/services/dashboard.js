@@ -167,3 +167,27 @@ export async function getDeviceOther(shop_url) {
             console.log(err.response.statusText)
         })
 }
+
+// eslint-disable-next-line camelcase
+export async function getNewVisiorLastWeek(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/count/newvisitor/lastweek/${shop_url}`
+    return axios.get(url)
+        .then((result) => {            
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
+export async function getOldVisiorLastWeek(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/count/oldvisitor/lastweek/${shop_url}`
+    return axios.get(url)
+        .then((result) => {            
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}

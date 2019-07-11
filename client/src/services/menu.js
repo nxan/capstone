@@ -32,6 +32,12 @@ export async function getLeftMenuData() {
       key: 'audience',
       url: '/audience',
       icon: 'icmn icmn-user',
+    }, 
+    {
+      title: 'Recoding',
+      key: 'recording',
+      url: '/recording',
+      icon: 'icmn icmn-stats-dots',
     },
     {
       title: 'Setting',

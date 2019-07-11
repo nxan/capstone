@@ -5,19 +5,33 @@ const video_db = require('../../db/video_db')
 // Session.hasMany(Video, { foreignKey: 'video_id', sourceKey: 'id' });
 // Video.belongsTo(Session, { foreignKey: 'video_id', targetKey: 'id' });
 const fs = require("fs");
-router.get('/:session_id', async (req, res) => {
-    session_id = req.params.session_id
+// router.get('/:session_id', async (req, res) => {
+//     session_id = req.params.session_id
+//     try {
+//         let video = await Video.findOne({
+//             where: {
+//                 session_id: session_id,
+//             }
+//         })
+//         res.json(video);
+//     } catch (err) {
+//         console.log(err.message);
+//         res.status(500).send('Server error');
+//     }
+// })
+/* ----- 
+  @route  GET api/video
+  @desc   Refresh session
+-----*/
+router.get('', async (req, res) => {
     try {
-        let video = await Video.findOne({
-            where: {
-                session_id: session_id,
-            }
-        })
-        res.json(video);
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server error');
-    }
+        var condition = {
+            parent_id: null,
+            is_parent: true
+        }
+        var result = await video_db.getAll(condition);
+        res.json(result);
+    } catch (err) { console.log(err); }
 })
 router.post('/sendVideo', async (req, res) => {
     var fileName = '', positionData;
@@ -552,6 +566,8 @@ router.post('/sendImage', async (req, res) => {
     }
     return fileName;
 })
+
+
 async function takeScreenShot(pathWeb, pathServer) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -578,4 +594,5 @@ function decodeBase64Image(dataString) {
 
     return response;
 }
+
 module.exports = router;

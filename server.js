@@ -15,6 +15,8 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+const PORT = process.env.PORT || 8888;
+http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
@@ -62,6 +64,13 @@ app.get('/', (req, res) => {
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
     console.log("model:" + allClients);
+    socket.on("session_live", function () {
+        if (io.sockets.adapter.rooms[process.env.ROOM]) {
+            // result
+            console.log(io.sockets.adapter.rooms['rooms'].length - 1);
+        }
+
+    })
     socket.on("disconnect", async function () {
         for (var i = 0; i < allClients.length; i++) {
             console.log("c:" + allClients[i].socket_id);
@@ -70,12 +79,21 @@ io.on("connection", function (socket) {
                 var date = new Date(Date.now()).toISOString();
                 await session_page_db.update_session_page(date, allClients[i].session_page_id)
                 if (allClients.length == 1) {
-                    await session_db.updateSession(date, allClients[i].session_id);
+                    var data_update = {
+                        session_end_time: date,
+                        exit_page_id: allClients[i].page_id
+                    }
+                    await session_db.updateSession(data_update, allClients[i].session_id);
                 }
                 allClients.splice(i, 1);
             }
             else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
-                await session_db.updateSession(date, allClients[i].session_id);
+                var date = new Date(Date.now()).toISOString();
+                var data_update = {
+                    session_end_time: date,
+                    exit_page_id: allClients[i].page_id
+                }
+                await session_db.updateSession(data_update, allClients[i].session_id);
                 allClients.splice(i, 1);
             }
         }
@@ -84,12 +102,13 @@ io.on("connection", function (socket) {
         console.log(data);
 
         var json = JSON.parse(data);
-        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0 };
+        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
         socketModel['session_id'] = json.session_id;
         socketModel['session_page_id'] = json.session_page_id;
         socketModel['socket_id'] = socket.id;
+        socketModel['page_id'] = json.page_id;
         allClients.push(socketModel);
-        socket.join(json.session_id);
+        socket.join(process.env.ROOM);
         io.sockets.emit("Server-send-data", data + ". This is server ");
     })
 });
@@ -102,7 +121,7 @@ app.use('/api/browser', require('./routes/api/browser.route'));
 app.use('/api/session', require('./routes/api/session.route'));
 app.use('/api/shopify', require('./routes/api/shopify.route'));
 app.use('/api/shop', require('./routes/api/shop.route'));
-
+app.use('/api/video', require('./routes/api/video.route'));
 app.use('/api/city', require('./routes/api/city.route'));
 app.use('/api/country', require('./routes/api/country.route'));
 app.use('/api/test', require('./routes/api/test.route'));
@@ -110,6 +129,6 @@ app.use('/api/page', require('./routes/api/page.route'))
 app.use('/api/session_page', require('./routes/api/session_page.route'))
 app.use('/api/stats', require('./routes/api/stats.route'))
 
-const PORT = process.env.PORT || 8888;
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+//app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
