@@ -7,7 +7,7 @@ $(document).ready(() => {
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     save_session()
     setInterval(function () {
-        fetch('https://addb31b7.ngrok.io/api/session/save/resave', {
+        fetch('https://df085892.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -30,7 +30,7 @@ function loadAdditionJs() {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://addb31b7.ngrok.io/api/session', {
+            fetch('https://df085892.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -73,7 +73,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("https://addb31b7.ngrok.io");
+    socket = io.connect("https://df085892.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -155,7 +155,7 @@ function startRecord(data, session_id, session_page_id) {
 
         // sendImage();
         $.ajax({
-            url: 'https://addb31b7.ngrok.io/api/video/sendVideo',
+            url: 'https://df085892.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -232,7 +232,7 @@ function trackChangePage(session_id, session_page_id) {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'https://addb31b7.ngrok.io/api/video/sendVideo',
+            url: 'https://df085892.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({

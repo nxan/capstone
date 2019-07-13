@@ -1,4 +1,6 @@
 import React from 'react'
+import io from 'socket.io-client';
+// import $ from 'jquery';
 import { Table } from 'antd'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
@@ -41,8 +43,15 @@ const taskTableColumns = [
     render: text => <a href="javascript: void(0);">{text}</a>,
   },
 ]
+  const socket = io.connect('http://localhost:8888');
+  // eslint-disable-next-line
+    socket.on('counter', function (data) {
+      console.log(`Oneline: ${data.count}`);      
+  }); 
+
 
 class Realtime extends React.Component {
+  
   componentDidMount() {
     const chart = am4core.create('chartdiv', am4maps.MapChart)
     const title = chart.titles.create();
