@@ -23,29 +23,29 @@ function fetchDataTrafficSource(social, search, direct, other) {
   return [{
         "key": "1",
         "type": "Social",
-        "amount": `${((social / total) * 100)}%`
+        "amount": `${Number((social / total) * 100).toFixed(2)}%`
       }, {
         "key": "2",
         "type": "Search",
-        "amount": `${((search / total) * 100)}%`
+        "amount": `${Number((search / total) * 100).toFixed(2)}%`
       }, {
         "key": "3", 
         "type": "Direct",
-        "amount": `${((direct / total) * 100)}%`
+        "amount": `${Number((direct / total) * 100).toFixed(2)}%`
       }, {
         "key": "4",
         "type": "Others",
-        "amount": `${((other / total) * 100)}%`
+        "amount": `${Number((other / total) * 100).toFixed(2)}%`
       }]
 }
 
 function fetchDataTrafficSourcePie(social, search, direct, other) {
   const total = social + search + direct + other
   return {"series": [
-    {"name": "Social", "value": (social / total) * 100},
-    {"name": "Search", "value": (search / total) * 100},
-    {"name": "Direct", "value": (direct / total) * 100},
-    {"name": "Others", "value": (other / total) * 100}
+    {"name": "Social", "value": Number((social / total) * 100).toFixed(2)},
+    {"name": "Search", "value": Number((search / total) * 100).toFixed(2)},
+    {"name": "Direct", "value": Number((direct / total) * 100).toFixed(2)},
+    {"name": "Others", "value": Number((other / total) * 100).toFixed(2)}
   ]}
 }
 
