@@ -913,7 +913,7 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@^7.2.0", "@babel/runtime@^7.4.2":
+"@babel/runtime@^7.2.0", "@babel/runtime@^7.4.2", "@babel/runtime@^7.5.4":
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.4.tgz#cb7d1ad7c6d65676e66b47186577930465b5271b"
   integrity sha512-Na84uwyImZZc3FKf4aUF1tysApzwf3p2yuFBIyBfbzT5glzKTdvYI4KVW4kcgjrzoGUjC7w3YyCHcJKaRxsr2Q==
@@ -1357,6 +1357,13 @@
     "@svgr/plugin-jsx" "^4.1.0"
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
+
+"@tanem/svg-injector@^8.0.21":
+  version "8.0.21"
+  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.21.tgz#949550aab0de917dd6b9099336353b417f99f41d"
+  integrity sha512-d28ggQuaXRrhGsRMOvCiUdNNpHcJKfAu8iQgxApMHaztWeWl15mdm16hcCxFrlIgcYejByUJbpaxwIcxsUDOeA==
+  dependencies:
+    "@babel/runtime" "^7.5.4"
 
 "@types/events@*":
   version "3.0.0"
@@ -4303,6 +4310,11 @@ d3-dsv@^1.1.1:
     iconv-lite "0.4"
     rw "1"
 
+d3-ease@^1.0.3:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.5.tgz#8ce59276d81241b1b72042d6af2d40e76d936ffb"
+  integrity sha512-Ct1O//ly5y5lFM9YTdu+ygq7LleSgSE4oj7vUt9tPLHUi8VCV7QoizGpdWRWAwCO9LdYzIrQDg97+hGVdsSGPQ==
+
 d3-force@^1.1.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/d3-force/-/d3-force-1.2.1.tgz#fd29a5d1ff181c9e7f0669e4bd72bdb0e914ec0b"
@@ -4343,6 +4355,11 @@ d3-geo@^1.10.0, d3-geo@^1.11.3:
   integrity sha512-z0J8InXR9e9wcgNtmVnPTj0TU8nhYT6lD/ak9may2PdKqXIeHUr8UbFLoCtrPYNsjv6YaLvSDQVl578k6nm7GA==
   dependencies:
     d3-array "1"
+
+d3-hierarchy@^1.1.5:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/d3-hierarchy/-/d3-hierarchy-1.1.8.tgz#7a6317bd3ed24e324641b6f1e76e978836b008cc"
+  integrity sha512-L+GHMSZNwTpiq4rt9GEsNcpLa4M96lXMR8M/nMG9p5hBE0jy6C+3hWtyZMenPQdwla249iJy7Nx0uKt3n+u9+w==
 
 d3-interpolate@1, d3-interpolate@^1.1.6:
   version "1.3.2"
@@ -11363,6 +11380,11 @@ react-app-rewired@^2.1.3:
     dotenv "^6.2.0"
     semver "^5.6.0"
 
+react-awesome-modal@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/react-awesome-modal/-/react-awesome-modal-2.0.5.tgz#d19702f7e3bc1f43e734f5a60814c2d1593c693a"
+  integrity sha512-H+0xKBhcGJCoDtMww5K+XUzQtK+oRNpXr1VZoN1tbBgu+fzrLrF+ZkdRC1XiPLJ5gpVd9uR90yg8nyPTtYj/OQ==
+
 react-c3js@^0.1.20:
   version "0.1.20"
   resolved "https://registry.yarnpkg.com/react-c3js/-/react-c3js-0.1.20.tgz#561bb211bd691be42af39726d11bab42d09f3e7b"
@@ -11463,6 +11485,13 @@ react-fast-compare@^2.0.2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-fluid-svg@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/react-fluid-svg/-/react-fluid-svg-0.0.7.tgz#5a8f7eeb3a91eae63b938084281f1117b3340380"
+  integrity sha512-7hMCk2W++9AB0Zyf4SeF2gn7zb4NRDi62gm3PCyaGRxMMwrnFhH+ufwlkA44GTrn8I2MGsLJ8APM1loIiG19RA==
+  dependencies:
+    react "^16.0.0"
 
 react-helmet@^5.2.0:
   version "5.2.1"
@@ -11701,6 +11730,15 @@ react-stockcharts@^0.7.8:
     prop-types "^15.6.0"
     save-svg-as-png "^1.4.5"
 
+react-svg@^10.0.11:
+  version "10.0.11"
+  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-10.0.11.tgz#c3892c63bad9bb9b9cb763c77c247961a48e2b61"
+  integrity sha512-5lCpQYP7cNTrGsYaCkwTGu6mxDVy1WRD/tJphVTHUtZaaJaFXi2wZOygdQ7Pq1s/Z8DAbu/g+ZlTI3UQNpMgfQ==
+  dependencies:
+    "@babel/runtime" "^7.5.4"
+    "@tanem/svg-injector" "^8.0.21"
+    prop-types "^15.7.2"
+
 react-table@^6.10.0:
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.10.0.tgz#20444b19d8ca3c1a08e7544e5c3a93e4ba56690e"
@@ -11744,6 +11782,17 @@ react-transition-group@^2.2.1, react-transition-group@^2.5.3, react-transition-g
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
+react-tree-graph@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-tree-graph/-/react-tree-graph-4.0.0.tgz#fdf694026eda046090adbd45ecf3771ad15db523"
+  integrity sha512-HTcD6P0uAj4J+QtHfMZQJWftBv4yMdykAWonRDoeZYh0Bjbp6+lj2ZCsZQl0XxcnOZrUx7zvxJJ89zbJMiMzPg==
+  dependencies:
+    clone "^2.1.1"
+    core-js "^2.5.0"
+    d3-ease "^1.0.3"
+    d3-hierarchy "^1.1.5"
+    prop-types "^15.5.7"
+
 react@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
@@ -11755,7 +11804,7 @@ react@^15.6.2:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react@^16.8.1:
+react@^16.0.0, react@^16.8.1:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react/-/react-16.8.6.tgz#ad6c3a9614fd3a4e9ef51117f54d888da01f2bbe"
   integrity sha512-pC0uMkhLaHm11ZSJULfOBqV4tIZkx87ZLvbbQYunNixAAvjnC+snJCg0XQXn9VIsttVsbZP/H/ewzgsd5fxKXw==
@@ -11764,6 +11813,11 @@ react@^16.8.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.13.6"
+
+reactjs-popup@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/reactjs-popup/-/reactjs-popup-1.4.1.tgz#d5ec829a0f94d4480144f8c52f71cc73b7941083"
+  integrity sha512-Q1yLwo4X+on6k/45usKuOdmIkJr5TnL+8LUNtFvNLNmGLEdOnZn1uR57iq36E8RrMJc+d+tSGdgo8uaJKkxNNA==
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
