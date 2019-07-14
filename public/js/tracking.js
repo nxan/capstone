@@ -122,10 +122,10 @@ function getDevice() {
     if (/iPad/i.test(platform)) device = 1 //'tablet'
     else if (mobile.test(ua)) device = 2 //'mobile'
     else if (/Android/i.test(ua)) device = 1 //'tablet'
-    else if (/Windows/.test(os)) {
+    else if (os==3) {
         if ('ontouchstart' in window | (navigator.msMaxTouchPoints > 0)) device = 1//'tablet'
         else device = 3 //'desktop'
-    } else if (/MacOS/.test(os)) device = 3 //'desktop'
+    } else if (os==2) device = 3 //'desktop'
     else device = 4 //'others'
     return device
 }
@@ -136,7 +136,7 @@ function getBrowser() {
     else if (/Edge\/|EdgA\//i.test(ua)) browser = 2 //'Edge'
     else if (/Firefox\//i.test(ua)) browser = 3 //'Firefox'
     else if (/Chrome\/|CriOS\//i.test(ua)) browser = 4 //'Chrome or chromium' //CriOS on ios
-    else if ((getOS() == 'iOS' || getOS() == 'MacOS')) {
+    else if ((getOS() == 2 || getOS() == 4)) {
         if (/version\//i.test(ua)) browser = 5 //'Safari'
     }
     else if (/MSIE|Trident/i.test(ua)) browser = 6 //'Internet Explorer'
