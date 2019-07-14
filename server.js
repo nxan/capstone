@@ -15,6 +15,9 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+var count = 0;
+
+var $ipsConnected = [];
 const PORT = process.env.PORT || 8888;
 http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const session_page_db = require('./db/session_page_db');
@@ -63,11 +66,20 @@ app.get('/', (req, res) => {
 // });
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
-    console.log("model:" + allClients);
+    for (var i = 0; i < allClients.length; i++) {
+        console.log("model:" + allClients[i].socket_id);  
+           
+    }
+    setInterval(function() {
+        socket.emit('online', io.engine.clientsCount); 
+    }, 1000)
+
     socket.on("session_live", function () {
         if (io.sockets.adapter.rooms[process.env.ROOM]) {
-            // result
+            // resultt
             console.log(io.sockets.adapter.rooms['rooms'].length - 1);
+            var length = io.sockets.adapter.rooms['rooms'].length - 1;
+            io.sockets.emit("Total-user", length + ". This is server ");
         }
 
     })
@@ -97,6 +109,7 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
         }
+        console.log("disconnected")
     })
     socket.on("client-send-session", function (data) {
         console.log(data);
@@ -109,9 +122,14 @@ io.on("connection", function (socket) {
         socketModel['page_id'] = json.page_id;
         allClients.push(socketModel);
         socket.join(process.env.ROOM);
+        console.log("online: "+ io.sockets.adapter.rooms[process.env.ROOM].length);
+        setInterval(function(){
+            socket.emit('news_by_server', 'Cow goes moo'); 
+        }, 1000);
         io.sockets.emit("Server-send-data", data + ". This is server ");
     })
 });
+
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
 // app.use('/api/profile', require('./routes/api/shop.route'));

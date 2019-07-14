@@ -1,4 +1,5 @@
 import React from 'react'
+import io from 'socket.io-client';
 import { Table } from 'antd'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
@@ -13,6 +14,8 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated'
 import { taskTableData } from './data.json'
 
 am4core.useTheme(am4themes_animated)
+
+const socket = io.connect('http://localhost:8888');
 const biPolarBarData = {
   labels: ['20', '15', '10', '5', '1'],
   series: [[1, 2, 1.5, 1, 1]],
@@ -43,7 +46,16 @@ const taskTableColumns = [
 ]
 
 class Realtime extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+        response: 0,
+    };
+}
+  
   componentDidMount() {
+    socket.on('online', data => this.setState({response: data}));
     const chart = am4core.create('chartdiv', am4maps.MapChart)
     const title = chart.titles.create();
     title.text = "[bold font-size: 20]Population of the World in 2011[/]\nsource: Gapminder";
@@ -101,15 +113,17 @@ class Realtime extends React.Component {
       "dataField": "value"
     })
     this.chart = chart
+    
   }
 
-  componentWillUnmount() {
+  componentWillUnmount() {   
     if (this.chart) {
       this.chart.dispose()
     }
   }
 
   render() {
+    const {response} = this.state;
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Realtime" />
@@ -122,7 +136,7 @@ class Realtime extends React.Component {
                 </div>
               </div>
               <div className="card-body">
-                <strong className="font-size-50">0</strong>
+                <strong className="font-size-50">{response}</strong>
               </div>
               <div className="card-footer">
                 <span>USERS ON SITE</span>
