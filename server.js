@@ -64,84 +64,72 @@ app.get('/', (req, res) => {
 //     // Pass to next layer of middleware
 //     next();
 // });
-// io.on("connection", function (socket) {
-//     console.log("Connecting:" + socket.id);
-//     for (var i = 0; i < allClients.length; i++) {
-//         console.log("model:" + allClients[i].socket_id);
-        
-//     }
-    
-
-//     socket.on("session_live", function () {
-//         if (io.sockets.adapter.rooms[process.env.ROOM]) {
-//             // result
-//             console.log(io.sockets.adapter.rooms['rooms'].length - 1);
-//             var length = io.sockets.adapter.rooms['rooms'].length - 1;
-//             io.sockets.emit("Total-user", length + ". This is server ");
-//         }
-
-//     })
-//     socket.on("disconnect", async function () {
-//         for (var i = 0; i < allClients.length; i++) {
-//             console.log("c:" + allClients[i].socket_id);
-//             if (allClients[i].socket_id == socket.id) {
-//                 console.log(true);
-//                 var date = new Date(Date.now()).toISOString();
-//                 await session_page_db.update_session_page(date, allClients[i].session_page_id)
-//                 if (allClients.length == 1) {
-//                     var data_update = {
-//                         session_end_time: date,
-//                         exit_page_id: allClients[i].page_id
-//                     }
-//                     await session_db.updateSession(data_update, allClients[i].session_id);
-//                 }
-//                 allClients.splice(i, 1);
-//             }
-//             else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
-//                 var date = new Date(Date.now()).toISOString();
-//                 var data_update = {
-//                     session_end_time: date,
-//                     exit_page_id: allClients[i].page_id
-//                 }
-//                 await session_db.updateSession(data_update, allClients[i].session_id);
-//                 allClients.splice(i, 1);
-//             }
-//         }
-//     })
-//     socket.on("client-send-session", function (data) {
-//         console.log(data);
-
-//         var json = JSON.parse(data);
-//         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
-//         socketModel['session_id'] = json.session_id;
-//         socketModel['session_page_id'] = json.session_page_id;
-//         socketModel['socket_id'] = socket.id;
-//         socketModel['page_id'] = json.page_id;
-//         allClients.push(socketModel);
-//         socket.join(process.env.ROOM);
-//         console.log("online:"+ io.sockets.adapter.rooms[process.env.ROOM].length);
-//         io.sockets.emit("Server-send-data", data + ". This is server ");
-//     })
-// });
-io.on('connection', function (socket) {
-    var $ipAddress = socket.handshake.address;
-    if (!$ipsConnected.hasOwnProperty($ipAddress)) {
-        $ipsConnected[$ipAddress] = 1;
-        count++;
-        socket.emit('counter', {count:count});
+io.on("connection", function (socket) {
+    console.log("Connecting:" + socket.id);
+    for (var i = 0; i < allClients.length; i++) {
+        console.log("model:" + allClients[i].socket_id);  
+           
     }
+    setInterval(function() {
+        socket.emit('online', io.engine.clientsCount); 
+    }, 1000)
 
-    console.log("client is connected");
-
-    /* Disconnect socket */
-    socket.on('disconnect', function() {
-        if ($ipsConnected.hasOwnProperty($ipAddress)) {
-            delete $ipsConnected[$ipAddress];
-            count--;
-            socket.emit('counter', {count:count});
+    socket.on("session_live", function () {
+        if (io.sockets.adapter.rooms[process.env.ROOM]) {
+            // resultt
+            console.log(io.sockets.adapter.rooms['rooms'].length - 1);
+            var length = io.sockets.adapter.rooms['rooms'].length - 1;
+            io.sockets.emit("Total-user", length + ". This is server ");
         }
-    });
+
+    })
+    socket.on("disconnect", async function () {
+        for (var i = 0; i < allClients.length; i++) {
+            console.log("c:" + allClients[i].socket_id);
+            if (allClients[i].socket_id == socket.id) {
+                console.log(true);
+                var date = new Date(Date.now()).toISOString();
+                await session_page_db.update_session_page(date, allClients[i].session_page_id)
+                if (allClients.length == 1) {
+                    var data_update = {
+                        session_end_time: date,
+                        exit_page_id: allClients[i].page_id
+                    }
+                    await session_db.updateSession(data_update, allClients[i].session_id);
+                }
+                allClients.splice(i, 1);
+            }
+            else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
+                var date = new Date(Date.now()).toISOString();
+                var data_update = {
+                    session_end_time: date,
+                    exit_page_id: allClients[i].page_id
+                }
+                await session_db.updateSession(data_update, allClients[i].session_id);
+                allClients.splice(i, 1);
+            }
+        }
+        console.log("disconnected")
+    })
+    socket.on("client-send-session", function (data) {
+        console.log(data);
+
+        var json = JSON.parse(data);
+        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
+        socketModel['session_id'] = json.session_id;
+        socketModel['session_page_id'] = json.session_page_id;
+        socketModel['socket_id'] = socket.id;
+        socketModel['page_id'] = json.page_id;
+        allClients.push(socketModel);
+        socket.join(process.env.ROOM);
+        console.log("online: "+ io.sockets.adapter.rooms[process.env.ROOM].length);
+        setInterval(function(){
+            socket.emit('news_by_server', 'Cow goes moo'); 
+        }, 1000);
+        io.sockets.emit("Server-send-data", data + ". This is server ");
+    })
 });
+
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
 // app.use('/api/profile', require('./routes/api/shop.route'));

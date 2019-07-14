@@ -9,7 +9,7 @@ const initialState = {
   authorized: false,
   loading: false,
   newVisitorLastWeek: [],
-  oldVisitorLastWeek: []
+  oldVisitorLastWeek: [],
 }
 
 export default function userReducer(state = initialState, action) {

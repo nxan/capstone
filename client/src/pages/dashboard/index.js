@@ -10,6 +10,7 @@ import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import styles from './style.module.scss'
 
+
 const colors = {
   primary: '#01a8fe',
   def: '#d17905',

@@ -114,7 +114,7 @@ export function* LOAD_DASHBOARD() {
     const deviceTablet = yield call(getDeviceTablet, shopUrl)
     const deviceOther = yield call(getDeviceOther, shopUrl)   
     const newVisitorLastWeek = yield call(getNewVisiorLastWeek, shopUrl); 
-    const oldVisitorLastWeek = yield call(getOldVisiorLastWeek, shopUrl); 
+    const oldVisitorLastWeek = yield call(getOldVisiorLastWeek, shopUrl);     
     yield put({
         type: 'user/SET_STATE',
         payload: {
@@ -131,7 +131,7 @@ export function* LOAD_DASHBOARD() {
             deviceTablet,
             deviceOther,
             newVisitorLastWeek,
-            oldVisitorLastWeek
+            oldVisitorLastWeek,
         },
     })
 }
