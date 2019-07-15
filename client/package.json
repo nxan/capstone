@@ -27,6 +27,7 @@
   "dependencies": {
     "@amcharts/amcharts4": "^4.5.3",
     "@amcharts/amcharts4-geodata": "^4.1.6",
+    "@ishawnwang/withunmounted": "^1.0.1",
     "@rowno/sparkline": "^3.0.1",
     "amcharts": "^3.14.5",
     "antd": "^3.13.2",
