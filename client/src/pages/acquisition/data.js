@@ -1,8 +1,8 @@
-export const dataTable = [
+export const data = [
     {
         acquistion: "Social",
-        users: 12,
-        newusers: 12,
+        visitor: 12,
+        revisitor: 12,
         sessions: 12,
         bouncerate: 12,
         pagessession: 12,
@@ -13,8 +13,8 @@ export const dataTable = [
     },
     {
         acquistion: "Search",
-        users: 12,
-        newusers: 12,
+        visitor: 12,
+        revisitor: 12,
         sessions: 12,
         bouncerate: 12,
         pagessession: 12,
@@ -25,8 +25,8 @@ export const dataTable = [
     },
     {
         acquistion: "Direct",
-        users: 12,
-        newusers: 12,
+        visitor: 12,
+        revisitor: 12,
         sessions: 12,
         bouncerate: 12,
         pagessession: 12,
@@ -37,8 +37,8 @@ export const dataTable = [
     },
     {
         acquistion: "Other",
-        users: 12,
-        newusers: 12,
+        visitor: 12,
+        revisitor: 12,
         sessions: 12,
         bouncerate: 12,
         pagessession: 12,

@@ -8,13 +8,12 @@ import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
-import { dataTable } from './dataTable';
+import { data } from './data';
 
-function lineData(data) {
-  console.log(data)
+function lineData(series) {
   return {
     labels: ['7 day ago', '6 day ago', '5 day ago', '4 day ago', '3 day ago', '2 day ago', 'Yesterday'],
-    series: [data],
+    series: [series],
   }
 }
 
@@ -59,12 +58,12 @@ const columns = [
     Header: 'Acquisition',
     columns: [
       {
-        Header: 'Users',
-        accessor: 'users',
+        Header: 'Visitor',
+        accessor: 'visitor',
       },
       {
-        Header: 'New Users',
-        accessor: 'newusers',
+        Header: 'Returning Visitor',
+        accessor: 'revisitor',
       },
       {
         Header: 'Sessions',
@@ -137,7 +136,7 @@ class Acquisition extends React.Component {
         <div className="row">
           <ReactTable
             columns={columns}
-            data={dataTable}
+            data={data}
             defaultPageSize={4}
             className={`-striped -highlight ${
               styles.tablewith
