@@ -63,7 +63,7 @@ class ProfileMenu extends React.Component {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item>
-          <a href="javascript: void(0);">
+          <a href="/#/profile">
             <i className={`${styles.menuIcon} icmn-user`} />
             <FormattedMessage id="topBar.profileMenu.editProfile" />
           </a>

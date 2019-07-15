@@ -137,6 +137,35 @@ export function* LOAD_DASHBOARD() {
     })
 }
 
+export function* PROFILE() {
+    yield put({
+        type: 'user/SET_STATE',
+        payload: {
+            loading: true,
+        },
+    })
+    const response = yield call(loadProfile)
+    if (response) {
+        yield put({
+            type: 'user/SET_STATE',
+            payload: {
+                name: response.user.name,
+                email: response.user.email,
+                shopName: response.name_shop,
+                shopUrl: response.shop_url,
+                role: 'admin',
+                authorized: true,
+            },
+        })
+    }
+    yield put({
+        type: 'user/SET_STATE',
+        payload: {
+            loading: false,
+        },
+    })
+}
+
 export default function* rootSaga() {
     yield all([
         takeEvery(actions.LOGIN, LOGIN),
@@ -144,6 +173,9 @@ export default function* rootSaga() {
         takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
         takeEvery(actions.LOAD_DASHBOARD, LOAD_DASHBOARD),
         takeEvery(actions.LOGOUT, LOGOUT),
+        takeEvery(actions.PROFILE, PROFILE),
         LOAD_CURRENT_ACCOUNT(),
     ])
 }
+
+
