@@ -118,19 +118,38 @@ class Acquisition extends React.Component {
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="mb-5">
-                <C3Chart data={pie(acquistion.acquistionSocial, acquistion.acquistionSearch, acquistion.acquistionDirect, acquistion.acquistionOther).data} color={pie.color} />
+                <C3Chart
+                  data={
+                    pie(
+                      acquistion.acquistionSocial,
+                      acquistion.acquistionSearch,
+                      acquistion.acquistionDirect,
+                      acquistion.acquistionOther,
+                    ).data
+                  }
+                  color={pie.color}
+                />
               </div>
             </div>
           </div>
           <div className="col-lg-8">
-            <div className="mb-5">
-              <ChartistGraph
-                className="height-400"
-                data={lineData(acquistion.visitorLastWeek)}
-                options={lineOptions}
-                type="Line"
-              />
-            </div>
+            <section className="card">
+              <div className="card-header">
+                <div className="utils__title">
+                  <strong> Visitors</strong>
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="mb-5">
+                  <ChartistGraph
+                    className="height-400"
+                    data={lineData(acquistion.visitorLastWeek)}
+                    options={lineOptions}
+                    type="Line"
+                  />
+                </div>
+              </div>
+            </section>
           </div>
         </div>
         <div className="row">
