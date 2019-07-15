@@ -22,32 +22,34 @@ const colors = {
 function fetchDataTrafficSource(social, search, direct, other) {
   const total = social + search + direct + other
   return [{
-        "key": "1",
-        "type": "Social",
-        "amount": `${Number((social / total) * 100).toFixed(2)}%`
-      }, {
-        "key": "2",
-        "type": "Search",
-        "amount": `${Number((search / total) * 100).toFixed(2)}%`
-      }, {
-        "key": "3", 
-        "type": "Direct",
-        "amount": `${Number((direct / total) * 100).toFixed(2)}%`
-      }, {
-        "key": "4",
-        "type": "Others",
-        "amount": `${Number((other / total) * 100).toFixed(2)}%`
-      }]
+    "key": "1",
+    "type": "Social",
+    "amount": `${Number((social / total) * 100).toFixed(2)}%`
+  }, {
+    "key": "2",
+    "type": "Search",
+    "amount": `${Number((search / total) * 100).toFixed(2)}%`
+  }, {
+    "key": "3",
+    "type": "Direct",
+    "amount": `${Number((direct / total) * 100).toFixed(2)}%`
+  }, {
+    "key": "4",
+    "type": "Others",
+    "amount": `${Number((other / total) * 100).toFixed(2)}%`
+  }]
 }
 
 function fetchDataTrafficSourcePie(social, search, direct, other) {
   const total = social + search + direct + other
-  return {"series": [
-    {"name": "Social", "value": Number((social / total) * 100).toFixed(2)},
-    {"name": "Search", "value": Number((search / total) * 100).toFixed(2)},
-    {"name": "Direct", "value": Number((direct / total) * 100).toFixed(2)},
-    {"name": "Others", "value": Number((other / total) * 100).toFixed(2)}
-  ]}
+  return {
+    "series": [
+      { "name": "Social", "value": Number((social / total) * 100).toFixed(2) },
+      { "name": "Search", "value": Number((search / total) * 100).toFixed(2) },
+      { "name": "Direct", "value": Number((direct / total) * 100).toFixed(2) },
+      { "name": "Others", "value": Number((other / total) * 100).toFixed(2) }
+    ]
+  }
 }
 
 const supportCasesTableColumns = [
@@ -85,31 +87,31 @@ function pie(desktop, mobile, tablet, other) {
     data: {
       columns: [['Desktop', desktop], ['Mobile', mobile], ['Tablet', tablet], ['Others', other]],
       type: 'pie',
-    }, 
+    },
     color: {
       pattern: [colors.primary, colors.danger, colors.success, colors.def],
     },
-  }  
+  }
 }
 
-const day = ['7 ngày trước', '6 ngày trước', '5 ngày trước', '4 ngày trước', '3 ngày trước', '2 ngày trước', 'Hôm qua']
+const day = ['7 day ago', '6 day ago', '5 day ago', '4 day ago', '3 day ago', '2 day ago', 'Yesterday']
 
-function fetchDataSpline(a, b) {  
+function fetchDataSpline(a, b) {
   return {
     data: {
       columns: [
-        ["New Visitors", [a[0]],[a[1]],[a[2]],[a[3]],[a[4]],[a[5]],[a[6]]],
-        ["Old Visitors", [b[0]],[b[1]],[b[2]],[b[3]],[b[4]],[b[5]],[b[6]]],
-      ]  
+        ["New Visitors", [a[0]], [a[1]], [a[2]], [a[3]], [a[4]], [a[5]], [a[6]]],
+        ["Old Visitors", [b[0]], [b[1]], [b[2]], [b[3]], [b[4]], [b[5]], [b[6]]],
+      ]
     },
-  }  
+  }
 }
 
 function spline() {
-  return {  
+  return {
     color: {
       pattern: [colors.primary, colors.danger],
-    },  
+    },
     axis: {
       x: {
         type: 'category',
@@ -301,7 +303,7 @@ class Dashboard extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <C3Chart data={pie([user.deviceDesktop],[user.deviceMobile], [user.deviceTablet], [user.deviceOther]).data} color={pie().color} />
+                  <C3Chart data={pie([user.deviceDesktop], [user.deviceMobile], [user.deviceTablet], [user.deviceOther]).data} color={pie().color} />
                 </div>
               </div>
             </div>

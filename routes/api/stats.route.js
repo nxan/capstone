@@ -370,7 +370,4 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
     res.json(array_visitor_lastweek)
 });
 
-
-
-
 module.exports = router;

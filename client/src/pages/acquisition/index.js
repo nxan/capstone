@@ -8,10 +8,14 @@ import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
+import { dataTable } from './dataTable';
 
-const lineData = {
-  labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-  series: [[0, 0, 0, 0, 0]],
+function lineData(data) {
+  console.log(data)
+  return {
+    labels: ['7 day ago', '6 day ago', '5 day ago', '4 day ago', '3 day ago', '2 day ago', 'Yesterday'],
+    series: [data],
+  }
 }
 
 const colors = {
@@ -30,7 +34,6 @@ const lineOptions = {
 }
 
 function pie(social, search, direct, others) {
-  console.log(social)
   return {
     data: {
       columns: [['Social', social], ['Search', search], ['Direct', direct], ['Others', others]],
@@ -41,10 +44,74 @@ function pie(social, search, direct, others) {
     },
   }
 }
-@connect(({ user }) => ({ user }))
+
+const columns = [
+  {
+    Header: '  ',
+    columns: [
+      {
+        Header: '',
+        accessor: 'acquistion',
+      },
+    ],
+  },
+  {
+    Header: 'Acquisition',
+    columns: [
+      {
+        Header: 'Users',
+        accessor: 'users',
+      },
+      {
+        Header: 'New Users',
+        accessor: 'newusers',
+      },
+      {
+        Header: 'Sessions',
+        accessor: 'sessions',
+      },
+    ],
+  },
+  {
+    Header: 'Behavior',
+    columns: [
+      {
+        Header: 'Bounce Rate',
+        accessor: 'bouncerate',
+      },
+      {
+        Header: 'Pages/Session',
+        accessor: 'pagessession',
+      },
+      {
+        Header: 'Avg. Session Duration',
+        accessor: 'avgsessionduration',
+      },
+    ],
+  },
+  {
+    Header: 'Conversions',
+    columns: [
+      {
+        Header: 'Conversion Rate',
+        accessor: 'conversionrate',
+      },
+      {
+        Header: 'Completion',
+        accessor: 'completion',
+      },
+      {
+        Header: 'Value',
+        accessor: 'value',
+      },
+    ],
+  },
+]
+
+@connect(({ acquistion }) => ({ acquistion }))
 class Acquisition extends React.Component {
   render() {
-    const { user } = this.props
+    const { acquistion } = this.props
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Acquisition" />
@@ -52,25 +119,15 @@ class Acquisition extends React.Component {
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="mb-5">
-                <C3Chart data={pie(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther).data} color={pie.color} />
+                <C3Chart data={pie(acquistion.acquistionSocial, acquistion.acquistionSearch, acquistion.acquistionDirect, acquistion.acquistionOther).data} color={pie.color} />
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-8">
             <div className="mb-5">
               <ChartistGraph
-                className="height-300"
-                data={lineData}
-                options={lineOptions}
-                type="Line"
-              />
-            </div>
-          </div>
-          <div className="col-lg-4">
-            <div className="mb-5">
-              <ChartistGraph
-                className="height-300"
-                data={lineData}
+                className="height-400"
+                data={lineData(acquistion.visitorLastWeek)}
                 options={lineOptions}
                 type="Line"
               />
@@ -79,69 +136,9 @@ class Acquisition extends React.Component {
         </div>
         <div className="row">
           <ReactTable
-            columns={[
-              {
-                Header: '  ',
-                columns: [
-                  {
-                    Header: '',
-                    accessor: '',
-                  },
-                ],
-              },
-              {
-                Header: 'Acquisition',
-                columns: [
-                  {
-                    Header: 'Users',
-                    accessor: 'firstName',
-                  },
-                  {
-                    Header: 'New Users',
-                    id: 'newusers',
-                  },
-                  {
-                    Header: 'Sessions',
-                    id: 'sessions',
-                  },
-                ],
-              },
-              {
-                Header: 'Behavior',
-                columns: [
-                  {
-                    Header: 'Bounce Rate',
-                    accessor: 'bouncerate',
-                  },
-                  {
-                    Header: 'Pages/Session',
-                    accessor: 'pagessession',
-                  },
-                  {
-                    Header: 'Avg. Session Duration',
-                    accessor: 'avgsessionduration',
-                  },
-                ],
-              },
-              {
-                Header: 'Conversions',
-                columns: [
-                  {
-                    Header: 'Conversion Rate',
-                    accessor: 'conversionrate',
-                  },
-                  {
-                    Header: 'Completion',
-                    accessor: 'completion',
-                  },
-                  {
-                    Header: 'Value',
-                    accessor: 'value',
-                  },
-                ],
-              },
-            ]}
-            defaultPageSize={10}
+            columns={columns}
+            data={dataTable}
+            defaultPageSize={4}
             className={`-striped -highlight ${
               styles.tablewith
               }`}
