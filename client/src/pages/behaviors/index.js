@@ -1,80 +1,76 @@
 import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
-import Tree from 'react-tree-graph'
-import './style.module.scss'
-import 'react-tree-graph/dist/style.css'
+import {Table} from 'antd'
 
-const data = {
-  name: 'Home',
-  children: [
-    {
-      name: 'Site1',
-      children: [
-        {
-          name: 'Site1.1',
-        },
-        {
-          name: 'Site1.2',
-        },
-      ],
-    },
-    {
-      name: 'Site 2',
-      children: [
-        {
-          name: 'Site1.1',
-          children: [
-            {
-              name: 'Site1.1',
-            },
-            {
-              name: 'Site1.2',
-            },
-          ],
-        },
-        {
-          name: 'Site1.2',
-          children: [
-            {
-              name: 'Site1.1',
-            },
-            {
-              name: 'Site1.2',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Site 2',
-      children: [
-        {
-          name: 'Site1.1',
-        },
-        {
-          name: 'Site1.2',
-        },
-      ],
-    },
-  ],
-}
+const columns = [
+  {
+    title: 'Page',
+    dataIndex: 'page',
+    key: 'page',
+  },
+  {
+    title: 'Total Sessions',
+    dataIndex: 'sessions',
+    key: 'sessions',
+    width: '12%',
+  },
+  {
+    title: 'End Session Here',
+    dataIndex: 'endsession',
+    width: '30%',
+    key: 'endsession',
+  },
+];
+
+const data = [
+  {
+    key: 1,
+    page: 'Home',
+    sessions: 500,
+    endsession: 100,
+    children: [
+      {
+        key: 11,
+        page: 'Interaction 1',
+        sessions: 42,
+        endsession: 44,
+        children: [
+          {
+            key: 111,
+            page: 'Interaction 2',
+            sessions: 16,
+            endsession: 3,
+            children: [
+              {
+                key: 211,
+                page: 'Interaction 3',
+                sessions: 16,
+                endsession: 3,
+                children: [
+                  {
+                    key: 311,
+                    page: 'Interaction 4',
+                    sessions: 16,
+                    endsession: 3,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
 
 class Behavior extends React.Component {
   render() {
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Behavior" />
-        <div className="custom-container">
-          <Tree
-            data={data}
-            height={200}
-            width={1300}
-            svgProps={{
-              className: 'custom'
-            }}
-          />
-        </div>
+        <Table columns={columns} dataSource={data} />
       </Authorize>
     )
   }
