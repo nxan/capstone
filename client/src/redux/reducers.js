@@ -4,12 +4,15 @@ import user from './user/reducers'
 import menu from './menu/reducers'
 import settings from './settings/reducers'
 import acquistion from './acquistion/reducers'
+import profile from './profile/reducers'
+
 
 export default history =>
-  combineReducers({
-    router: connectRouter(history),
-    user,
-    menu,
-    settings,
-    acquistion
-  })
+    combineReducers({
+        router: connectRouter(history),
+        user,
+        menu,
+        settings,
+        acquistion,
+        profile
+    })
