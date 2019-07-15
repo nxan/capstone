@@ -73,5 +73,39 @@ router.post(
     }
   }
 );
+router.put(
+  '/', async (req, res) => {  
 
+    const { name, password, email } = req.body;
+    console.log(name)
+    try {
+      let user = await User.findOne({
+        where: {
+          email: email
+        },
+      });
+      if(name != null){
+        user.name = name
+      }
+      if(password != null){
+        user.password = password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+      }    
+      
+      await user.save();
+
+      const payload = {
+        user: {
+          email: user.email
+        }
+      }
+      res.json(user)
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  }
+);
 module.exports = router;

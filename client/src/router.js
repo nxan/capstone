@@ -32,6 +32,11 @@ const routes = [
     component: loadable(() => import('pages/user/register')),
     exact: true,
   },
+  {
+    path: '/profile',
+    component: loadable(() => import('pages/profile')),
+    exact: true,
+  },
 
   // Dashboards
   {
