@@ -8,12 +8,20 @@ import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
-import { dataTable } from './dataTable';
+import { dataTable } from './dataTable'
 
 function lineData(data) {
   console.log(data)
   return {
-    labels: ['7 day ago', '6 day ago', '5 day ago', '4 day ago', '3 day ago', '2 day ago', 'Yesterday'],
+    labels: [
+      '7 day ago',
+      '6 day ago',
+      '5 day ago',
+      '4 day ago',
+      '3 day ago',
+      '2 day ago',
+      'Yesterday',
+    ],
     series: [data],
   }
 }
@@ -119,31 +127,56 @@ class Acquisition extends React.Component {
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="mb-5">
-                <C3Chart data={pie(acquistion.acquistionSocial, acquistion.acquistionSearch, acquistion.acquistionDirect, acquistion.acquistionOther).data} color={pie.color} />
+                <C3Chart
+                  data={
+                    pie(
+                      acquistion.acquistionSocial,
+                      acquistion.acquistionSearch,
+                      acquistion.acquistionDirect,
+                      acquistion.acquistionOther,
+                    ).data
+                  }
+                  color={pie.color}
+                />
               </div>
             </div>
           </div>
           <div className="col-lg-8">
-            <div className="mb-5">
-              <ChartistGraph
-                className="height-400"
-                data={lineData(acquistion.visitorLastWeek)}
-                options={lineOptions}
-                type="Line"
-              />
-            </div>
+            <section className="card">
+              <div className="card-header">
+                <div className="utils__title">
+                  <strong> Visitors</strong>
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="mb-5">
+                  <ChartistGraph
+                    className="height-400"
+                    data={lineData(acquistion.visitorLastWeek)}
+                    options={lineOptions}
+                    type="Line"
+                  />
+                </div>
+              </div>
+            </section>
           </div>
         </div>
-        <div className="row">
-          <ReactTable
-            columns={columns}
-            data={dataTable}
-            defaultPageSize={4}
-            className={`-striped -highlight ${
-              styles.tablewith
-              }`}
-          />
-        </div>
+
+        <section className="card">
+          <div className="card-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <ReactTable
+                  columns={columns}
+                  data={dataTable}
+                  defaultPageSize={4}
+                  showPagination={false}
+                  className={`-striped -highlight ${styles.tablewith}`}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
       </Authorize>
     )
   }

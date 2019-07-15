@@ -1126,6 +1126,11 @@
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.8.2.tgz#fae4112c4fb47086f6ae167e32524b280000abd5"
   integrity sha512-E4fDUF4fbu9AxKpaQQqCN3XBnNzb/5e0Gvd9OaQsYkK574LVI57v/EqqPfIm/mC7jYbxaPNrhvT5AF+Yzwyizg==
 
+"@ishawnwang/withunmounted@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ishawnwang/withunmounted/-/withunmounted-1.0.1.tgz#de78ff5190b71bf2e0ce5951a261074bb7cab04a"
+  integrity sha512-epLHr/BfZZsWIXaBirrjKZKINsi/AgCr66VhlUjtP3IDq4v6kKphX4K8fAvHqN65qQMrkes1fMUzRnjFbLNKrQ==
+
 "@material-ui/core@3.9.3":
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.9.3.tgz#d378c1f4beb18df9a534ca7258c2c33fb8e0e51f"
