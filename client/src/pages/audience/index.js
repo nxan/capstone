@@ -322,23 +322,37 @@ class Audience extends React.Component {
         </div>
         <div className="row">
           <div className="col-lg-12">
-            <Tabs type="card">
-              <TabPane tab="Language" key="1">
-                <Table columns={columns} dataSource={data} />
-              </TabPane>
-              <TabPane tab="Devices" key="2">
-                <Table columns={columns1} dataSource={data2} />
-              </TabPane>
-              <TabPane tab="Operating System" key="3">
-                <Table columns={columns} dataSource={data} />
-              </TabPane>
-              <TabPane tab="Mobile" key="4">
-                <Table columns={columns} dataSource={data} />
-              </TabPane>
-              <TabPane tab="Browser" key="5 ">
-                <Table columns={columns} dataSource={data} />
-              </TabPane>
-            </Tabs>
+            <section className="card">
+              <div className="card-header">
+                <div className="utils__title">
+                  <strong>Users Data Table</strong>
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <Tabs type="card">
+                      <TabPane tab="Language" key="1">
+                        <Table columns={columns} dataSource={data} />
+                      </TabPane>
+                      <TabPane tab="Devices" key="2">
+                        <Table columns={columns1} dataSource={data2} />
+                      </TabPane>
+                      <TabPane tab="Operating System" key="3">
+                        <Table columns={columns} dataSource={data} />
+                      </TabPane>
+                      <TabPane tab="Mobile" key="4">
+                        <Table columns={columns} dataSource={data} />
+                      </TabPane>
+                      <TabPane tab="Browser" key="5 ">
+                        <Table columns={columns} dataSource={data} />
+                      </TabPane>
+                    </Tabs>
+
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </Authorize>

@@ -1,7 +1,7 @@
 import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
-import {Table} from 'antd'
+import { Table } from 'antd'
 
 const columns = [
   {
@@ -70,7 +70,20 @@ class Behavior extends React.Component {
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Behavior" />
-        <Table columns={columns} dataSource={data} />
+        <section className="card">
+          <div className="card-header">
+            <div className="utils__title">
+              <strong>Users Behavior Table</strong>
+            </div>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <Table columns={columns} dataSource={data} />
+              </div>
+            </div>
+          </div>
+        </section>
       </Authorize>
     )
   }

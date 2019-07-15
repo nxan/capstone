@@ -52,96 +52,115 @@ class Acquisition extends React.Component {
             </div>
           </div>
           <div className="col-lg-4">
-            <div className="mb-5">
-              <ChartistGraph
-                className="height-300"
-                data={lineData}
-                options={lineOptions}
-                type="Line"
-              />
-            </div>
+            <section className="card">
+              <div className="card-body">
+                <div className="row">
+                  <div className="mb-5">
+                    <ChartistGraph
+                      className="height-300"
+                      data={lineData}
+                      options={lineOptions}
+                      type="Line"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
           <div className="col-lg-4">
-            <div className="mb-5">
-              <ChartistGraph
-                className="height-300"
-                data={lineData}
-                options={lineOptions}
-                type="Line"
-              />
-            </div>
+            <section className="card">
+              <div className="card-body">
+                <div className="row">
+                  <div className="mb-5">
+                    <ChartistGraph
+                      className="height-300"
+                      data={lineData}
+                      options={lineOptions}
+                      type="Line"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
-        <div className="row">
-          <ReactTable
-            columns={[
-              {
-                Header: '  ',
-                columns: [
-                  {
-                    Header: '',
-                    accessor: '',
-                  },
-                ],
-              },
-              {
-                Header: 'Acquisition',
-                columns: [
-                  {
-                    Header: 'Users',
-                    accessor: 'firstName',
-                  },
-                  {
-                    Header: 'New Users',
-                    id: 'newusers',
-                  },
-                  {
-                    Header: 'Sessions',
-                    id: 'sessions',
-                  },
-                ],
-              },
-              {
-                Header: 'Behavior',
-                columns: [
-                  {
-                    Header: 'Bounce Rate',
-                    accessor: 'bouncerate',
-                  },
-                  {
-                    Header: 'Pages/Session',
-                    accessor: 'pagessession',
-                  },
-                  {
-                    Header: 'Avg. Session Duration',
-                    accessor: 'avgsessionduration',
-                  },
-                ],
-              },
-              {
-                Header: 'Conversions',
-                columns: [
-                  {
-                    Header: 'Conversion Rate',
-                    accessor: 'conversionrate',
-                  },
-                  {
-                    Header: 'Completion',
-                    accessor: 'completion',
-                  },
-                  {
-                    Header: 'Value',
-                    accessor: 'value',
-                  },
-                ],
-              },
-            ]}
-            defaultPageSize={10}
-            className={`-striped -highlight ${
-              styles.tablewith
-              }`}
-          />
-        </div>
+        <section className="card">
+          <div className="card-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <ReactTable
+                  columns={[
+                    {
+                      Header: '  ',
+                      columns: [
+                        {
+                          Header: '',
+                          accessor: '',
+                        },
+                      ],
+                    },
+                    {
+                      Header: 'Acquisition',
+                      columns: [
+                        {
+                          Header: 'Users',
+                          accessor: 'firstName',
+                        },
+                        {
+                          Header: 'New Users',
+                          id: 'newusers',
+                        },
+                        {
+                          Header: 'Sessions',
+                          id: 'sessions',
+                        },
+                      ],
+                    },
+                    {
+                      Header: 'Behavior',
+                      columns: [
+                        {
+                          Header: 'Bounce Rate',
+                          accessor: 'bouncerate',
+                        },
+                        {
+                          Header: 'Pages/Session',
+                          accessor: 'pagessession',
+                        },
+                        {
+                          Header: 'Avg. Session Duration',
+                          accessor: 'avgsessionduration',
+                        },
+                      ],
+                    },
+                    {
+                      Header: 'Conversions',
+                      columns: [
+                        {
+                          Header: 'Conversion Rate',
+                          accessor: 'conversionrate',
+                        },
+                        {
+                          Header: 'Completion',
+                          accessor: 'completion',
+                        },
+                        {
+                          Header: 'Value',
+                          accessor: 'value',
+                        },
+                      ],
+                    },
+                  ]}
+                  showPagination={false}
+                  defaultPageSize={10}
+                  className={`-striped -highlight ${
+                    styles.tablewith
+                    }`}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
       </Authorize>
     )
   }
