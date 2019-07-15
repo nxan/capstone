@@ -31,13 +31,19 @@ export async function getLeftMenuData() {
       title: 'Audience',
       key: 'audience',
       url: '/audience',
-      icon: 'icmn icmn-user',
+      icon: 'icmn icmn-users',
     }, 
     {
       title: 'Recoding',
       key: 'recording',
       url: '/recording',
       icon: 'icmn icmn-stats-dots',
+    }, 
+    {
+      title: 'Profile',
+      key: 'profile',
+      url: '/profile',
+      icon: 'fa fa-user',
     },
     {
       title: 'Setting',

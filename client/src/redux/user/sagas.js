@@ -1,7 +1,8 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import { notification } from 'antd'
 import { login, register, loadProfile, logout } from 'services/user'
-import { getSession, getVisitor, getAvgDurationSession, getTotalPageView,
+import {
+    getSession, getVisitor, getAvgDurationSession, getTotalPageView,
     getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
     getDeviceDesktop, getDeviceMobile, getDeviceTablet, getDeviceOther, getNewVisiorLastWeek,
     getOldVisiorLastWeek
@@ -60,7 +61,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
             loading: true,
         },
     })
-    const response = yield call(loadProfile)    
+    const response = yield call(loadProfile)
     if (response) {
         yield put({
             type: 'user/SET_STATE',
@@ -74,7 +75,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
             },
         })
         yield put({
-            type: 'user/LOAD_DASHBOARD',            
+            type: 'user/LOAD_DASHBOARD',
         })
     }
     yield put({
@@ -82,7 +83,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
         payload: {
             loading: false,
         },
-    })    
+    })
 }
 
 export function* LOGOUT() {
@@ -103,7 +104,7 @@ export function* LOAD_DASHBOARD() {
     const shopUrl = yield select(selectors.shopUrl);
     const session = yield call(getSession, shopUrl);
     const visitor = yield call(getVisitor, shopUrl);
-    const avgDurationSession = yield call(getAvgDurationSession, shopUrl)    
+    const avgDurationSession = yield call(getAvgDurationSession, shopUrl)
     const pageview = yield call(getTotalPageView, shopUrl)
     const acquistionSocial = yield call(getAcquistionSocial, shopUrl)
     const acquistionSearch = yield call(getAcquistionSearch, shopUrl)
@@ -112,9 +113,9 @@ export function* LOAD_DASHBOARD() {
     const deviceDesktop = yield call(getDeviceDesktop, shopUrl)
     const deviceMobile = yield call(getDeviceMobile, shopUrl)
     const deviceTablet = yield call(getDeviceTablet, shopUrl)
-    const deviceOther = yield call(getDeviceOther, shopUrl)   
-    const newVisitorLastWeek = yield call(getNewVisiorLastWeek, shopUrl); 
-    const oldVisitorLastWeek = yield call(getOldVisiorLastWeek, shopUrl);     
+    const deviceOther = yield call(getDeviceOther, shopUrl)
+    const newVisitorLastWeek = yield call(getNewVisiorLastWeek, shopUrl);
+    const oldVisitorLastWeek = yield call(getOldVisiorLastWeek, shopUrl);
     yield put({
         type: 'user/SET_STATE',
         payload: {
@@ -126,12 +127,41 @@ export function* LOAD_DASHBOARD() {
             acquistionSearch,
             acquistionDirect,
             acquistionOther,
-            deviceDesktop, 
+            deviceDesktop,
             deviceMobile,
             deviceTablet,
             deviceOther,
             newVisitorLastWeek,
             oldVisitorLastWeek,
+        },
+    })
+}
+
+export function* PROFILE() {
+    yield put({
+        type: 'user/SET_STATE',
+        payload: {
+            loading: true,
+        },
+    })
+    const response = yield call(loadProfile)
+    if (response) {
+        yield put({
+            type: 'user/SET_STATE',
+            payload: {
+                name: response.user.name,
+                email: response.user.email,
+                shopName: response.name_shop,
+                shopUrl: response.shop_url,
+                role: 'admin',
+                authorized: true,
+            },
+        })
+    }
+    yield put({
+        type: 'user/SET_STATE',
+        payload: {
+            loading: false,
         },
     })
 }
@@ -143,6 +173,9 @@ export default function* rootSaga() {
         takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
         takeEvery(actions.LOAD_DASHBOARD, LOAD_DASHBOARD),
         takeEvery(actions.LOGOUT, LOGOUT),
+        takeEvery(actions.PROFILE, PROFILE),
         LOAD_CURRENT_ACCOUNT(),
     ])
 }
+
+

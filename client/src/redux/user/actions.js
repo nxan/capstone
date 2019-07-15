@@ -5,6 +5,7 @@ const actions = {
   LOAD_CURRENT_ACCOUNT: 'user/LOAD_CURRENT_ACCOUNT',
   LOAD_DASHBOARD: 'user/LOAD_DASHBOARD',
   LOGOUT: 'user/LOGOUT',
+  PROFILE: 'user/PROFILE',
 }
 
 export default actions
