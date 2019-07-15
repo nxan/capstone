@@ -54,11 +54,11 @@ const routes = [
     component: loadable(() => import('pages/acquisition')),
     exact: true,
   },
-  {
-    path: '/behaviors',
-    component: loadable(() => import('pages/behaviors')),
-    exact: true,
-  },
+  // {
+  //   path: '/behaviors',
+  //   component: loadable(() => import('pages/behaviors')),
+  //   exact: true,
+  // },
   {
     path: '/recording',
     component: loadable(() => import('pages/recording')),

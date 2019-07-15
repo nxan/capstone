@@ -67,11 +67,11 @@ app.get('/', (req, res) => {
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
     for (var i = 0; i < allClients.length; i++) {
-        console.log("model:" + allClients[i].socket_id);  
-           
+        console.log("model:" + allClients[i].socket_id);
+
     }
-    setInterval(function() {
-        socket.emit('online', io.engine.clientsCount); 
+    setInterval(function () {
+        socket.emit('online', Object.keys(io.sockets.connected).length - 1);
     }, 1000)
 
     socket.on("session_live", function () {
@@ -113,7 +113,7 @@ io.on("connection", function (socket) {
     })
     socket.on("client-send-session", function (data) {
         console.log(data);
-
+        
         var json = JSON.parse(data);
         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
         socketModel['session_id'] = json.session_id;
@@ -122,11 +122,8 @@ io.on("connection", function (socket) {
         socketModel['page_id'] = json.page_id;
         allClients.push(socketModel);
         socket.join(process.env.ROOM);
-        console.log("online: "+ io.sockets.adapter.rooms[process.env.ROOM].length);
-        setInterval(function(){
-            socket.emit('news_by_server', 'Cow goes moo'); 
-        }, 1000);
-        io.sockets.emit("Server-send-data", data + ". This is server ");
+        console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
+        io.sockets.emit("Server-send-data", data);
     })
 });
 

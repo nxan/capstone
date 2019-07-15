@@ -9,7 +9,7 @@ const shop_db = require('../../db/shop_db')
 
 
 function formatSeconds(seconds) {
-    const date = new Date(1970,0,1);
+    const date = new Date(1970, 0, 1);
     date.setSeconds(seconds);
     return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
 }
@@ -82,8 +82,8 @@ router.get('/count/avgduration/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id,
-    { type: sequelize.QueryTypes.SELECT}
-    ).then(function(result) {
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
         res.json(formatSeconds(result[0].Avg))
     })
 });
@@ -319,15 +319,15 @@ router.get('/count/newvisitor/lastweek/:shop_url/', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_lastweek = []
-    for(var i = 1; i < 8; i++) {
-        var sql = 'select count(user_id) as visitor from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) ='  + i + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
+    for (var i = 1; i < 8; i++) {
+        var sql = 'select count(user_id) as visitor from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) =' + i + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
         await Session.sequelize.query(sql,
-            { type: sequelize.QueryTypes.SELECT}
-            ).then(function(result) {
-                array_visitor_lastweek.unshift(result[0].visitor)
-            })
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_visitor_lastweek.unshift(result[0].visitor)
+        })
     }
-    res.json(array_visitor_lastweek)    
+    res.json(array_visitor_lastweek)
 });
 
 /* ----- 
@@ -339,15 +339,35 @@ router.get('/count/oldvisitor/lastweek/:shop_url/', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_lastweek = []
-    for(var i = 1; i < 8; i++) {
+    for (var i = 1; i < 8; i++) {
         var sql = 'select user_id from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id + 'group by user_id having count(user_id) > 1';
         await Session.sequelize.query(sql,
-            { type: sequelize.QueryTypes.SELECT}
-            ).then(function(result) {
-                array_visitor_lastweek.unshift(result.length)
-            })
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_visitor_lastweek.unshift(result.length)
+        })
     }
-    res.json(array_visitor_lastweek)    
+    res.json(array_visitor_lastweek)
+});
+
+/* ----- 
+  @route  Count api/stats/count/oldvisitor/days/:shop_url/:day
+  @desc   Count visitor last n day
+-----*/
+
+router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_lastweek = []
+    for (var i = 1; i < 8; i++) {
+        var sql = 'select distinct(user_id) from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_visitor_lastweek.unshift(result.length)
+        })
+    }
+    res.json(array_visitor_lastweek)
 });
 
 

@@ -34,28 +34,30 @@ const biPolarBarOptions = {
 
 const taskTableColumns = [
   {
-    title: 'Name',
+    title: 'Active Page',
     dataIndex: 'name',
     render: text => <a href="javascript: void(0);">{text}</a>,
   },
   {
-    title: 'Username',
+    title: 'Active Users',
     dataIndex: 'username',
     render: text => <a href="javascript: void(0);">{text}</a>,
   },
 ]
+
 
 class Realtime extends React.Component {
 
   constructor() {
     super();
     this.state = {
-        response: 0,
+      response: 0,
     };
-}
-  
+  }
+
   componentDidMount() {
-    socket.on('online', data => this.setState({response: data}));
+    socket.on('Server-send-data', data => console.log(data));
+    socket.on('online', data => this.setState({ response: data }));
     const chart = am4core.create('chartdiv', am4maps.MapChart)
     const title = chart.titles.create();
     title.text = "[bold font-size: 20]Population of the World in 2011[/]\nsource: Gapminder";
@@ -113,17 +115,18 @@ class Realtime extends React.Component {
       "dataField": "value"
     })
     this.chart = chart
-    
+
   }
 
-  componentWillUnmount() {   
+  componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose()
     }
+    socket.off('online');
   }
 
   render() {
-    const {response} = this.state;
+    const { response } = this.state;
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Realtime" />
@@ -194,10 +197,7 @@ class Realtime extends React.Component {
             <section className="card">
               <div className="card-header">
                 <div className="utils__title">
-                  <strong>Task Table</strong>
-                </div>
-                <div className="utils__titleDescription">
-                  Block with important Task Table information
+                  <strong>Top Active Pages:</strong>
                 </div>
               </div>
               <div className="card-body">
@@ -263,4 +263,4 @@ class Realtime extends React.Component {
     )
   }
 }
-export default Realtime
+export default Realtime;

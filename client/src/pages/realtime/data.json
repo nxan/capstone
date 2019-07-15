@@ -2,23 +2,8 @@
     "taskTableData": [
         {
             "key": 1,
-            "name": "Mark Stevenson",
-            "username": "@mdo"
-        },
-        {
-            "key": 2,
-            "name": "Jacob Hoffman",
-            "username": "@fat"
-        },
-        {
-            "key": 3,
-            "name": "Larry Page",
-            "username": "@twitter"
-        },
-        {
-            "key": 4,
-            "name": "Mark Stevenson",
-            "username": "@mdo"
+            "name": "https://capstonefpt.myshopify.com/collections/all",
+            "username": "1"
         }
     ],
     "tableData": [

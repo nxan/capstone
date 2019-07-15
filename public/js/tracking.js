@@ -7,7 +7,7 @@ $(document).ready(() => {
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     save_session()
     setInterval(function () {
-        fetch('https://c41efbfc.ngrok.io/api/session/save/resave', {
+        fetch('https://12e3e190.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -30,7 +30,7 @@ function loadAdditionJs() {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://c41efbfc.ngrok.io/api/session', {
+            fetch('https://12e3e190.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -50,7 +50,7 @@ function save_session(set) {
                     }
                     console.log(infor_tab);
                     connect_socket(infor_tab);
-                    
+
                     // track event
                     $(document).mousemove(function (event) {
                         trackEvent(event, 1, json.session_id, json.session_page_id);
@@ -73,7 +73,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("https://c41efbfc.ngrok.io");
+    socket = io.connect("https://12e3e190.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -122,10 +122,10 @@ function getDevice() {
     if (/iPad/i.test(platform)) device = 1 //'tablet'
     else if (mobile.test(ua)) device = 2 //'mobile'
     else if (/Android/i.test(ua)) device = 1 //'tablet'
-    else if (os==3) {
+    else if (os == 3) {
         if ('ontouchstart' in window | (navigator.msMaxTouchPoints > 0)) device = 1//'tablet'
         else device = 3 //'desktop'
-    } else if (os==2) device = 3 //'desktop'
+    } else if (os == 2) device = 3 //'desktop'
     else device = 4 //'others'
     return device
 }
@@ -155,7 +155,7 @@ function startRecord(data, session_id, session_page_id) {
 
         // sendImage();
         $.ajax({
-            url: 'https://c41efbfc.ngrok.io/api/video/sendVideo',
+            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -232,7 +232,7 @@ function trackChangePage(session_id, session_page_id) {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'https://c41efbfc.ngrok.io/api/video/sendVideo',
+            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({

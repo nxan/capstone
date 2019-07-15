@@ -1,6 +1,7 @@
 import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
 import ChartistGraph from 'react-chartist'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
@@ -28,18 +29,22 @@ const lineOptions = {
   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
 }
 
-const pie = {
-  data: {
-    columns: [['exp', 30], ['exp2', 120]],
-    type: 'pie',
-  },
-  color: {
-    pattern: [colors.primary, colors.success],
-  },
+function pie(social, search, direct, others) {
+  console.log(social)
+  return {
+    data: {
+      columns: [['Social', social], ['Search', search], ['Direct', direct], ['Others', others]],
+      type: 'pie',
+    },
+    color: {
+      pattern: [colors.primary, colors.success, colors.def, colors.danger],
+    },
+  }
 }
-
+@connect(({ user }) => ({ user }))
 class Acquisition extends React.Component {
   render() {
+    const { user } = this.props
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Acquisition" />
@@ -47,7 +52,7 @@ class Acquisition extends React.Component {
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="mb-5">
-                <C3Chart data={pie.data} color={pie.color} />
+                <C3Chart data={pie(user.acquistionSocial, user.acquistionSearch, user.acquistionDirect, user.acquistionOther).data} color={pie.color} />
               </div>
             </div>
           </div>
