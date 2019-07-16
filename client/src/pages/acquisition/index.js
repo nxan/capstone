@@ -142,7 +142,7 @@ class Acquisition extends React.Component {
               <div className="card-body">
                 <div className="mb-5">
                   <ChartistGraph
-                    className="height-400"
+                    className="height-300"
                     data={lineData(acquistion.visitorLastWeek)}
                     options={lineOptions}
                     type="Line"
@@ -157,6 +157,7 @@ class Acquisition extends React.Component {
             columns={columns}
             data={data}
             defaultPageSize={4}
+            showPagination={false}
             className={`-striped -highlight ${
               styles.tablewith
               }`}
