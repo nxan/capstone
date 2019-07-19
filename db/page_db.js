@@ -20,7 +20,18 @@ module.exports = {
         })
 
     },
-
+    getPageById: async (id) => {
+        var res
+        return Page.findOne({
+            where: {
+                id: id
+            }
+        }).then((result) => {
+            // res = result.dataValues
+            // console.log(res)
+            return result
+        })
+    },
     getAllPage: async (shop_id) => {
         console.log(shop_id)
         return Page.findAll({
@@ -33,4 +44,4 @@ module.exports = {
 
     },
 
-    }
+}
