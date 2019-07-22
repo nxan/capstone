@@ -3,11 +3,11 @@ var send = 0; check_redirect = false;
 var set = false; var socket;
 $(document).ready(() => {
 
-    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
+    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     save_session()
     setInterval(function () {
-        fetch('https://12e3e190.ngrok.io/api/session/save/resave', {
+        fetch('https://6baaadb4.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -30,7 +30,7 @@ function loadAdditionJs() {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://12e3e190.ngrok.io/api/session', {
+            fetch('https://6baaadb4.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -46,23 +46,28 @@ function save_session(set) {
                     let infor_tab = {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id,
-                        page_id: json.page_id
+                        page_id: json.page_id,
+                        page_url: window.location.href,
+                        operating_system_id: getOS(),
+                        device_type_id: getDevice(),
+                        browser_id: getBrowser(),
+                        acquistion_id: getReference()
                     }
                     console.log(infor_tab);
                     connect_socket(infor_tab);
 
                     // track event
-                    $(document).mousemove(function (event) {
-                        trackEvent(event, 1, json.session_id, json.session_page_id);
-                    });
-                    $(document).click(function (event) {
-                        trackEvent(event, 2, json.session_id, json.session_page_id)
-                    });
+                    // $(document).mousemove(function (event) {
+                    //     trackEvent(event, 1, json.session_id, json.session_page_id);
+                    // });
+                    // $(document).click(function (event) {
+                    //     trackEvent(event, 2, json.session_id, json.session_page_id)
+                    // });
 
-                    $("select").on('change', function (i, e) {
-                        trackEvent(null, 4, json.session_id, json.session_page_id);
-                    });
-                    trackChangePage(json.session_id, json.session_page_id);
+                    // $("select").on('change', function (i, e) {
+                    //     trackEvent(null, 4, json.session_id, json.session_page_id);
+                    // });
+                    // trackChangePage(json.session_id, json.session_page_id);
                     /*socket here
      
                     */
@@ -73,7 +78,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("https://12e3e190.ngrok.io");
+    socket = io.connect("https://6baaadb4.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -155,7 +160,7 @@ function startRecord(data, session_id, session_page_id) {
 
         // sendImage();
         $.ajax({
-            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
+            url: 'https://6baaadb4.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -232,7 +237,7 @@ function trackChangePage(session_id, session_page_id) {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
+            url: 'https://6baaadb4.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({

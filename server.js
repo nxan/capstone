@@ -3,7 +3,6 @@ var session = require('express-session');
 const querystring = require('querystring');
 const path = require('path');
 var cors = require('cors')
-const request = require('request-promise');
 var favicon = require('serve-favicon')
 const db = require('./config/db');
 const bodyParser = require('body-parser')
@@ -13,18 +12,22 @@ const session_db = require('./db/session_db');
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
+
+const axios = require('axios')
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var count = 0;
-
-var $ipsConnected = [];
+var check = false;
+var locations = [];
+var countsExtended = [];
 const PORT = process.env.PORT || 8888;
 http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+
 
 db.authenticate()
     .then(() => console.log('Database connected....'))
@@ -64,15 +67,130 @@ app.get('/', (req, res) => {
 //     // Pass to next layer of middleware
 //     next();
 // });
+function getAquision(number) {
+    switch (number) {
+        case 1: return process.env.Social
+            break;
+        case 2: return process.env.Search
+            break;
+        case 3: return process.env.Direct
+            break;
+        case 4: return process.env.Other
+            break;
+    }
+}
+function getOS(number) {
+    switch (number) {
+        case 1: return process.env.Android
+            break;
+        case 2: return process.env.MacOs
+            break;
+        case 3: return process.env.Window
+            break;
+        case 4: return process.env.iOS
+            break;
+        case 5: return process.env.Linux
+            break;
+        case 6: return process.env.Other
+            break;
+    }
+}
+function getBrowser(number) {
+    switch (number) {
+        case 1: return process.env.Opera
+            break;
+        case 2: return process.env.Edge
+            break;
+        case 3: return process.env.Firefox
+            break;
+        case 4: return process.env.Chrome
+            break;
+        case 5: return process.env.Safari
+            break;
+        case 6: return process.env.others
+            break;
+    }
+}
+function getDevice(number) {
+    switch (number) {
+        case 1: return process.env.tablet
+            break;
+        case 2: return process.env.mobile
+            break;
+        case 3: return process.env.desktop
+            break;
+        case 4: return process.env.others
+            break;
+    }
+}
+function groupBy(allClients, key) {
+    // array.reduce((objectsByKeyValue, obj) => {
+    //     const value = obj[key];
+    //     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+    //     return objectsByKeyValue;
+    // }, {});
+    var counts = allClients.reduce((p, c) => {
+        var name = c[key];
+        if (!p.hasOwnProperty(name)) {
+            p[name] = 0;
+        }
+        p[name]++;
+        return p;
+    }, {});
+    var countsExtended = Object.keys(counts).map(k => {
+        return { name: k, count: counts[k] };
+    });
+    return countsExtended;
+}
 io.on("connection", function (socket) {
-    console.log("Connecting:" + socket.id);
+    //console.log("Connecting:" + socket.id);
     for (var i = 0; i < allClients.length; i++) {
         console.log("model:" + allClients[i].socket_id);
 
     }
+    // if(check){
+    //     socket.emit('online', allClients.length);
+    //     var counts = allClients.reduce((p, c) => {
+    //         var name = c.page_url;
+    //         if (!p.hasOwnProperty(name)) {
+    //             p[name] = 0;
+    //         }
+    //         p[name]++;
+    //         return p;
+    //     }, {});
+    //     countsExtended = Object.keys(counts).map(k => {
+    //         return { name: k, count: counts[k] };
+    //     });
+    //     // socket.emit('locations', locations);
+    //     socket.emit('online_os', groupBy(allClients, 'os'));
+    //     socket.emit('online_dv', groupBy(allClients, 'device'));
+    //     socket.emit('online_bw', groupBy(allClients, 'browser'));
+    //     socket.emit('online_ac', groupBy(allClients, 'acquistion'));
+    //     socket.emit('online_page', countsExtended);
+    //     check = false;
+    // }
     setInterval(function () {
-        socket.emit('online', Object.keys(io.sockets.connected).length - 1);
-    }, 1000)
+        //socket.emit('online', Object.keys(io.sockets.connected).length - 1);
+        socket.emit('online', allClients.length);
+        var counts = allClients.reduce((p, c) => {
+            var name = c.page_url;
+            if (!p.hasOwnProperty(name)) {
+                p[name] = 0;
+            }
+            p[name]++;
+            return p;
+        }, {});
+        var countsExtended = Object.keys(counts).map(k => {
+            return { name: k, count: counts[k] };
+        });
+        //console.log(countsExtended)
+        // socket.emit('locations', locations);
+        socket.emit('online_os', groupBy(allClients, 'os'));
+        socket.emit('online_dv', groupBy(allClients, 'device'));
+        socket.emit('online_bw', groupBy(allClients, 'browser'));
+        socket.emit('online_ac', groupBy(allClients, 'acquistion'));
+        socket.emit('online_page', countsExtended);
+    }, 2000)
 
     socket.on("session_live", function () {
         if (io.sockets.adapter.rooms[process.env.ROOM]) {
@@ -81,13 +199,13 @@ io.on("connection", function (socket) {
             var length = io.sockets.adapter.rooms['rooms'].length - 1;
             io.sockets.emit("Total-user", length + ". This is server ");
         }
-
     })
+
     socket.on("disconnect", async function () {
         for (var i = 0; i < allClients.length; i++) {
-            console.log("c:" + allClients[i].socket_id);
+            // console.log("c:" + allClients[i].socket_id);
             if (allClients[i].socket_id == socket.id) {
-                console.log(true);
+                // console.log(true + ":" + allClients[i].socket_id );
                 var date = new Date(Date.now()).toISOString();
                 await session_page_db.update_session_page(date, allClients[i].session_page_id)
                 if (allClients.length == 1) {
@@ -100,6 +218,7 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
             else if (allClients[i].socket_id == socket.id && allClients.length == 1) {
+                // console.log(false + ":" + allClients[i].socket_id );
                 var date = new Date(Date.now()).toISOString();
                 var data_update = {
                     session_end_time: date,
@@ -109,20 +228,54 @@ io.on("connection", function (socket) {
                 allClients.splice(i, 1);
             }
         }
-        console.log("disconnected")
+        console.log(socket.id + ":disconnected")
     })
-    socket.on("client-send-session", function (data) {
-        console.log(data);
-        
+
+    socket.on("client-send-session", async function (data) {
+        var check_change_page = false;
         var json = JSON.parse(data);
-        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
+        var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0, page_url: '', device: '', os: '', browser: '', acquistion: '' };
         socketModel['session_id'] = json.session_id;
         socketModel['session_page_id'] = json.session_page_id;
         socketModel['socket_id'] = socket.id;
         socketModel['page_id'] = json.page_id;
-        allClients.push(socketModel);
-        socket.join(process.env.ROOM);
-        console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
+        socketModel['page_url'] = json.page_url;
+        socketModel['device'] = getDevice(json.device_type_id);
+        socketModel['os'] = getOS(json.operating_system_id);
+        socketModel['browser'] = getBrowser(json.browser_id);
+        socketModel['acquistion'] = getAquision(json.acquistion_id);
+        //console.log(json);
+        // if (allClients.length <= 0) {
+        //     allClients.push(socketModel);
+        //     console.log(allClients)
+        //     socket.join(process.env.ROOM);
+        // } else {
+        //     for (var i = 0; i < allClients.length; i++) {
+        //         if (allClients[i].session_id != json.session_id) {
+        //             // allClients.push(socketModel);
+        //         } else {
+        //             allClients[i].page_url = json.page_url;
+        //         }
+        //         console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
+        //     }
+        // }
+
+        for (var i = 0; i < allClients.length; i++) {
+            if (allClients[i].session_id != json.session_id) {
+
+            } else {
+                check_change_page = true;
+                allClients[i].socket_id = socket.id;
+                allClients[i].page_url = json.page_url;
+            }
+            console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
+        }
+        if (!check_change_page) {
+            allClients.push(socketModel);
+            console.log(allClients)
+            socket.join(process.env.ROOM);
+        }
+        console.log(allClients);
         io.sockets.emit("Server-send-data", data);
     })
 });

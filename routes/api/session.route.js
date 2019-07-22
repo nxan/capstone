@@ -136,6 +136,7 @@ router.post('/', [
         }
         //Get location by IPIFY api
         let ip = req.headers['x-forwarded-for'];
+        console.log('ip_session:' + ip)
         let api_Key = process.env.IPIFY_API_KEY;
         let location
         await axios.get(`https://geo.ipify.org/api/v1?apiKey=${api_Key}&ipAddress=${ip}`)

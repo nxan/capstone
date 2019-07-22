@@ -8,7 +8,6 @@ import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
-import { data } from './data';
 
 function lineData(series) {
   return {
@@ -163,7 +162,7 @@ class Acquisition extends React.Component {
         <div className="row">
           <ReactTable
             columns={columns}
-            data={data}
+            data={acquistion.acquistionTable}
             defaultPageSize={4}
             showPagination={false}
             className={`-striped -highlight ${

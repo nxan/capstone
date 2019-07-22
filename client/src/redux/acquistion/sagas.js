@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
     getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
-    getVisitorLastWeek,
+    getVisitorLastWeek, getAcquistionTable
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
@@ -14,6 +14,7 @@ export function* LOAD_ACQUISTION() {
     const acquistionDirect = yield call(getAcquistionDirect, shopUrl)
     const acquistionOther = yield call(getAcquistionOther, shopUrl)
     const visitorLastWeek = yield call(getVisitorLastWeek, shopUrl);
+    const acquistionTable = yield call(getAcquistionTable, shopUrl)
     yield put({
         type: 'acquistion/SET_STATE',
         payload: {
@@ -22,6 +23,7 @@ export function* LOAD_ACQUISTION() {
             acquistionSearch,
             acquistionDirect,
             acquistionOther,
+            acquistionTable
         },
     })
 }
