@@ -32,6 +32,39 @@ router.get('/count/session/:shop_url', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+/* ----- 
+  @route  Count api/stats/count/session/lastweek/:shop_url
+  @desc   Count sessions lastweek shop
+-----*/
+router.get('/count/session/lastweek/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_lastweek = []
+    for (var i = 1; i < 8; i++) {
+        var sql = 'select * from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_sessions_lastweek.unshift(result.length)
+        })
+    }
+    res.json(array_sessions_lastweek)
+});
+
+router.get('/count/session/month/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_month = []
+    for (var i = 1; i < 31; i++) {
+        var sql = 'select * from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_sessions_month.unshift(result.length)
+        })
+    }
+    res.json(array_sessions_month)
+});
 
 /* ----- 
   @route  Count api/stats/count/visitors/:shop_url
@@ -65,6 +98,20 @@ router.get('/count/newvisitors/:shop_url', async (req, res) => {
         let shop = await shop_db.getShop(shop_url)
         const count = await Session.count({
             where: { shop_id: shop.id, is_first_visit: true }
+        })
+        res.json(count)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get('/count/oldvisitors/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        const count = await Session.count({
+            where: { shop_id: shop.id, is_first_visit: false }
         })
         res.json(count)
     } catch (err) {
@@ -368,6 +415,27 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
         })
     }
     res.json(array_visitor_lastweek)
+});
+
+router.get('/user_browser/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        var array_usrbrowser = []
+        var sql = 'USE [shopify] SELECT COUNT(s.user_id) user_count, br.browser_name FROM [session] AS s LEFT JOIN [browser] br ON s.browser_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.browser_name ORDER BY user_count DESC'
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while(result.length>0){
+                array_usrbrowser.unshift(result.pop())
+            }
+        })
+            res.json(array_usrbrowser);
+        
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
 });
 
 module.exports = router;

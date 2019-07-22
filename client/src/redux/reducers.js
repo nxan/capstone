@@ -4,6 +4,7 @@ import user from './user/reducers'
 import menu from './menu/reducers'
 import settings from './settings/reducers'
 import acquistion from './acquistion/reducers'
+import audience from './audience/reducers'
 import profile from './profile/reducers'
 
 
@@ -14,5 +15,6 @@ export default history =>
         menu,
         settings,
         acquistion,
+        audience,
         profile
     })
