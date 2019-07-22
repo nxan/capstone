@@ -1,5 +1,9 @@
 const Session_page = require('../model/Session_page')
 const sequelize = require('sequelize')
+const Session = require('../model/Session')
+
+Session.hasMany(Session_page, { foreignKey: 'session_id', sourceKey: 'id' });
+Session_page.belongsTo(Session, { foreignKey: 'session_id', targetKey: 'id' });
 
 module.exports = {
     add_session_page: async (page_infor) => {
@@ -31,8 +35,39 @@ module.exports = {
     },
     update_session_page: async (data, session_page_id) => {
         var dataUpdate = {
-            end_time : data
+            end_time: data
         }
         await Session_page.update(dataUpdate, { where: { id: session_page_id } });
+    },
+    get_all_session_page: async function (shop_id) {
+        // const tempSQL = await sequelize.dialect.QueryGenerator.selectQuery('session', {
+        //     attributes: ['id'],
+        //     where: {
+        //         shop_id: shop_id,
+        //     }
+        // }).slice(0, -1); // to remove the ';' from the end of the SQL
+
+        var session_page = await Session_page.findAll({
+            include: [{
+                model: Session
+            }],
+            attributes: {
+                exclude: ['session_id'],
+
+            },
+            where: {
+                session_id: [sequelize.literal('(select id from session where shop_id = ' + shop_id + ') ')],
+
+            }
+        });
+        // const session_page = await Session_page.findAll({
+        //     include: [{
+        //         model: Session
+        //     }],
+        //     attributes: {
+        //         exclude: ['session_id']
+        //     }
+        // });
+        return session_page
     }
 }

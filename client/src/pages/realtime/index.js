@@ -6,9 +6,7 @@ import { Helmet } from 'react-helmet'
 import ChartistGraph from 'react-chartist'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import * as am4core from '@amcharts/amcharts4/core'
-import * as am4maps from '@amcharts/amcharts4/maps'
 // eslint-disable-next-line camelcase
-import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow"
 // eslint-disable-next-line camelcase
 import am4themes_animated from '@amcharts/amcharts4/themes/animated'
 
@@ -99,64 +97,6 @@ const columnsBrowser = [
   },
 ]
 
-function generateChart(locations){
-  console.log(locations);
-  const chart = am4core.create('chartdiv', am4maps.MapChart)
-  const title = chart.titles.create();
-  title.text = "[bold font-size: 20]Population of the World in 2011[/]\nsource: Gapminder";
-  title.textAlign = "middle";
-
-
-    // const mapData = [
-    //   // { "id": "AD", "name": "Afghanistan", "value": 32358260, "color": chart.colors.getIndex(0) },
-    //   //   { "id":"AL", "name":"Albania", "value":3215988, "color":chart.colors.getIndex(1) }
-      
-    // ];
-
-  // Add lat/long information to data
-  // for (let i = 0; i < locations.length; i += 1) {
-  //   // mapData[i].latitude = locations[i].lat;
-  //   // mapData[i].longitude = locations[i].lng;
-  //   // mapData.push()
-  // }
-
-  // Set map definition
-  // eslint-disable-next-line camelcase
-  chart.geodata = am4geodata_worldLow;
-
-  // Set projection
-  chart.projection = new am4maps.projections.Miller();
-
-  // Create map polygon series
-  const polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
-  polygonSeries.exclude = ["AQ"];
-  polygonSeries.useGeodata = true;
-  polygonSeries.nonScalingStroke = true;
-  polygonSeries.strokeWidth = 0.5;
-
-  const imageSeries = chart.series.push(new am4maps.MapImageSeries());
-  imageSeries.data = locations;
-  imageSeries.dataFields.value = "value";
-
-  const imageTemplate = imageSeries.mapImages.template;
-  imageTemplate.propertyFields.latitude = "latitude";
-  imageTemplate.propertyFields.longitude = "longitude";
-  imageTemplate.nonScaling = true
-
-  const circle = imageTemplate.createChild(am4core.Circle);
-  circle.fillOpacity = 0.7;
-  circle.propertyFields.fill = "color";
-  circle.tooltipText = "{name}: [bold]{value}[/]";
-
-  imageSeries.heatRules.push({
-    "target": circle,
-    "property": "radius",
-    "min": 4,
-    "max": 30,
-    "dataField": "value"
-  })
-  // this.chart = chart
-}
 
 class Realtime extends React.Component {
 
@@ -191,11 +131,8 @@ class Realtime extends React.Component {
     socket.on('online_ac', data => {
       this.setState({ ac: data })
     });
-    socket.on('locations', data => {
-      generateChart(data)
-      // this.setState({ locations: data })
-    });
     socket.on('online_page', data => {
+      console.log(data);
       this.setState({ page: data })
     });
 
@@ -306,24 +243,6 @@ class Realtime extends React.Component {
                       </TabPane>
                     </Tabs>
 
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </section>
-        <section className="row">
-          <div className="col-lg-12">
-            <section className="card">
-              <div className="card-header">
-                <div className="utils__title">
-                  <strong>Top Location</strong>
-                </div>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <div id="chartdiv" style={{ width: '100%', height: '500px' }} />
                   </div>
                 </div>
               </div>

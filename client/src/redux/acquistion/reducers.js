@@ -6,6 +6,7 @@ const initialState = {
     acquistionSearch: 0,
     acquistionDirect: 0,
     acquistionOther: 0,
+    acquistionTable: []
 }
 
 export default function userReducer(state = initialState, action) {

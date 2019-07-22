@@ -6,7 +6,8 @@ const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
 
 const shop_db = require('../../db/shop_db')
-
+const session_db = require('../../db/session_db')
+const session_page_db = require('../../db/session_page_db')
 
 function formatSeconds(seconds) {
     const date = new Date(1970, 0, 1);
@@ -370,4 +371,87 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
     res.json(array_visitor_lastweek)
 });
 
+/* ----- 
+  @route  GET /api/aqui/acquisition/:shop_url
+  @desc   Get all acquisition
+-----*/
+
+router.get('/acquisition/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var condition = { where: shop_id = shop.id }
+    var sessionData = await session_db.getAllSessionsByCondition(condition);
+    // var sessionPageData = await Session_page.sequelize.query('select * from session_page where session_id in (select session_id from session where shop_id =' + shop.id + ')',
+    //   { type: sequelize.QueryTypes.SELECT }).then(function (result) {
+    //     return result
+    //   })
+    var sessionPageData = await session_page_db.get_all_session_page(shop.id);
+    sessionData.sort();
+    var obj = {};
+
+    for (var i = 0, len = sessionData.length; i < len; i++) {
+        obj[sessionData[i]['user_id']] = sessionData[i];
+    }
+
+
+    var newSession = []
+    for (var key in obj) {
+        newSession.push(obj[key]);
+    }
+    var re_vis = newSession.filter(function (session) {
+        return session.is_first_visit == '0'
+    })
+
+    // var numBoys = sessionData.reduce(function (n, s) {
+    //   return n + (s.acquistion_id || 0) + 1;
+    // }, s);
+    var result_re_vis = re_vis.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var result_vis = newSession.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var session = sessionData.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+
+    var session_page = sessionPageData.reduce((acc, o) => (
+        acc[o.session.acquistion_id] = (acc[o.session.acquistion_id] || 0) + 1, acc), {});
+    var result = [];
+
+    var avg = await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id + ' group by acquistion_id',
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        return result
+        //res.json(formatSeconds(result[0].Avg))
+    })
+    for (var i = 1; i <= 4; i++) {
+        var model = {}
+        if (i == 1) {
+            model.acquistion = 'Social';
+        }
+        if (i == 2) {
+            model.acquistion = 'Search';
+        }
+        if (i == 3) {
+            model.acquistion = 'Direct';
+        }
+        if (i == 4) {
+            model.acquistion = 'Other';
+        }
+        model.visitor = result_vis['' + i]
+        model.revisitor = result_re_vis['' + i];
+        model.sessions = session['' + i];
+        model.bouncerate = 0;
+        model.pagessession = session['' + i] + session_page['' + i];
+        model.avgsessionduration = formatSeconds(avg[i - 1].Avg);
+        model.conversionrate = 0;
+        model.completion = 0;
+        model.value = 0;
+        result.push(model)
+    }
+    res.json(result);
+    //var result = groupArray(sessionData, 'acquistion_id');
+    // var resultCount = sessionData.reduce((acc, o) => (
+    //   acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    // //var result = groupArray(resultCount, 'acquistion_id');
+    // res.json(resultCount);
+});
 module.exports = router;
