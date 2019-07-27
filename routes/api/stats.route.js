@@ -8,7 +8,7 @@ const Session = require('../../model/Session');
 const shop_db = require('../../db/shop_db')
 const session_db = require('../../db/session_db')
 const session_page_db = require('../../db/session_page_db')
-
+const groupArray = require('group-array')
 function formatSeconds(seconds) {
     const date = new Date(1970, 0, 1);
     date.setSeconds(seconds);
@@ -423,22 +423,35 @@ router.get('/user_browser/:shop_url', async (req, res) => {
         const shop_url = req.params.shop_url
         let shop = await shop_db.getShop(shop_url)
         var array_usrbrowser = []
-        var sql = 'USE [shopify] SELECT COUNT(s.user_id) user_count, br.browser_name FROM [session] AS s LEFT JOIN [browser] br ON s.browser_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.browser_name ORDER BY user_count DESC'
+        var sql = 'USE [shopify] SELECT COUNT(s.user_id) user_count, br.browser_name FROM [session] AS s LEFT JOIN [browser] br ON s.browser_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.browser_name ORDER BY user_count DESC'
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
-            while(result.length>0){
+            while (result.length > 0) {
                 array_usrbrowser.unshift(result.pop())
             }
         })
-            res.json(array_usrbrowser);
-        
+        res.json(array_usrbrowser);
+
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server error');
     }
 });
 
+router.get('/test/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var condition = { where: shop_id = shop.id }
+    var sessionData = await session_page_db.getSessionPageWithCount(shop.id, 1);
+    // var session = sessionData.reduce((acc, o) => (
+    //     acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    // var result = groupArray(sessionData, 'acquistion_id');
+    // var session = sessionData.reduce((acc, o) => (
+    //     acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+
+    res.json(sessionData.length)
+})
 /* ----- 
   @route  GET /api/aqui/acquisition/:shop_url
   @desc   Get all acquisition
@@ -504,10 +517,11 @@ router.get('/acquisition/:shop_url', async (req, res) => {
         if (i == 4) {
             model.acquistion = 'Other';
         }
+        var bounce_num = await session_page_db.getSessionPageWithCount(shop.id, i);
         model.visitor = result_vis['' + i]
         model.revisitor = result_re_vis['' + i];
         model.sessions = session['' + i];
-        model.bouncerate = 0;
+        model.bouncerate = ((bounce_num.length / session['' + i]) * 100).toFixed(1) + '%';
         model.pagessession = session['' + i] + session_page['' + i];
         model.avgsessionduration = formatSeconds(avg[i - 1].Avg);
         model.conversionrate = 0;
