@@ -2,10 +2,9 @@ import React from 'react'
 import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import Modal from 'react-awesome-modal';
 import $ from 'jquery'
 import table from './data.json'
-
+import styles from './style.module.scss'
 
 @connect(({ video }) => ({ video }))
 class VideosList extends React.Component {
@@ -15,8 +14,9 @@ class VideosList extends React.Component {
     filterDropdownVisible: false,
     searchText: '',
     playerString: [],
+    events: [],
     filtered: false,
-    visibled: false,
+    // visibled: false,
   }
 
   componentDidMount() {
@@ -28,7 +28,7 @@ class VideosList extends React.Component {
     $('head').prepend(link);
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);
-
+    $('#close').click(this.closeModal());
   }
 
   onInputChange = e => {
@@ -72,43 +72,62 @@ class VideosList extends React.Component {
 
 
 
-  replay = (events) => {
+  replay = () => {
     /* eslint-disable no-new */
     /* eslint new-cap: ["error", { "newIsCap": false }] */
     /* global rrwebPlayer  */
     /* eslint no-undef: "error" */
+    const { events } = this.state
     new rrwebPlayer({
-      target: document.body,
-      data: { events }
+      target: document.getElementById('video'),
+      data: {
+        events,
+      }
     })
-    /* global replayer  */
-    /* eslint no-undef: "error" */
-    replayer.play()
+    /* eslint object-shorthand: "error" */
+    // replayer.addEventListener('finish', () => console.log('finish'));
+    // /* global replayer  */
+    // /* eslint no-undef: "error" */
+    // replayer.play()
+
   }
 
-  replayFormatSetter= () => {
+  replayFormatSetter = (events) => {
     let data = [];
-    const playerString = this.state
-    playerString.map((entry) => {
+    const { playerString } = this.state
+    console.log(playerString.length)
+    console.log(events.length);
+    // console.log(events)
+    // for (let i = 0; i < playerString.length / 1000; i += 1) {
+    //   data = data.concat(playerString[i]);
+    //   console.log(data);
+    // }
+    playerString.forEach((entry) => {
       data = data.concat(entry);
-      return data;
+
+      // return data;
     });
     // this.setState({ playerString: data })
-
-    this.replay(data);
+    this.setState({
+      //  visibled: true,
+      events: data
+    });
+    this.replay();
     // return playerString;
   }
 
+
   closeModal() {
+    // component.addEventListener('finish', () => console.log('finish'));
+    $('#container').hide();
     this.setState({
-      visibled: false
+      //  visibled: false,
+      events: []
     });
   }
 
   openModal(id) {
-    this.setState({
-      visibled: true
-    });
+
 
     fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -118,18 +137,21 @@ class VideosList extends React.Component {
         'Content-Type': 'application/json',
       }
     }).then((data) => data.json()).then((data) => {
+      console.log(data);
+      $('#container').show();
+      $('#close').show();
       this.setState({
-        visibled: true,
-        playerString: data.events
+        // visibled: true,
+        playerString: data
       });
-      return this.replayFormatSetter();
+      this.replayFormatSetter(data);
     }).catch(error => console.log(error));
 
 
   }
 
   render() {
-    const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
+    const { video, searchText, filtered, filterDropdownVisible } = this.state
     const videoData = Object.values(video.video);
 
     const columns = [
@@ -151,12 +173,14 @@ class VideosList extends React.Component {
         render: (text, record) => (
           <span>
             <Button onClick={() => this.openModal(record.id)}>Play</Button>
-            <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
-              <div>
-
-                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
-              </div>
-            </Modal>
+            <div id='close' className={styles.close}>X</div>
+            <div id="container" className={styles.container}>
+              <div id="video" className={styles.video} />
+              {/* <div id='container' className={styles.container}>
+                <div id="video" className={styles.video} />
+              </div> */}
+              <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+            </div>
           </span>
         ),
       },

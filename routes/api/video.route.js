@@ -62,14 +62,16 @@ router.get('/getOne/:video_id', async (req, res, next) => {
         if (err) {
             res.status(400).send('error on reading');
         } else {
+            var readData = [];
             readData = makePlayableString(data);
             // video.events = readData;
-            var data = {};
-            data.video_id = video.id;
-            data.session_id = video.session_id;
-            data.url_video = video.url_video;
-            data.events = readData
-            res.json(data);
+            // var data = {};
+            // data.video_id = video.id;
+            // data.session_id = video.session_id;
+            // data.url_video = video.url_video;
+            // data.events = readData
+            //console.log(readData)
+            res.send(readData);
         }
 
     })
