@@ -69,5 +69,18 @@ module.exports = {
         //     }
         // });
         return session_page
+    },
+    getSessionPageWithCount: async function (shop_id, acquistion_id) {
+        var session_page = await Session_page.findAll(
+            {
+                attributes:[sequelize.fn('COUNT', sequelize.col('session_id'))],
+                group: 'session_id',
+                where: {
+                    session_id: [sequelize.literal('(select id from session where shop_id = ' + shop_id + ' and acquistion_id=' + acquistion_id + ' ) ')],
+                },
+                having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
+            },
+        );
+        return session_page;
     }
 }

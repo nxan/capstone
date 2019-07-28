@@ -64,11 +64,11 @@ const routes = [
     component: loadable(() => import('pages/behaviors')),
     exact: true,
   },
-  // {
-  //   path: '/recording',
-  //   component: loadable(() => import('pages/recording')),
-  //   exact: true,
-  // },
+  {
+    path: '/recording',
+    component: loadable(() => import('pages/recording')),
+    exact: true,
+  },
   // AntDesign
   {
     path: '/antd',

@@ -32,9 +32,13 @@ module.exports = {
         // });
 
     },
-    getVideo: async (condition) => {
+    getVideo: async (video_id) => {
         return Video.findOne(
-            condition
+            {
+                where: {
+                    id: video_id
+                }
+            }
         ).then((result) => {
             return result
         })
