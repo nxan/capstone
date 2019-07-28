@@ -1,6 +1,7 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
 var send = 0; check_redirect = false;
 var set = false; var socket;
+var events = []
 $(document).ready(() => {
 
     // var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
@@ -95,7 +96,14 @@ function save_session(set) {
                     let infor_tab = {
                         session_id: json.session_id,
                         session_page_id: json.session_page_id,
-                        page_id: json.page_id
+                        page_id: json.page_id,
+                        shop: window.location.hostname,
+                        page_url: window.location.href,
+                        operating_system_id: getOS(),
+                        device_type_id: getDevice(),
+                        browser_id: getBrowser(),
+                        acquistion_id: getReference(),
+                        video: ''
                     }
                     console.log(infor_tab);
                     //  connect_socket(infor_tab);
@@ -113,7 +121,19 @@ function connect_socket(infor_tab) {
 
     socket = io.connect("https://3e431240.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
-
+    //const body = JSON.stringify(events);
+    
+    infor_tab.video = events;
+    events = [];
+    //console.log(infor_tab)
+    socket.emit('client_send_video', JSON.stringify(infor_tab));
+    // fetch('http://localhost:8889/api', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body,
+    // });
 }
 function getInfor() {
     var infor = {

@@ -6,8 +6,9 @@ const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
 
 const shop_db = require('../../db/shop_db')
-
-
+const session_db = require('../../db/session_db')
+const session_page_db = require('../../db/session_page_db')
+const groupArray = require('group-array')
 function formatSeconds(seconds) {
     const date = new Date(1970, 0, 1);
     date.setSeconds(seconds);
@@ -31,6 +32,39 @@ router.get('/count/session/:shop_url', async (req, res) => {
         console.log(err.message);
         res.status(500).send('Server error');
     }
+});
+/* ----- 
+  @route  Count api/stats/count/session/lastweek/:shop_url
+  @desc   Count sessions lastweek shop
+-----*/
+router.get('/count/session/lastweek/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_lastweek = []
+    for (var i = 1; i < 8; i++) {
+        var sql = 'select * from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_sessions_lastweek.unshift(result.length)
+        })
+    }
+    res.json(array_sessions_lastweek)
+});
+
+router.get('/count/session/month/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_month = []
+    for (var i = 1; i < 31; i++) {
+        var sql = 'select * from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_sessions_month.unshift(result.length)
+        })
+    }
+    res.json(array_sessions_month)
 });
 
 /* ----- 
@@ -65,6 +99,20 @@ router.get('/count/newvisitors/:shop_url', async (req, res) => {
         let shop = await shop_db.getShop(shop_url)
         const count = await Session.count({
             where: { shop_id: shop.id, is_first_visit: true }
+        })
+        res.json(count)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get('/count/oldvisitors/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        const count = await Session.count({
+            where: { shop_id: shop.id, is_first_visit: false }
         })
         res.json(count)
     } catch (err) {
@@ -370,4 +418,122 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
     res.json(array_visitor_lastweek)
 });
 
+router.get('/user_browser/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        var array_usrbrowser = []
+        var sql = 'USE [shopify] SELECT COUNT(s.user_id) user_count, br.browser_name FROM [session] AS s LEFT JOIN [browser] br ON s.browser_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.browser_name ORDER BY user_count DESC'
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while (result.length > 0) {
+                array_usrbrowser.unshift(result.pop())
+            }
+        })
+        res.json(array_usrbrowser);
+
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get('/test/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var condition = { where: shop_id = shop.id }
+    var sessionData = await session_page_db.getSessionPageWithCount(shop.id, 1);
+    // var session = sessionData.reduce((acc, o) => (
+    //     acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    // var result = groupArray(sessionData, 'acquistion_id');
+    // var session = sessionData.reduce((acc, o) => (
+    //     acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+
+    res.json(sessionData.length)
+})
+/* ----- 
+  @route  GET /api/aqui/acquisition/:shop_url
+  @desc   Get all acquisition
+-----*/
+
+router.get('/acquisition/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var condition = { where: shop_id = shop.id }
+    var sessionData = await session_db.getAllSessionsByCondition(condition);
+    // var sessionPageData = await Session_page.sequelize.query('select * from session_page where session_id in (select session_id from session where shop_id =' + shop.id + ')',
+    //   { type: sequelize.QueryTypes.SELECT }).then(function (result) {
+    //     return result
+    //   })
+    var sessionPageData = await session_page_db.get_all_session_page(shop.id);
+    sessionData.sort();
+    var obj = {};
+
+    for (var i = 0, len = sessionData.length; i < len; i++) {
+        obj[sessionData[i]['user_id']] = sessionData[i];
+    }
+
+
+    var newSession = []
+    for (var key in obj) {
+        newSession.push(obj[key]);
+    }
+    var re_vis = newSession.filter(function (session) {
+        return session.is_first_visit == '0'
+    })
+
+    // var numBoys = sessionData.reduce(function (n, s) {
+    //   return n + (s.acquistion_id || 0) + 1;
+    // }, s);
+    var result_re_vis = re_vis.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var result_vis = newSession.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var session = sessionData.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+
+    var session_page = sessionPageData.reduce((acc, o) => (
+        acc[o.session.acquistion_id] = (acc[o.session.acquistion_id] || 0) + 1, acc), {});
+    var result = [];
+
+    var avg = await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id + ' group by acquistion_id',
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        return result
+        //res.json(formatSeconds(result[0].Avg))
+    })
+    for (var i = 1; i <= 4; i++) {
+        var model = {}
+        if (i == 1) {
+            model.acquistion = 'Social';
+        }
+        if (i == 2) {
+            model.acquistion = 'Search';
+        }
+        if (i == 3) {
+            model.acquistion = 'Direct';
+        }
+        if (i == 4) {
+            model.acquistion = 'Other';
+        }
+        var bounce_num = await session_page_db.getSessionPageWithCount(shop.id, i);
+        model.visitor = result_vis['' + i]
+        model.revisitor = result_re_vis['' + i];
+        model.sessions = session['' + i];
+        model.bouncerate = ((bounce_num.length / session['' + i]) * 100).toFixed(1) + '%';
+        model.pagessession = session['' + i] + session_page['' + i];
+        model.avgsessionduration = formatSeconds(avg[i - 1].Avg);
+        model.conversionrate = 0;
+        model.completion = 0;
+        model.value = 0;
+        result.push(model)
+    }
+    res.json(result);
+    //var result = groupArray(sessionData, 'acquistion_id');
+    // var resultCount = sessionData.reduce((acc, o) => (
+    //   acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    // //var result = groupArray(resultCount, 'acquistion_id');
+    // res.json(resultCount);
+});
 module.exports = router;

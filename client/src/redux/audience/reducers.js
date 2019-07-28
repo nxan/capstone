@@ -1,12 +1,8 @@
 import actions from './actions'
 
 const initialState = {
-    visitorLastWeek: [],
-    acquistionSocial: 0,
-    acquistionSearch: 0,
-    acquistionDirect: 0,
-    acquistionOther: 0,
-    acquistionTable: []
+    sessionLastWeek: [],
+    usrbrowser:[],
 }
 
 export default function userReducer(state = initialState, action) {

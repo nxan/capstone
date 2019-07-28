@@ -1,6 +1,7 @@
 import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
+import { connect } from 'react-redux'
 import { Tabs, Table, Menu, Dropdown, Icon } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
@@ -8,9 +9,19 @@ import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 // import styles from './style.module.scss'
 
-const areaData = {
-  labels: [1, 2, 3, 4, 5, 6, 7, 8],
-  series: [[5, 9, 7, 8, 5, 3, 5, 4]],
+function areaData(series) {
+  return {
+    labels: [
+      '7 day ago',
+      '6 day ago',
+      '5 day ago',
+      '4 day ago',
+      '3 day ago',
+      '2 day ago',
+      'Yesterday',
+    ],
+    series: [series],
+  }
 }
 
 const menu = (
@@ -42,25 +53,6 @@ const colors = {
 
 const { TabPane } = Tabs
 
-const columns = [
-  {
-    title: 'Language',
-    dataIndex: 'language',
-    key: 'language',
-  },
-  {
-    title: 'Users',
-    dataIndex: 'users',
-    key: 'users',
-    width: '12%',
-  },
-  {
-    title: '% Users',
-    dataIndex: 'percentusers',
-    width: '30%',
-    key: 'percentusers',
-  },
-]
 const columns1 = [
   {
     title: 'Devices',
@@ -81,21 +73,6 @@ const columns1 = [
   },
 ]
 
-const data = [
-  {
-    key: 1,
-    language: 'vietnamese',
-    users: 60,
-    percentusers: '60%',
-  },
-  {
-    key: 2,
-    language: 'english',
-    users: 40,
-    percentusers: '40%',
-  },
-]
-
 const data2 = [
   {
     key: 1,
@@ -110,24 +87,49 @@ const data2 = [
     percentusers: '40%',
   },
 ]
+const columns = [
+  {
+    title: 'Browser',
+    dataIndex: 'browser',
+    key: 'browser',
+  },
+  {
+    title: 'Users',
+    dataIndex: 'users',
+    key: 'users',
+    width: '12%',
+  },
+  {
+    title: '% Users',
+    dataIndex: 'percentusers',
+    width: '30%',
+    key: 'percentusers',
+  },
+]
+
 const areaOptions = {
   low: 0,
   showArea: true,
   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
 }
 
-const pie = {
-  data: {
-    columns: [['Primary', 30], ['Success', 120]],
-    type: 'pie',
-  },
-  color: {
-    pattern: [colors.primary, colors.success],
-  },
-}
-
+@connect(({ audience }) => ({ audience }))
 class Audience extends React.Component {
   render() {
+    const { audience } = this.props
+    const pagesession = audience.session + audience.pageView
+    const x = parseInt(audience.olduser, 10)
+    const y = parseInt(audience.newuser, 10)
+    const pie = {
+      data: {
+        columns: [['old users', x], ['new users', y]],
+        type: 'pie',
+      },
+      color: {
+        pattern: [colors.primary, colors.success],
+      },
+    }
+
     return (
       <Authorize roles={['admin']}>
         <Helmet title="Audience" />
@@ -141,7 +143,7 @@ class Audience extends React.Component {
                   <br />
                   <Dropdown overlay={menu}>
                     <a className="ant-dropdown-link" href="#">
-                      User <Icon type="down" />
+                      Session <Icon type="down" />
                     </a>
                   </Dropdown>
                 </h5>
@@ -150,7 +152,7 @@ class Audience extends React.Component {
                 <div className="mb-5">
                   <ChartistGraph
                     className="height-300"
-                    data={areaData}
+                    data={areaData(audience.sessionLastWeek)}
                     options={areaOptions}
                     type="Line"
                   />
@@ -163,6 +165,63 @@ class Audience extends React.Component {
           <div className="col-md-2">
             <ChartCard2
               title="Users"
+              amount={audience.user}
+              chartProps={{
+                width: 180,
+                height: 107,
+                lines: [
+                  {
+                    values: [1, 1, 1, 1, 18, 20, 26],
+                    colors: {
+                      area: 'rgba(199, 228, 255, 0.5)',
+                      line: '#004585',
+                    },
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div className="col-md-2">
+            <ChartCard2
+              title="New Users"
+              amount={audience.newuser}
+              chartProps={{
+                width: 180,
+                height: 107,
+                lines: [
+                  {
+                    values: [1, 1, 1, 1, 18, 20, 26],
+                    colors: {
+                      area: 'rgba(199, 228, 255, 0.5)',
+                      line: '#004585',
+                    },
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div className="col-md-2">
+            <ChartCard2
+              title="Sessions"
+              amount={audience.session}
+              chartProps={{
+                width: 180,
+                height: 107,
+                lines: [
+                  {
+                    values: [1, 1, 1, 1, 18, 20, 26],
+                    colors: {
+                      area: 'rgba(199, 228, 255, 0.5)',
+                      line: '#004585',
+                    },
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div className="col-md-2">
+            <ChartCard2
+              title="Bounce Rate"
               amount="240"
               chartProps={{
                 width: 180,
@@ -181,8 +240,8 @@ class Audience extends React.Component {
           </div>
           <div className="col-md-2">
             <ChartCard2
-              title="Users"
-              amount="240"
+              title="Pageviews"
+              amount={audience.pageView}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -200,65 +259,8 @@ class Audience extends React.Component {
           </div>
           <div className="col-md-2">
             <ChartCard2
-              title="Users"
-              amount="240"
-              chartProps={{
-                width: 180,
-                height: 107,
-                lines: [
-                  {
-                    values: [1, 1, 1, 1, 18, 20, 26],
-                    colors: {
-                      area: 'rgba(199, 228, 255, 0.5)',
-                      line: '#004585',
-                    },
-                  },
-                ],
-              }}
-            />
-          </div>
-          <div className="col-md-2">
-            <ChartCard2
-              title="Users"
-              amount="240"
-              chartProps={{
-                width: 180,
-                height: 107,
-                lines: [
-                  {
-                    values: [1, 1, 1, 1, 18, 20, 26],
-                    colors: {
-                      area: 'rgba(199, 228, 255, 0.5)',
-                      line: '#004585',
-                    },
-                  },
-                ],
-              }}
-            />
-          </div>
-          <div className="col-md-2">
-            <ChartCard2
-              title="Users"
-              amount="240"
-              chartProps={{
-                width: 180,
-                height: 107,
-                lines: [
-                  {
-                    values: [1, 1, 1, 1, 18, 20, 26],
-                    colors: {
-                      area: 'rgba(199, 228, 255, 0.5)',
-                      line: '#004585',
-                    },
-                  },
-                ],
-              }}
-            />
-          </div>
-          <div className="col-md-2">
-            <ChartCard2
-              title="Users"
-              amount="240"
+              title="Page/Session"
+              amount={pagesession}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -278,8 +280,8 @@ class Audience extends React.Component {
         <div className="row">
           <div className="col-md-3">
             <ChartCard2
-              title="Users"
-              amount="240"
+              title="Avg. Session Duration"
+              amount={audience.avgDuration}
               chartProps={{
                 width: 180,
                 height: 107,
@@ -297,7 +299,7 @@ class Audience extends React.Component {
           </div>
           <div className="col-md-3">
             <ChartCard2
-              title="Users"
+              title="Number sessions per User"
               amount="240"
               chartProps={{
                 width: 180,
@@ -332,23 +334,19 @@ class Audience extends React.Component {
                 <div className="row">
                   <div className="col-lg-12">
                     <Tabs type="card">
-                      <TabPane tab="Language" key="1">
-                        <Table columns={columns} dataSource={data} />
-                      </TabPane>
-                      <TabPane tab="Devices" key="2">
+                      <TabPane tab="Devices" key="1">
                         <Table columns={columns1} dataSource={data2} />
                       </TabPane>
-                      <TabPane tab="Operating System" key="3">
-                        <Table columns={columns} dataSource={data} />
+                      <TabPane tab="Operating System" key="2">
+                        <Table columns={columns1} dataSource={data2} />
                       </TabPane>
-                      <TabPane tab="Mobile" key="4">
-                        <Table columns={columns} dataSource={data} />
+                      <TabPane tab="Mobile" key="3">
+                        <Table columns={columns1} dataSource={data2} />
                       </TabPane>
-                      <TabPane tab="Browser" key="5 ">
-                        <Table columns={columns} dataSource={data} />
+                      <TabPane tab="Browser" key="4">
+                        <Table columns={columns} dataSource={data2} />
                       </TabPane>
                     </Tabs>
-
                   </div>
                 </div>
               </div>

@@ -2,9 +2,9 @@ export const data = [
     {
         acquistion: "Social",
         visitor: 12,
-        revisitor: 12,
-        sessions: 12,
-        bouncerate: 12,
+        revisitor: 13,
+        sessions: 14,
+        bouncerate: 15,
         pagessession: 12,
         avgsessionduration: 12,
         conversionrate: 12,

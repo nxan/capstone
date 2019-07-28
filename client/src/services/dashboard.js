@@ -11,6 +11,17 @@ export async function getSession(shop_url) {
             console.log(err.response.statusText)
         })
 }
+// eslint-disable-next-line camelcase
+export async function getSessionsLastWeek(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/count/session/lastweek/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
 
 // eslint-disable-next-line camelcase
 export async function getVisitor(shop_url) {
@@ -133,6 +144,18 @@ export async function getDeviceDesktop(shop_url) {
 }
 
 // eslint-disable-next-line camelcase
+export async function getUserBrowser(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/user_browser/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
 export async function getDeviceMobile(shop_url) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/device/mobile/${shop_url}`
@@ -196,6 +219,17 @@ export async function getOldVisiorLastWeek(shop_url) {
 export async function getVisitorLastWeek(shop_url) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/visitor/lastweek/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+// eslint-disable-next-line camelcase
+export async function getAcquistionTable(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/acquisition/${shop_url}`
     return axios.get(url)
         .then((result) => {
             return result.data;

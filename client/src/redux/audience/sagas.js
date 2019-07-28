@@ -1,36 +1,41 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
-    getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
-    getVisitorLastWeek, getAcquistionTable
+    getSession, getSessionsLastWeek,getVisitor,getNewVisitors,getAvgDurationSession,
+    getTotalPageView, getOldVistor,getUserBrowser
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
 import * as selectors from './selectors';
 
-export function* LOAD_ACQUISTION() {
+
+export function* LOAD_AUDIENCE() {
     const shopUrl = yield select(selectors.shopUrl);
-    const acquistionSocial = yield call(getAcquistionSocial, shopUrl)
-    const acquistionSearch = yield call(getAcquistionSearch, shopUrl)
-    const acquistionDirect = yield call(getAcquistionDirect, shopUrl)
-    const acquistionOther = yield call(getAcquistionOther, shopUrl)
-    const visitorLastWeek = yield call(getVisitorLastWeek, shopUrl);
-    const acquistionTable = yield call(getAcquistionTable, shopUrl)
+    const session = yield call(getSession, shopUrl);
+    const sessionLastWeek = yield call(getSessionsLastWeek, shopUrl);
+    const user = yield call(getVisitor, shopUrl);
+    const newuser = yield call(getNewVisitors,shopUrl);
+    const avgDuration = yield call(getAvgDurationSession, shopUrl);
+    const pageView= yield call(getTotalPageView,shopUrl);
+    const olduser = yield call(getOldVistor,shopUrl);
+    const usrbrowser = yield call(getUserBrowser,shopUrl);
     yield put({
-        type: 'acquistion/SET_STATE',
+        type: 'audience/SET_STATE',
         payload: {
-            visitorLastWeek,
-            acquistionSocial,
-            acquistionSearch,
-            acquistionDirect,
-            acquistionOther,
-            acquistionTable
+            sessionLastWeek,
+            session,
+            user,
+            newuser,
+            avgDuration,
+            pageView,
+            olduser,
+            usrbrowser,
         },
     })
 }
 
 export function* LOAD_CURRENT_ACCOUNT() {
     yield put({
-        type: 'acquistion/SET_STATE',
+        type: 'audience/SET_STATE',
         payload: {
             loading: true,
         },
@@ -38,7 +43,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
     const response = yield call(loadProfile)
     if (response) {
         yield put({
-            type: 'acquistion/SET_STATE',
+            type: 'audience/SET_STATE',
             payload: {
                 name: response.user.name,
                 email: response.user.email,
@@ -49,11 +54,11 @@ export function* LOAD_CURRENT_ACCOUNT() {
             },
         })
         yield put({
-            type: 'acquistion/LOAD_ACQUISTION',
+            type: 'audience/LOAD_AUDIENCE',
         })
     }
     yield put({
-        type: 'acquistion/SET_STATE',
+        type: 'audience/SET_STATE',
         payload: {
             loading: false,
         },
@@ -62,7 +67,7 @@ export function* LOAD_CURRENT_ACCOUNT() {
 
 export default function* rootSaga() {
     yield all([
-        takeEvery(actions.LOAD_ACQUISTION, LOAD_ACQUISTION),
+        takeEvery(actions.LOAD_AUDIENCE, LOAD_AUDIENCE),
         takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
         LOAD_CURRENT_ACCOUNT(),
     ])

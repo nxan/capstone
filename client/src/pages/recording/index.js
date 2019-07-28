@@ -3,17 +3,32 @@ import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import Modal from 'react-awesome-modal';
+import $ from 'jquery'
 import table from './data.json'
 
+
 @connect(({ video }) => ({ video }))
-class ProductsList extends React.Component {
+class VideosList extends React.Component {
   state = {
     tableData: table.data,
     video: this.props,
     filterDropdownVisible: false,
     searchText: '',
+    playerString: [],
     filtered: false,
     visibled: false,
+  }
+
+  componentDidMount() {
+    let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>'
+    $('head').prepend(script);
+    script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>'
+    $('head').prepend(script);
+    let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
+    $('head').prepend(link);
+    link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
+    $('head').prepend(link);
+
   }
 
   onInputChange = e => {
@@ -53,10 +68,35 @@ class ProductsList extends React.Component {
     this.searchInput = node
   }
 
-  openModal() {
-    this.setState({
-      visibled: true
+
+
+
+
+  replay = (events) => {
+    /* eslint-disable no-new */
+    /* eslint new-cap: ["error", { "newIsCap": false }] */
+    /* global rrwebPlayer  */
+    /* eslint no-undef: "error" */
+    new rrwebPlayer({
+      target: document.body,
+      data: { events }
+    })
+    /* global replayer  */
+    /* eslint no-undef: "error" */
+    replayer.play()
+  }
+
+  replayFormatSetter= () => {
+    let data = [];
+    const playerString = this.state
+    playerString.map((entry) => {
+      data = data.concat(entry);
+      return data;
     });
+    // this.setState({ playerString: data })
+
+    this.replay(data);
+    // return playerString;
   }
 
   closeModal() {
@@ -65,20 +105,41 @@ class ProductsList extends React.Component {
     });
   }
 
+  openModal(id) {
+    this.setState({
+      visibled: true
+    });
+
+    fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then((data) => data.json()).then((data) => {
+      this.setState({
+        visibled: true,
+        playerString: data.events
+      });
+      return this.replayFormatSetter();
+    }).catch(error => console.log(error));
+
+
+  }
+
   render() {
     const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
     const videoData = Object.values(video.video);
-
-    console.log(videoData);
 
     const columns = [
       {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        render: text => (
+        render: (text) => (
           <a className="utils__link--underlined" href="javascript: void(0);">
-            {text.id}
+            {text}
           </a>
         ),
         sorter: (a, b) => a.id - b.id,
@@ -87,19 +148,12 @@ class ProductsList extends React.Component {
         title: 'Action',
         dataIndex: 'action',
         key: 'play',
-        render: () => (
+        render: (text, record) => (
           <span>
-            <Button onClick={() => this.openModal()}>Play</Button>
+            <Button onClick={() => this.openModal(record.id)}>Play</Button>
             <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
               <div>
-                <div id='videoImg'>
-                  <img id="frame" alt="Fake Child Education Site Label" />
-                  <div id="click" />
-                  <div id="mouse" />
-                </div>
-                <div id="video">
-                  <iframe id="spy_frame" title="myFrame">video</iframe>
-                </div>
+
                 <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
               </div>
             </Modal>
@@ -169,7 +223,7 @@ class ProductsList extends React.Component {
               className="utils__scrollTable"
               scroll={{ x: '100%' }}
               columns={columns}
-              dataSource={videoData[0].video}
+              dataSource={videoData[0]}
             />
           </div>
         </div>
@@ -178,4 +232,4 @@ class ProductsList extends React.Component {
   }
 }
 
-export default ProductsList
+export default VideosList
