@@ -16,15 +16,16 @@ app.use(cookieParser())
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var count = 0;
-
+var fs = require('fs');
+let fileName = 'events';
 var $ipsConnected = [];
 const PORT = process.env.PORT || 8888;
 http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const session_page_db = require('./db/session_page_db');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 db.authenticate()
     .then(() => console.log('Database connected....'))
@@ -113,7 +114,7 @@ io.on("connection", function (socket) {
     })
     socket.on("client-send-session", function (data) {
         console.log(data);
-        
+
         var json = JSON.parse(data);
         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0 };
         socketModel['session_id'] = json.session_id;
@@ -126,7 +127,18 @@ io.on("connection", function (socket) {
         io.sockets.emit("Server-send-data", data);
     })
 });
-
+app.post('/api', (req, res) => {
+    console.log(req.body)
+    fs.appendFile('recordings/' + fileName + '.json', JSON.stringify(req.body) + ',', (err) => {
+        if (err) {
+            console.log(err);
+            res.status(400).send('error on recording');
+        } else {
+            console.log('events updated');
+            res.send("event received");
+        }
+    })
+});
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
 // app.use('/api/profile', require('./routes/api/shop.route'));

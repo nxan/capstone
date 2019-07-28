@@ -3,11 +3,32 @@ var send = 0; check_redirect = false;
 var set = false; var socket;
 $(document).ready(() => {
 
-    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
-    $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    // var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
+    // $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided URL
+    var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
+    $('head').prepend(script);
+    $('head').prepend(link);
+    //loadAdditionJs()
     save_session()
+    setInterval(record, 500);
+   // record()
     setInterval(function () {
-        fetch('https://12e3e190.ngrok.io/api/session/save/resave', {
+        fetch('https://6e076938.ngrok.io/api/session/save/resave', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            // mode: 'cors', // no-cors, cors, *same-origin
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            console.log("OK")
+        })
+    }, 333333 * 1000);
+
+    setInterval(function () {
+        fetch('https://6e076938.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -24,13 +45,41 @@ document.addEventListener('visibilitychange', () => {
     save_session();
 
 });
-function loadAdditionJs() {
+function record() {
+    let events = []
 
+    rrweb.record({
+        emit(event) {
+            events.push(event);
+        },
+    });
+
+    function save() {
+        const body = JSON.stringify(events);
+        console.log(events);
+        events = [];
+        fetch('http://localhost:8888/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body,
+        });
+    }
+    setInterval(save, 0.2 * 10000);
+}
+function loadAdditionJs() {
+    var script = document.createElement("script");  // create a script DOM node
+    script.src = 'https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js';  // set its src to the provided URL
+
+    document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
+    $('head').append(link);
 }
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://12e3e190.ngrok.io/api/session', {
+            fetch('https://6e076938.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -49,20 +98,9 @@ function save_session(set) {
                         page_id: json.page_id
                     }
                     console.log(infor_tab);
-                    connect_socket(infor_tab);
+                    //  connect_socket(infor_tab);
+                    //record()
 
-                    // track event
-                    $(document).mousemove(function (event) {
-                        trackEvent(event, 1, json.session_id, json.session_page_id);
-                    });
-                    $(document).click(function (event) {
-                        trackEvent(event, 2, json.session_id, json.session_page_id)
-                    });
-
-                    $("select").on('change', function (i, e) {
-                        trackEvent(null, 4, json.session_id, json.session_page_id);
-                    });
-                    trackChangePage(json.session_id, json.session_page_id);
                     /*socket here
      
                     */
@@ -73,7 +111,7 @@ function save_session(set) {
 }
 function connect_socket(infor_tab) {
 
-    socket = io.connect("https://12e3e190.ngrok.io");
+    socket = io.connect("https://3e431240.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 
 }
@@ -142,121 +180,4 @@ function getBrowser() {
     else if (/MSIE|Trident/i.test(ua)) browser = 6 //'Internet Explorer'
     else browser = 7 //'Others'
     return browser;
-}
-function startRecord(data, session_id, session_page_id) {
-    //console.log("length of positions:" + data.length);
-    if (positions.length == 500) {
-        var scripts = "";
-        var script = document.getElementsByTagName("script");
-        for (var i = 0; i < script.length; i++) {
-            scripts += script[i].src + "\n";
-        }
-
-
-        // sendImage();
-        $.ajax({
-            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                positions: positions,
-                // web_page: document.getElementsByTagName('html')[0].innerHTML,
-                //web_page:"",
-                url: window.location.pathname == '/' ? '' : window.location.pathname,
-                shop: window.location.hostname,
-                session_id: session_id,
-                is_image: false,
-                session_page_id: session_page_id,
-                is_change_page: false,
-                is_redirect: check_redirect
-                //script: scripts
-                // script: ""
-            }),
-            complete: function () {
-                window.positions = [];
-            },
-            success: function (data) {
-                window.positions = [];
-            }
-        }).done(function () {
-            alert("second success");
-
-
-        })
-        window.positions = [];
-    }
-}
-function trackSelect() {
-    console.log($("select option:selected").text() + "-");
-    // var text = "1,2,3";
-    var text = [];
-    $("select option:selected").each(function (i, e) {
-        if ($(this).length) {
-            text.push($(this).val());
-        }
-    });
-    console.log(text);
-    return text;
-}
-function trackEvent(event, action, session_id, session_page_id) {
-    // get pageX, pageY of visitors
-    shopEvent["x"] = event == null ? 0 : event.pageX;
-    shopEvent["y"] = event == null ? 0 : event.pageY;
-    //action-1: mousemove, action-2: click, action-4: change select
-    if (action == 2 || action == 4) {
-        shopEvent["x"] = 0;
-        shopEvent["y"] = 0;
-        shopEvent['s'] = trackSelect();
-    }
-    shopEvent["scrollTop"] = $(window).scrollTop() == 0 ? 0 : $(window).scrollTop() + 60;
-    shopEvent["scrollLeft"] = $(window).scrollLeft() + 10;
-    shopEvent["action"] = action;
-    shopEvent["datetime"] = new Date().getTime() / 1000;
-    shopEvent["page"] = window.location.pathname;
-    //  shopEvent['s'] = trackSelect();
-    positions.push(shopEvent);
-    //console.log(positions);
-    shopEvent = {};
-    startRecord(positions, session_id, session_page_id);
-}
-function trackChangePage(session_id, session_page_id) {
-    var url_redirect;
-    $("body a").click(function () {
-        url_redirect = $(this).attr('href');
-        window.localLinkClicked = true;
-    });
-    $(window).bind("beforeunload", function () {
-        if (typeof url_redirect === 'undefined') {
-            url_redirect = window.location.pathname;
-            check_redirect = true
-        }
-        url_redirect = url_redirect == '/' ? '' : url_redirect;
-        $.ajax({
-            url: 'https://12e3e190.ngrok.io/api/video/sendVideo',
-            method: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                positions: positions,
-                url_redirect: url_redirect,
-                session_id: session_id,
-                session_page_id: session_page_id,
-                is_image: false,
-                is_change_page: true,
-                is_redirect: check_redirect,
-                url: window.location.pathname == '/' ? '' : window.location.pathname
-                //script: scripts
-                // script: ""
-            }),
-            complete: function () {
-                window.positions = [];
-            },
-            success: function (data) {
-                window.positions = [];
-            }
-        }).done(function () {
-            alert("second success");
-
-
-        })
-    })
 }
