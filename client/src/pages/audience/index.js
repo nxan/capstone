@@ -2,7 +2,7 @@ import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import { connect } from 'react-redux'
-import { Tabs, Table, Menu, Dropdown, Icon } from 'antd'
+import { Tabs, Table , Select } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
@@ -12,37 +12,61 @@ import C3Chart from 'react-c3js'
 function areaData(series) {
   return {
     labels: [
-      '7 day ago',
-      '6 day ago',
-      '5 day ago',
-      '4 day ago',
-      '3 day ago',
-      '2 day ago',
+      '30',
+      '29',
+      '28',
+      '27',
+      '26',
+      '25',
+      '24',
+      '23',
+      '22',
+      '21',
+      '20',
+      '19',
+      '18',
+      '17',
+      '16',
+      '15',
+      '14',
+      '13',
+      '12',
+      '11',
+      '10',
+      '9',
+      '8',
+      '7',
+      '6',
+      '5',
+      '4',
+      '3',
+      '2 days ago',
       'Yesterday',
     ],
     series: [series],
   }
 }
 
-const menu = (
-  <Menu>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-        1st menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-        2nd menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-        3rd menu item
-      </a>
-    </Menu.Item>
-  </Menu>
-)
+// const menu = (
+//   <Menu>
+//     <Menu.Item>
+//       <a target="_blank" rel="noopener noreferrer" href="javascript:void(0)">
+//         last Week
+//       </a>
+//     </Menu.Item>
+//     <Menu.Item>
+//       <a target="_blank" rel="noopener noreferrer" href=" javascript:void(0)">
+//         Last Month
+//       </a>
+//     </Menu.Item>
+//   </Menu>
+// )
+
+const { Option } = Select;
+
+function handleChange(value) {
+  console.log(`selected ${value}`);
+}
 
 const colors = {
   primary: '#01a8fe',
@@ -53,57 +77,63 @@ const colors = {
 
 const { TabPane } = Tabs
 
-const columns1 = [
+const columnsdev = [
   {
     title: 'Devices',
-    dataIndex: 'devices',
-    key: 'devices',
+    dataIndex: 'device_type_name',
+    key: 'device_type_name',
   },
   {
     title: 'Users',
-    dataIndex: 'users',
-    key: 'users',
+    dataIndex: 'totalCount',
+    key: 'totalCount',
     width: '12%',
   },
   {
     title: '% Users',
-    dataIndex: 'percentusers',
+    dataIndex: 'percentuser',
     width: '30%',
-    key: 'percentusers',
+    key: 'percentuser',
   },
 ]
 
-const data2 = [
+const columnsOS = [
   {
-    key: 1,
-    devices: 'laptop',
-    users: 60,
-    percentusers: '60%',
-  },
-  {
-    key: 2,
-    devices: 'PC',
-    users: 40,
-    percentusers: '40%',
-  },
-]
-const columns = [
-  {
-    title: 'Browser',
-    dataIndex: 'browser',
-    key: 'browser',
+    title: 'Operating System',
+    dataIndex: 'os_name',
+    key: 'os_name',
   },
   {
     title: 'Users',
-    dataIndex: 'users',
-    key: 'users',
+    dataIndex: 'totalCount',
+    key: 'totalCount',
     width: '12%',
   },
   {
     title: '% Users',
-    dataIndex: 'percentusers',
+    dataIndex: 'percentuser',
     width: '30%',
-    key: 'percentusers',
+    key: 'percentuser',
+  },
+]
+
+const columnsbrowser = [
+  {
+    title: 'Browser',
+    dataIndex: 'browser_name',
+    key: 'browser_name',
+  },
+  {
+    title: 'Users',
+    dataIndex: 'totalCount',
+    key: 'totalCount',
+    width: '12%',
+  },
+  {
+    title: '% Users',
+    dataIndex: 'percentuser',
+    width: '30%',
+    key: 'percentuser',
   },
 ]
 
@@ -141,18 +171,22 @@ class Audience extends React.Component {
                   <strong>Overview</strong>
                   <br />
                   <br />
-                  <Dropdown overlay={menu}>
-                    <a className="ant-dropdown-link" href="#">
+                  {/* <Dropdown overlay={menu}>
+                    <a className="ant-dropdown-link" href="javascript:void(0)">
                       Session <Icon type="down" />
                     </a>
-                  </Dropdown>
+                  </Dropdown> */}
+                  <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChange}>
+                    <Option value="jack">Last Month</Option>
+                    <Option value="lucy">Last Week</Option>
+                  </Select>
                 </h5>
               </div>
               <div className="card-body">
                 <div className="mb-5">
                   <ChartistGraph
                     className="height-300"
-                    data={areaData(audience.sessionLastWeek)}
+                    data={areaData(audience.sessionLastMonth)}
                     options={areaOptions}
                     type="Line"
                   />
@@ -335,16 +369,13 @@ class Audience extends React.Component {
                   <div className="col-lg-12">
                     <Tabs type="card">
                       <TabPane tab="Devices" key="1">
-                        <Table columns={columns1} dataSource={data2} />
+                        <Table columns={columnsdev} dataSource={audience.usrdev} />
                       </TabPane>
                       <TabPane tab="Operating System" key="2">
-                        <Table columns={columns1} dataSource={data2} />
+                        <Table columns={columnsOS} dataSource={audience.usrOS} />
                       </TabPane>
-                      <TabPane tab="Mobile" key="3">
-                        <Table columns={columns1} dataSource={data2} />
-                      </TabPane>
-                      <TabPane tab="Browser" key="4">
-                        <Table columns={columns} dataSource={data2} />
+                      <TabPane tab="Browser" key="3">
+                        <Table columns={columnsbrowser} dataSource={audience.usrbrowser} />
                       </TabPane>
                     </Tabs>
                   </div>

@@ -52,6 +52,21 @@ router.get('/count/session/lastweek/:shop_url', async (req, res) => {
     res.json(array_sessions_lastweek)
 });
 
+router.get('/count/session/lastmonth/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_lastmonth = []
+    for (var i = 1; i < 30; i++) {
+        var sql = 'select * from [session] where DATEDIFF(DAY, session_start_time, GETDATE()) = ' + i + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_sessions_lastmonth.unshift(result.length)
+        })
+    }
+    res.json(array_sessions_lastmonth)
+});
+
 router.get('/count/session/month/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
@@ -423,7 +438,7 @@ router.get('/user_browser/:shop_url', async (req, res) => {
         const shop_url = req.params.shop_url
         let shop = await shop_db.getShop(shop_url)
         var array_usrbrowser = []
-        var sql = 'USE [shopify] SELECT COUNT(s.user_id) user_count, br.browser_name FROM [session] AS s LEFT JOIN [browser] br ON s.browser_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.browser_name ORDER BY user_count DESC'
+        var sql = 'USE [shopify] SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = '+shop.id+')AS float) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.id, br.browser_name'
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
@@ -439,6 +454,47 @@ router.get('/user_browser/:shop_url', async (req, res) => {
     }
 });
 
+router.get('/user_device/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        var array_usrdevice = []
+        var sql = 'USE [shopify] SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = '+shop.id+')AS float) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.id, br.device_type_name'
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while(result.length>0){
+                array_usrdevice.unshift(result.pop())
+            }
+        })
+            res.json(array_usrdevice);
+        
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get('/user_OS/:shop_url', async (req, res) => {
+    try {
+        const shop_url = req.params.shop_url
+        let shop = await shop_db.getShop(shop_url)
+        var array_usrOS = []
+        var sql = 'USE [shopify] SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = '+shop.id+')AS float) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = '+shop.id+' GROUP BY br.id, br.os_name'
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while(result.length>0){
+                array_usrOS.unshift(result.pop())
+            }
+        })
+            res.json(array_usrOS);
+        
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
 /* ----- 
   @route  GET /api/aqui/acquisition/:shop_url
   @desc   Get all acquisition
