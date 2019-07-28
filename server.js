@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser')
 var allClients = [];
 var onlines = [];
 const session_db = require('./db/session_db');
+const video_db = require('./db/video_db');
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
@@ -37,7 +38,7 @@ const
     , blobService = azureStorage.createBlobService('videoshopifystorage', '6cNKqrtKmKImlaq5GPH7GLDHBmE5C1roXWcfdu1clo4cbiELtm0jtw7dvflB7ILQSKb0fDimSQ9T37Sqi8l9xg==')
 
     , getStream = require('into-stream')
-    , containerName = 'video'
+    , containerName = 'videoshopify'
     ;
 
 db.authenticate()
@@ -263,27 +264,41 @@ io.on("connection", function (socket) {
             }
 
         }
+        //console.log(socket.adapter.rooms)
+
+
+        //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
-            if (io.sockets.adapter.rooms[onlines[i].session_id].length == 1) {
+            if (onlines[i].socket_id == socket.id) {
+                var videoFields = {};
+                videoFields.session_id = onlines[i].session_id;
+                videoFields.url_video = onlines[i].session_id;
+                var video = await video_db.addVideo(videoFields);
                 var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
                 var buffer = bufferFile(filename);
                 const
-                    blobName = onlines[i].session_id + '.json'
+                    blobName = video.id + '.json'
                     , stream = getStream(buffer)
                     , streamLength = buffer.length
                     ;
                 blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-
                     if (!err) {
-                        console.log("upload file success")
+                        console.log("upload file success");
+                       
+                    }
+                    else {
+                        console.log(err);
                     }
                 });
-            }
-            if (onlines[i].socket_id == socket.id) {
+                var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+                fs.unlinkSync(filePath);
                 onlines.splice(i, 1);
-                socket.leave(onlines[i].socket_id)
             }
+
+
+            //socket.leave(onlines[i].socket_id)
         }
+
         console.log(socket.id + ":disconnected")
     })
 
@@ -295,6 +310,7 @@ io.on("connection", function (socket) {
         socketModel['session_page_id'] = json.session_page_id;
         socketModel['socket_id'] = socket.id;
         socketModel['page_id'] = json.page_id;
+        socketModel['shop'] = json.shop;
         socketModel['page_url'] = json.page_url;
         socketModel['device'] = getDevice(json.device_type_id);
         socketModel['os'] = getOS(json.operating_system_id);

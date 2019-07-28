@@ -3,8 +3,9 @@ import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import $ from 'jquery'
+import { Link } from 'react-router-dom'
 import table from './data.json'
-import styles from './style.module.scss'
+
 
 @connect(({ video }) => ({ video }))
 class VideosList extends React.Component {
@@ -28,7 +29,22 @@ class VideosList extends React.Component {
     $('head').prepend(link);
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);
-    $('#close').click(this.closeModal());
+    $('#close').click(function hideDiv() {
+      /* eslint-disable no-new */
+      /* eslint new-cap: ["error", { "newIsCap": false }] */
+      /* global rrwebPlayer  */
+      /* eslint no-undef: "error" */
+      // const events = [[], []]
+      // new rrwebPlayer({
+      //   target: document.getElementById('video'),
+      //   data: {
+      //     events,
+      //   }
+      // })
+      // $('#container').hide();
+      // $('#video').hide();
+      // $('#video').html('');
+    });
   }
 
   onInputChange = e => {
@@ -68,16 +84,13 @@ class VideosList extends React.Component {
     this.searchInput = node
   }
 
-
-
-
-
   replay = () => {
     /* eslint-disable no-new */
     /* eslint new-cap: ["error", { "newIsCap": false }] */
     /* global rrwebPlayer  */
     /* eslint no-undef: "error" */
     const { events } = this.state
+    console.log(events.length)
     new rrwebPlayer({
       target: document.getElementById('video'),
       data: {
@@ -112,6 +125,11 @@ class VideosList extends React.Component {
       //  visibled: true,
       events: data
     });
+    // return <Redirect to={{
+    //   pathname: '/replay',
+    //   state: { playerString: data }
+    // }}
+    // />
     this.replay();
     // return playerString;
   }
@@ -127,8 +145,6 @@ class VideosList extends React.Component {
   }
 
   openModal(id) {
-
-
     fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       credentials: 'include',
@@ -137,7 +153,6 @@ class VideosList extends React.Component {
         'Content-Type': 'application/json',
       }
     }).then((data) => data.json()).then((data) => {
-      console.log(data);
       $('#container').show();
       $('#close').show();
       this.setState({
@@ -172,15 +187,13 @@ class VideosList extends React.Component {
         key: 'play',
         render: (text, record) => (
           <span>
-            <Button onClick={() => this.openModal(record.id)}>Play</Button>
-            <div id='close' className={styles.close}>X</div>
-            <div id="container" className={styles.container}>
-              <div id="video" className={styles.video} />
-              {/* <div id='container' className={styles.container}>
-                <div id="video" className={styles.video} />
-              </div> */}
-              <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
-            </div>
+            <Link to={{
+              pathname: '/recording/replay',
+              id: record.id
+            }}
+            >
+              <Button>Play</Button>
+            </Link>
           </span>
         ),
       },

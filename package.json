@@ -9,6 +9,11 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"yarn run client\""
   },
+  "nodemonConfig": {
+    "ignore": [
+      "recordings/*"
+    ]
+  },
   "author": "nxan",
   "license": "MIT",
   "dependencies": {
