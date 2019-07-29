@@ -50,29 +50,34 @@ router.get('/getOne/:video_id', async (req, res, next) => {
     // var condition = { where: id = req.params.video_id }
     // console.log(req.params.video_id)
     var video = await video_db.getVideo(req.params.video_id);
-    // request.get('https://videoshopify.blob.core.windows.net/' + 'video/' + video.session_id + '.json', function (error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //         var csv = body;
-    //         readData = makePlayableString(csv);
+    var url = 'https://videoshopifystorage.blob.core.windows.net/videoshopify/' + req.params.video_id + '.json';
+    request.get(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var csv = body;
+            readData = makePlayableString(csv);
+            res.send(readData);
+        }
+        else {
+            res.send(404)
+        }
+    });
+    // fs.readFile('recordings/capstonefpt.myshopify.com' + '/' + video.id + '.json', (err, data) => {
+    //     if (err) {
+    //         res.status(400).send('error on reading');
+    //     } else {
+    //         var readData = [];
+    //         readData = makePlayableString(data);
+    //         // video.events = readData;
+    //         // var data = {};
+    //         // data.video_id = video.id;
+    //         // data.session_id = video.session_id;
+    //         // data.url_video = video.url_video;
+    //         // data.events = readData
+    //         //console.log(readData)
     //         res.send(readData);
     //     }
 
-    // });
-    fs.readFile('recordings/capstonefpt.myshopify.com' + '/' + video.id + '.json', (err, data) => {
-        if (err) {
-            res.status(400).send('error on reading');
-        } else {
-            readData = makePlayableString(data);
-            // video.events = readData;
-            var data = {};
-            data.video_id = video.id;
-            data.session_id = video.session_id;
-            data.url_video = video.url_video;
-            data.events = readData
-            res.json(data);
-        }
-
-    })
+    // })
 
 
 });

@@ -13,7 +13,7 @@ $(document).ready(() => {
     //loadAdditionJs()
     save_session()
     setInterval(record, 500);
-   // record()
+    // record()
     setInterval(function () {
         fetch('https://6e076938.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -122,7 +122,7 @@ function connect_socket(infor_tab) {
     socket = io.connect("https://3e431240.ngrok.io");
     socket.emit("client-send-session", JSON.stringify(infor_tab));
     //const body = JSON.stringify(events);
-    
+
     infor_tab.video = events;
     events = [];
     //console.log(infor_tab)

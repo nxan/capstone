@@ -24,6 +24,18 @@ export async function getSessionsLastWeek(shop_url) {
 }
 
 // eslint-disable-next-line camelcase
+export async function getSessionsLastMonth(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/count/session/lastmonth/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
 export async function getVisitor(shop_url) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/visitors/${shop_url}`
@@ -147,6 +159,30 @@ export async function getDeviceDesktop(shop_url) {
 export async function getUserBrowser(shop_url) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/user_browser/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
+export async function getUserDevice(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/user_device/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
+export async function getUserOS(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/user_OS/${shop_url}`
     return axios.get(url)
         .then((result) => {
             return result.data;

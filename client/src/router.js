@@ -69,6 +69,11 @@ const routes = [
     component: loadable(() => import('pages/recording')),
     exact: true,
   },
+  {
+    path: '/recording/replay',
+    component: loadable(() => import('pages/recording/replay')),
+    exact: true,
+  },
   // AntDesign
   {
     path: '/antd',

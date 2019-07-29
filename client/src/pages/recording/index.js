@@ -2,8 +2,8 @@ import React from 'react'
 import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import Modal from 'react-awesome-modal';
 import $ from 'jquery'
+import { Link } from 'react-router-dom'
 import table from './data.json'
 
 
@@ -16,7 +16,7 @@ class VideosList extends React.Component {
     searchText: '',
     // playerString: [],
     filtered: false,
-    visibled: false,
+    // visibled: false,
   }
 
   componentDidMount() {
@@ -28,7 +28,22 @@ class VideosList extends React.Component {
     $('head').prepend(link);
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);
-
+    $('#close').click(function hideDiv() {
+      /* eslint-disable no-new */
+      /* eslint new-cap: ["error", { "newIsCap": false }] */
+      /* global rrwebPlayer  */
+      /* eslint no-undef: "error" */
+      // const events = [[], []]
+      // new rrwebPlayer({
+      //   target: document.getElementById('video'),
+      //   data: {
+      //     events,
+      //   }
+      // })
+      // $('#container').hide();
+      // $('#video').hide();
+      // $('#video').html('');
+    });
   }
 
   onInputChange = e => {
@@ -68,69 +83,91 @@ class VideosList extends React.Component {
     this.searchInput = node
   }
 
-
-
-
-
-  replay = (events) => {
+  replay = () => {
     /* eslint-disable no-new */
     /* eslint new-cap: ["error", { "newIsCap": false }] */
     /* global rrwebPlayer  */
     /* eslint no-undef: "error" */
+    const { events } = this.state
+    console.log(events.length)
     new rrwebPlayer({
-      target: document.body,
-      data: { events }
+      target: document.getElementById('video'),
+      data: {
+        events,
+      }
     })
-    /* global replayer  */
-    /* eslint no-undef: "error" */
-    replayer.play()
+    /* eslint object-shorthand: "error" */
+    // replayer.addEventListener('finish', () => console.log('finish'));
+    // /* global replayer  */
+    // /* eslint no-undef: "error" */
+    // replayer.play()
+
   }
 
   replayFormatSetter = () => {
     let data = [];
-    const playerString = this.state
-    playerString.map((entry) => {
+    const { playerString } = this.state
+    console.log(playerString.length)
+    console.log(events.length);
+    // console.log(events)
+    // for (let i = 0; i < playerString.length / 1000; i += 1) {
+    //   data = data.concat(playerString[i]);
+    //   console.log(data);
+    // }
+    playerString.forEach((entry) => {
       data = data.concat(entry);
-      return data;
+
+      // return data;
     });
     // this.setState({ playerString: data })
-
-    this.replay(data);
+    this.setState({
+      //  visibled: true,
+      events: data
+    });
+    // return <Redirect to={{
+    //   pathname: '/replay',
+    //   state: { playerString: data }
+    // }}
+    // />
+    this.replay();
     // return playerString;
   }
 
+
   closeModal() {
+    // component.addEventListener('finish', () => console.log('finish'));
+    $('#container').hide();
     this.setState({
-      visibled: false
+      //  visibled: false,
+      events: []
     });
   }
 
-  openModal(id) {
+  openModal() {
     this.setState({
       visibled: true
     });
 
-    fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((data) => data.json()).then((data) => {
-      this.setState({
-        visibled: true,
-        // playerString: data.events
-      });
-      console.log(data)
-      return this.replayFormatSetter();
-    }).catch(error => console.log(error));
+    // fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
+    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    //   credentials: 'include',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   }
+    // }).then((data) => data.json()).then((data) => {
+    //   this.setState({
+    //     visibled: true,
+    //     playerString: data.events
+    //   });
+    //   return this.replayFormatSetter();
+    // }).catch(error => console.log(error));
 
 
   }
 
   render() {
-    const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
+    const { video, searchText, filtered, filterDropdownVisible } = this.state
     const videoData = Object.values(video.video);
 
     const columns = [
@@ -151,13 +188,13 @@ class VideosList extends React.Component {
         key: 'play',
         render: (text, record) => (
           <span>
-            <Button onClick={() => this.openModal(record.id)}>Play</Button>
-            <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
-              <div>
-
-                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
-              </div>
-            </Modal>
+            <Link to={{
+              pathname: '/recording/replay',
+              id: record.id
+            }}
+            >
+              <Button>Play</Button>
+            </Link>
           </span>
         ),
       },
