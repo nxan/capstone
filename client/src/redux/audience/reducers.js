@@ -3,6 +3,10 @@ import actions from './actions'
 const initialState = {
     sessionLastWeek: [],
     usrbrowser:[],
+    usrdev:[],
+    usrOS:[],
+    sessionLastMonth:[],
+
 }
 
 export default function userReducer(state = initialState, action) {

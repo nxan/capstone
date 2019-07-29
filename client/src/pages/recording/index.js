@@ -14,8 +14,7 @@ class VideosList extends React.Component {
     video: this.props,
     filterDropdownVisible: false,
     searchText: '',
-    playerString: [],
-    events: [],
+    // playerString: [],
     filtered: false,
     // visibled: false,
   }
@@ -144,23 +143,25 @@ class VideosList extends React.Component {
     });
   }
 
-  openModal(id) {
-    fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((data) => data.json()).then((data) => {
-      $('#container').show();
-      $('#close').show();
-      this.setState({
-        // visibled: true,
-        playerString: data
-      });
-      this.replayFormatSetter(data);
-    }).catch(error => console.log(error));
+  openModal() {
+    this.setState({
+      visibled: true
+    });
+
+    // fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
+    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    //   credentials: 'include',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   }
+    // }).then((data) => data.json()).then((data) => {
+    //   this.setState({
+    //     visibled: true,
+    //     playerString: data.events
+    //   });
+    //   return this.replayFormatSetter();
+    // }).catch(error => console.log(error));
 
 
   }

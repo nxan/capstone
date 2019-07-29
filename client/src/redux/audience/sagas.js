@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
     getSession, getSessionsLastWeek,getVisitor,getNewVisitors,getAvgDurationSession,
-    getTotalPageView, getOldVistor,getUserBrowser
+    getTotalPageView, getOldVistor,getUserBrowser,getUserDevice,getUserOS,getSessionsLastMonth
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
@@ -18,6 +18,10 @@ export function* LOAD_AUDIENCE() {
     const pageView= yield call(getTotalPageView,shopUrl);
     const olduser = yield call(getOldVistor,shopUrl);
     const usrbrowser = yield call(getUserBrowser,shopUrl);
+    const usrdev = yield call(getUserDevice,shopUrl);
+    const usrOS = yield call(getUserOS,shopUrl);
+    const sessionLastMonth = yield call(getSessionsLastMonth,shopUrl);
+
     yield put({
         type: 'audience/SET_STATE',
         payload: {
@@ -29,6 +33,9 @@ export function* LOAD_AUDIENCE() {
             pageView,
             olduser,
             usrbrowser,
+            usrdev,
+            usrOS,
+            sessionLastMonth,
         },
     })
 }
