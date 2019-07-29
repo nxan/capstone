@@ -14,7 +14,7 @@ class VideosList extends React.Component {
     video: this.props,
     filterDropdownVisible: false,
     searchText: '',
-    playerString: [],
+    // playerString: [],
     filtered: false,
     visibled: false,
   }
@@ -55,7 +55,7 @@ class VideosList extends React.Component {
                   .split(reg)
                   .map((text, i) =>
                     i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text,
-                  )}
+                )}
               </span>
             ),
           }
@@ -86,7 +86,7 @@ class VideosList extends React.Component {
     replayer.play()
   }
 
-  replayFormatSetter= () => {
+  replayFormatSetter = () => {
     let data = [];
     const playerString = this.state
     playerString.map((entry) => {
@@ -120,8 +120,9 @@ class VideosList extends React.Component {
     }).then((data) => data.json()).then((data) => {
       this.setState({
         visibled: true,
-        playerString: data.events
+        // playerString: data.events
       });
+      console.log(data)
       return this.replayFormatSetter();
     }).catch(error => console.log(error));
 

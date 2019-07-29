@@ -13,7 +13,6 @@ const session_db = require('./db/session_db');
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
-const fs = require('fs');
 const axios = require('axios')
 var http = require("http").Server(app);
 var io = require("socket.io")(http);

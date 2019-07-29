@@ -16,9 +16,6 @@ const { check, validationResult } = require('express-validator/check');
 router.post(
   '/',
   [
-    check('name', 'Name is required')
-      .not()
-      .isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
@@ -74,7 +71,7 @@ router.post(
   }
 );
 router.put(
-  '/', async (req, res) => {  
+  '/', async (req, res) => {
 
     const { name, password, email } = req.body;
     console.log(name)
@@ -84,15 +81,15 @@ router.put(
           email: email
         },
       });
-      if(name != null){
+      if (name != null) {
         user.name = name
       }
-      if(password != null){
+      if (password != null) {
         user.password = password
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
-      }    
-      
+      }
+
       await user.save();
 
       const payload = {
