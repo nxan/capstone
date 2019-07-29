@@ -176,9 +176,9 @@ class Audience extends React.Component {
                       Session <Icon type="down" />
                     </a>
                   </Dropdown> */}
-                  <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChange}>
-                    <Option value="jack">Last Month</Option>
-                    <Option value="lucy">Last Week</Option>
+                  <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={handleChange}>
+                    <Option value="lastmonth">Last Month</Option>
+                    <Option value="lastweek">Last Week</Option>
                   </Select>
                 </h5>
               </div>

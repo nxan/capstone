@@ -6,12 +6,21 @@ import ChartistGraph from 'react-chartist'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
+import { Select } from 'antd'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
 
 function lineData(series) {
   return {
-    labels: ['7 day ago', '6 day ago', '5 day ago', '4 day ago', '3 day ago', '2 day ago', 'Yesterday'],
+    labels: [
+      '7 day ago',
+      '6 day ago',
+      '5 day ago',
+      '4 day ago',
+      '3 day ago',
+      '2 day ago',
+      'Yesterday',
+    ],
     series: [series],
   }
 }
@@ -105,6 +114,11 @@ const columns = [
     ],
   },
 ]
+const { Option } = Select
+
+function handleChange(value) {
+  console.log(`selected ${value}`)
+}
 
 @connect(({ acquistion }) => ({ acquistion }))
 class Acquisition extends React.Component {
@@ -117,8 +131,16 @@ class Acquisition extends React.Component {
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="card-header">
-                <div className="utils__title">
-                  <strong> Aquisition</strong>
+                <div className="utils__title row">
+                  <div className="col-xl-7">
+                    <strong> Aquisition</strong>
+                  </div>
+                  <div className="col-xl-5">
+                    <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={handleChange}>
+                      <Option value="lastmonth">Last Month</Option>
+                      <Option value="lastweek">Last Week</Option>
+                    </Select>
+                  </div>
                 </div>
               </div>
               <div className="card-body">
@@ -135,15 +157,22 @@ class Acquisition extends React.Component {
                     color={pie.color}
                   />
                 </div>
-
               </div>
             </div>
           </div>
           <div className="col-lg-8">
             <section className="card">
               <div className="card-header">
-                <div className="utils__title">
-                  <strong> Visitors</strong>
+                <div className="utils__title row">
+                  <div className="col-xl-9">
+                    <strong> Visitors</strong>
+                  </div>
+                  <div className="col-xl-3">
+                    <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={handleChange}>
+                      <Option value="lastmonth">Last Month</Option>
+                      <Option value="lastweek">Last Week</Option>
+                    </Select>
+                  </div>
                 </div>
               </div>
               <div className="card-body">
@@ -165,9 +194,7 @@ class Acquisition extends React.Component {
             data={acquistion.acquistionTable}
             defaultPageSize={4}
             showPagination={false}
-            className={`-striped -highlight ${
-              styles.tablewith
-              }`}
+            className={`-striped -highlight ${styles.tablewith}`}
           />
         </div>
       </Authorize>
