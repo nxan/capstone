@@ -145,7 +145,7 @@ class VideosList extends React.Component {
 
   openModal() {
     this.setState({
-      visibled: true
+      // visibled: true
     });
 
     // fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
