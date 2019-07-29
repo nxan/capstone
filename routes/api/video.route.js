@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Video = require('../../model/Video');
 const video_db = require('../../db/video_db')
+const bodyParser = require('body-parser')
+const app = express();
+const path = require('path');
 const
     multer = require('multer')
     , inMemoryStorage = multer.memoryStorage()
@@ -11,9 +14,12 @@ const
     , blobService = azureStorage.createBlobService()
 
     , getStream = require('into-stream')
-    , containerName = 'video'
+    , containerName = 'videoshopify'
     ;
 var request = require('request');
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+
 const cors = require('cors');
 // Session.hasMany(Video, { foreignKey: 'video_id', sourceKey: 'id' });
 // Video.belongsTo(Session, { foreignKey: 'video_id', targetKey: 'id' });
@@ -102,5 +108,19 @@ router.post('/', async (req, res, next) => {
     //     }
 
     // });
+});
+
+
+router.post('/sendVideo', async (req, res, next) => {
+    var url = './recordings/' + req.body.shop + '/' + req.body.session_id + '.json';
+    fs.appendFile(url, JSON.stringify(req.body.video) + ',', (err) => {
+        if (err) {
+            console.log(err);
+            res.status(400).send('error on recording');
+        } else {
+            console.log('events updated');
+            res.send("event received");
+        }
+    })
 });
 module.exports = router;

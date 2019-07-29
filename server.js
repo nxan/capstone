@@ -212,24 +212,24 @@ io.on("connection", function (socket) {
             io.sockets.emit("Total-user", length + ". This is server ");
         }
     })
-    socket.on('client_send_video', function (data) {
-        var json = JSON.parse(data);
-        let dir = 'recordings/' + json.shop;
-        console.log('video:' + json.shop + '- ' + dir);
+    // socket.on('client_send_video', function (data) {
+    //     var json = JSON.parse(data);
+    //     let dir = 'recordings/' + json.shop;
+    //     console.log('video:' + json.shop + '- ' + dir);
 
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
-        fs.appendFile('recordings/' + json.shop + '/' + json.session_id + '.json', JSON.stringify(json.video) + ',', (err) => {
-            if (err) {
-                console.log(err);
-                // res.status(400).send('error on recording');
-            } else {
-                console.log('events updated');
-                //  res.send("event received");
-            }
-        })
-    })
+    //     if (!fs.existsSync(dir)) {
+    //         fs.mkdirSync(dir);
+    //     }
+    //     fs.appendFile('recordings/' + json.shop + '/' + json.session_id + '.json', JSON.stringify(json.video) + ',', (err) => {
+    //         if (err) {
+    //             console.log(err);
+    //             // res.status(400).send('error on recording');
+    //         } else {
+    //             console.log('events updated');
+    //             //  res.send("event received");
+    //         }
+    //     })
+    // })
     socket.on("disconnect", async function () {
         for (var i = 0; i < allClients.length; i++) {
             // console.log("c:" + allClients[i].socket_id);
@@ -269,7 +269,7 @@ io.on("connection", function (socket) {
 
         //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
-            if (onlines[i].socket_id == socket.id) {
+            if (onlines[i].socket_id == socket.id && onlines[i].session_length == 1) {
                 var videoFields = {};
                 videoFields.session_id = onlines[i].session_id;
                 videoFields.url_video = onlines[i].session_id;
@@ -284,7 +284,7 @@ io.on("connection", function (socket) {
                 blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
                     if (!err) {
                         console.log("upload file success");
-                       
+
                     }
                     else {
                         console.log(err);
@@ -294,11 +294,14 @@ io.on("connection", function (socket) {
                 fs.unlinkSync(filePath);
                 onlines.splice(i, 1);
             }
+            if (onlines[i].socket_id == socket.id) {
+                onlines[i].session_length -= 1;
+            }
 
 
             //socket.leave(onlines[i].socket_id)
         }
-
+        console.log(onlines);
         console.log(socket.id + ":disconnected")
     })
 
@@ -339,12 +342,14 @@ io.on("connection", function (socket) {
             } else {
                 check_change_page = true;
                 onlines[i].socket_id = socket.id;
+                onlines[i].session_length = onlines[i].session_length + 1
                 onlines[i].page_url = json.page_url;
             }
             //console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
         }
 
         if (!check_change_page) {
+            socketModel.session_length = 1;
             onlines.push(socketModel);
             socket.join(process.env.ROOM);
         }

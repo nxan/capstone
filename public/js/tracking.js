@@ -1,7 +1,7 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
 var send = 0; check_redirect = false;
 var set = false; var socket;
-var events = []
+var events = [], session_id = 0;
 $(document).ready(() => {
 
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>'
@@ -12,13 +12,8 @@ $(document).ready(() => {
     rel = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(rel);
     $('head').prepend(script);
-    setInterval(function () {
-        rrweb.record({
-            emit(event) {
-                events.push(event);
-            },
-        });
-    }, 1000);
+    save_session()
+    setInterval(record, 500);
 
 
     // function save() {
@@ -33,9 +28,9 @@ $(document).ready(() => {
     //     });
     // }
     //setInterval(save, 0.3 * 1000);
-    save_session()
+
     setInterval(function () {
-        fetch('https://7a5844d1.ngrok.io/api/session/save/resave', {
+        fetch('https://3902c080.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -55,10 +50,48 @@ document.addEventListener('visibilitychange', () => {
 function loadAdditionJs() {
 
 }
+function record() {
+    let events = []
+    rrweb.record({
+        emit(event) {
+            events.push(event);
+        },
+    });
+    function save() {
+        // const body = JSON.stringify(events);
+        //console.log(events);
+        console.log(session_id)
+        if (session_id != 0) {
+            const body = events;
+            events = [];
+            $.ajax({
+                url: 'http://localhost:8888/api/video/sendVideo',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    session_id: session_id,
+                    video: body,
+                    shop: window.location.hostname
+                }),
+                complete: function () {
+                    window.positions = [];
+                },
+                success: function (data) {
+                    window.positions = [];
+                }
+            }).done(function () {
+                console.log('ok');
+            })
+        }
+
+    }
+    setInterval(save, 0.1 * 10000);
+}
+
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://7a5844d1.ngrok.io/api/session', {
+            fetch('https://3902c080.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -83,8 +116,10 @@ function save_session(set) {
                         acquistion_id: getReference(),
                         video: ''
                     }
+                    session_id = json.session_id;
                     console.log(infor_tab);
-                    connect_socket(infor_tab);
+                    socket = io.connect("https://3902c080.ngrok.io");
+                    connect_socket(socket, infor_tab);
 
                     // track event
                     // $(document).mousemove(function (event) {
@@ -106,16 +141,16 @@ function save_session(set) {
         }
     }
 }
-function connect_socket(infor_tab) {
+function connect_socket(socket, infor_tab) {
 
-    socket = io.connect("https://7a5844d1.ngrok.io");
+
     socket.emit("client-send-session", JSON.stringify(infor_tab));
     //const body = JSON.stringify(events);
-    
-    infor_tab.video = events;
-    events = [];
+
+    //infor_tab.video = events;
+    //events = [];
     //console.log(infor_tab)
-    socket.emit('client_send_video', JSON.stringify(infor_tab));
+    // socket.emit('client_send_video', JSON.stringify(infor_tab));
     // fetch('http://localhost:8889/api', {
     //     method: 'POST',
     //     headers: {
@@ -202,7 +237,7 @@ function startRecord(data, session_id, session_page_id) {
 
         // sendImage();
         $.ajax({
-            url: 'https://7a5844d1.ngrok.io/api/video/sendVideo',
+            url: 'https://3902c080.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -279,7 +314,7 @@ function trackChangePage(session_id, session_page_id) {
         }
         url_redirect = url_redirect == '/' ? '' : url_redirect;
         $.ajax({
-            url: 'https://7a5844d1.ngrok.io/api/video/sendVideo',
+            url: 'https://3902c080.ngrok.io/api/video/sendVideo',
             method: 'post',
             contentType: 'application/json',
             data: JSON.stringify({
