@@ -77,7 +77,7 @@ router.get('/addScript', async (req, res) => {
             console.log(getProductsField)
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
                 .then(async (responses) => {
-                    await axios.post(process.env.DOMAIN + '/api/shopify/products', getProductsField)
+                        await axios.post(process.env.DOMAIN + '/api/shopify/products', getProductsField)
                         .then((response) => {
                             res.send("Done")
                         })
@@ -85,7 +85,8 @@ router.get('/addScript', async (req, res) => {
                             // handle error
                             console.log(error);
                         })
-                })
+                    })
+                   
         })
         .catch((error) => {
             res.status(403).send(error.error.error_description);

@@ -42,12 +42,6 @@ const Session = db.define('session', {
     acquistion_id: {
         type: Sequelize.INTEGER
     },
-    // age_id: {
-    //     type: Sequelize.INTEGER
-    // },
-    // gender_id: {
-    //     type: Sequelize.INTEGER
-    // },
     is_first_visit: {
         type: Sequelize.INTEGER
     },

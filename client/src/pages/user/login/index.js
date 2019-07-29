@@ -34,7 +34,7 @@ class Login extends Component {
             <strong>WELCOME TO SHOPIFY ANALYTICS</strong>
           </h1>
           <p>
-          Shopify analytics and reports give you the means to review your store recent activity,
+            Shopify analytics and reports give you the means to review your store recent activity,
             <br />
             get insight into your visitors, and analyze your store transactions.
             <br />
@@ -68,12 +68,14 @@ class Login extends Component {
                         valuePropName: 'checked',
                         initialValue: true,
                       })(<Checkbox>Remember me</Checkbox>)}
-                      <Link
-                        to="/user/forgot"
-                        className="utils__link--blue utils__link--underlined pull-right"
-                      >
-                        Forgot password?
-                      </Link>
+                      <a>
+                        <Link
+                          to="/user/forgot"
+                          className="utils__link--blue utils__link--underlined pull-right"
+                        >
+                          Forgot password?
+                        </Link>
+                      </a>
                     </Form.Item>
                     <div className="form-actions">
                       <Button
@@ -85,12 +87,12 @@ class Login extends Component {
                         Login
                       </Button>
                       <span className="ml-3 register-link">
-                        <a
-                          href="javascript: void(0);"
-                          className="text-primary utils__link--underlined"
+                        <Link
+                          to="/user/register"
+                          className="utils__link--blue utils__link--underlined pull-right"
                         >
                           Register
-                        </a>{' '}
+                        </Link>{' '}
                         if you don&#39;t have account
                       </span>
                     </div>

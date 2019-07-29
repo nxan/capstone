@@ -70,7 +70,7 @@ class VideosList extends React.Component {
                   .split(reg)
                   .map((text, i) =>
                     i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text,
-                  )}
+                )}
               </span>
             ),
           }
@@ -104,7 +104,7 @@ class VideosList extends React.Component {
 
   }
 
-  replayFormatSetter = (events) => {
+  replayFormatSetter = () => {
     let data = [];
     const { playerString } = this.state
     console.log(playerString.length)

@@ -14,14 +14,13 @@ const video_db = require('./db/video_db');
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser())
-const fs = require('fs');
 const axios = require('axios')
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var count = 0;
-var check = false;
-var locations = [];
-var countsExtended = [];
+var fs = require('fs');
+let fileName = 'events';
+var $ipsConnected = [];
 const PORT = process.env.PORT || 8888;
 http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const session_page_db = require('./db/session_page_db');
@@ -304,9 +303,9 @@ io.on("connection", function (socket) {
         console.log(onlines);
         console.log(socket.id + ":disconnected")
     })
+    socket.on("client-send-session", function (data) {
+        console.log(data);
 
-    socket.on("client-send-session", async function (data) {
-        var check_change_page = false;
         var json = JSON.parse(data);
         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0, page_url: '', device: '', os: '', browser: '', acquistion: '' };
         socketModel['session_id'] = json.session_id;
@@ -358,10 +357,18 @@ io.on("connection", function (socket) {
         io.sockets.emit("Server-send-data", data);
     })
 });
-function bufferFile(relPath) {
-    return fs.readFileSync(path.join(__dirname, relPath));
-}
-
+app.post('/api', (req, res) => {
+    console.log(req.body)
+    fs.appendFile('recordings/' + fileName + '.json', JSON.stringify(req.body) + ',', (err) => {
+        if (err) {
+            console.log(err);
+            res.status(400).send('error on recording');
+        } else {
+            console.log('events updated');
+            res.send("event received");
+        }
+    })
+});
 app.use('/api/user', require('./routes/api/user.route'));
 app.use('/api/auth', require('./routes/api/auth.route'));
 // app.use('/api/profile', require('./routes/api/shop.route'));
