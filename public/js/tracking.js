@@ -1,21 +1,27 @@
 var save = false, positions = [], shopEvent = { x: 0, y: 0, scrollTop: 0, scrollLef: 0, action: "", s: [], datetime: new Date(), page: '' }
 var send = 0; check_redirect = false;
 var set = false; var socket;
+var coordinates = [],
+    mousePos,
+    heatMap = [];
 var events = [], session_id = 0;
 $(document).ready(() => {
 
-    // var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
-    // $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
+    $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     var script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided URL
     var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(script);
-    save_session()
-    setInterval(record, 500);
+    //save_session()
+    //setInterval(record, 500);
     $('head').prepend(link);
     //loadAdditionJs()
     save_session()
     setInterval(record, 500);
     // record()
+    document.onmousemove = handler;
+    setInterval(getMousePosition, 100); // setInterval repeats every X ms
+
     setInterval(function () {
         fetch('https://6e076938.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -44,7 +50,6 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://3902c080.ngrok.io/api/session/save/resave', {
         fetch('https://6e076938.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
@@ -62,6 +67,43 @@ document.addEventListener('visibilitychange', () => {
     save_session();
 
 });
+function getGroupedData() {
+    var positions = coordinates
+    var grouped = [];
+    positions.map(function (pos, index) {
+        var filtered = positions.filter(function (obj) {
+            return (obj.x == pos.x && obj.y == pos.y)
+        })
+
+        var group = Object.assign({}, pos, { value: filtered.length });
+
+        if (grouped.indexOf({ x: group.x, y: group.y }) == -1) {
+            grouped.push(group);
+        }
+    });
+    heatMap = grouped;
+    //localStorage.setItem('heatMap', JSON.stringify(grouped));
+    const body = JSON.stringify(grouped);
+    fetch('http://localhost:8889/api/video/sendHeatMap', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify({
+            heatmap: grouped,
+            shop: window.location.hostname
+        })
+    });
+}
+function getMousePosition() {
+    var pos = mousePos;
+    if (pos) {
+        coordinates.push({ x: pos.x, y: pos.y });
+    }
+    //localStorage.setItem('coordinates', JSON.stringify(coordinates));
+    getGroupedData();
+}
+
 function record() {
     let events = []
 
@@ -130,11 +172,35 @@ function record() {
     }
     setInterval(save, 0.1 * 10000);
 }
+function handler(event) {
+    var dot,
+        eventDoc,
+        doc,
+        body,
+        pageX,
+        pageY;
+
+    event = event || window.event; // IE-ism
+
+    if (event.pageX == null && event.clientX != null) {
+        eventDoc = (event.target && event.target.ownerDocument) || document;
+        doc = eventDoc.documentElement;
+        body = eventDoc.body;
+
+        event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+        event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+    }
+
+    mousePos = {
+        x: event.pageX,
+        y: event.pageY
+    };
+}
 
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://3902c080.ngrok.io/api/session', {
+            fetch('https://d7786117.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -161,7 +227,7 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://3902c080.ngrok.io");
+                    socket = io.connect("https://d7786117.ngrok.io");
                     connect_socket(socket, infor_tab);
 
                     /*socket here

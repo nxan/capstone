@@ -154,7 +154,7 @@ function groupBy(allClients, key) {
     return countsExtended;
 }
 io.on("connection", function (socket) {
-    //console.log("Connecting:" + socket.id);
+    console.log("Connecting:" + socket.id);
     // for (var i = 0; i < allClients.length; i++) {
     //     console.log("model:" + allClients[i].socket_id);
 
@@ -293,10 +293,8 @@ io.on("connection", function (socket) {
                 fs.unlinkSync(filePath);
                 onlines.splice(i, 1);
             }
-            if (onlines[i].socket_id == socket.id) {
-                onlines[i].session_length -= 1;
-            }
-
+           
+            onlines[i].session_length -= 1;
 
             //socket.leave(onlines[i].socket_id)
         }
@@ -305,7 +303,7 @@ io.on("connection", function (socket) {
     })
     socket.on("client-send-session", function (data) {
         console.log(data);
-
+        var check_change_page = false;
         var json = JSON.parse(data);
         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0, page_url: '', device: '', os: '', browser: '', acquistion: '' };
         socketModel['session_id'] = json.session_id;
@@ -357,6 +355,9 @@ io.on("connection", function (socket) {
         io.sockets.emit("Server-send-data", data);
     })
 });
+function bufferFile(relPath) {
+    return fs.readFileSync(path.join(__dirname, relPath));
+}
 app.post('/api', (req, res) => {
     console.log(req.body)
     fs.appendFile('recordings/' + fileName + '.json', JSON.stringify(req.body) + ',', (err) => {
