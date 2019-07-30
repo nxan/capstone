@@ -11,7 +11,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "recordings/*"
+      "recordings/*",
+      "heatmap/*"
     ]
   },
   "author": "nxan",

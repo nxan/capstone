@@ -123,4 +123,32 @@ router.post('/sendVideo', async (req, res, next) => {
         }
     })
 });
+router.post('/sendHeatMap', async (req, res, next) => {
+    console.log(req.body)
+    var url = './heatmap/' + req.body.shop + '.json';
+    fs.appendFile(url, JSON.stringify(req.body.heat_map) + ',', (err) => {
+        if (err) {
+            console.log(err);
+            res.status(400).send('error on recording');
+        } else {
+            console.log('events updated');
+            res.send("event received");
+        }
+    })
+})
+
+router.get('/getOneHeatMap', async (req, res, next) => {
+    var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.params.shop + '.json';
+    request.get(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            // var csv = body;
+            // readData = makePlayableString(csv);
+            res.send(body);
+        }
+        else {
+            res.send(404)
+        }
+    });
+});
+
 module.exports = router;

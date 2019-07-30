@@ -17,13 +17,36 @@ $(document).ready(() => {
     $('head').prepend(link);
     //loadAdditionJs()
     save_session()
-    setInterval(record, 500);
+    //setInterval(record, 500);
     // record()
+    setInterval(function () {
+        if (heatMap.length > 0) {
+            $.ajax({
+                url: 'http://localhost:8888/api/video/sendHeatMap',
+                method: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    heat_map: heatMap,
+                    shop: window.location.hostname
+                }),
+                complete: function () {
+                    window.positions = [];
+                },
+                success: function (data) {
+                    window.positions = [];
+                }
+            }).done(function () {
+                console.log('ok');
+            })
+        }
+
+    }, 5000);
+
     document.onmousemove = handler;
     setInterval(getMousePosition, 100); // setInterval repeats every X ms
 
     setInterval(function () {
-        fetch('https://6e076938.ngrok.io/api/session/save/resave', {
+        fetch('https://d55545a6.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -50,7 +73,7 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://6e076938.ngrok.io/api/session/save/resave', {
+        fetch('https://d55545a6.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -84,16 +107,8 @@ function getGroupedData() {
     heatMap = grouped;
     //localStorage.setItem('heatMap', JSON.stringify(grouped));
     const body = JSON.stringify(grouped);
-    fetch('http://localhost:8889/api/video/sendHeatMap', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        data: JSON.stringify({
-            heatmap: grouped,
-            shop: window.location.hostname
-        })
-    });
+
+
 }
 function getMousePosition() {
     var pos = mousePos;
@@ -200,7 +215,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://d7786117.ngrok.io/api/session', {
+            fetch('https://d55545a6.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -227,7 +242,7 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://d7786117.ngrok.io");
+                    socket = io.connect("https://d55545a6.ngrok.io");
                     connect_socket(socket, infor_tab);
 
                     /*socket here

@@ -268,6 +268,9 @@ io.on("connection", function (socket) {
 
         //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
+            if(onlines[i].socket_id == socket.id){
+                onlines[i].session_length = 1;
+            }
             if (onlines[i].socket_id == socket.id && onlines[i].session_length == 1) {
                 var videoFields = {};
                 videoFields.session_id = onlines[i].session_id;
@@ -294,7 +297,7 @@ io.on("connection", function (socket) {
                 onlines.splice(i, 1);
             }
            
-            onlines[i].session_length -= 1;
+            
 
             //socket.leave(onlines[i].socket_id)
         }
