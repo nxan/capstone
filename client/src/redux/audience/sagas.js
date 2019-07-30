@@ -72,6 +72,8 @@ export function* LOAD_CURRENT_ACCOUNT() {
     })
 }
 
+
+
 export default function* rootSaga() {
     yield all([
         takeEvery(actions.LOAD_AUDIENCE, LOAD_AUDIENCE),

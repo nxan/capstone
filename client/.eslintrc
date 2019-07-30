@@ -10,6 +10,7 @@
     "no-template-curly-in-string": "off",
     "react/prop-types": 0,
     "react/jsx-indent": "off", 
+    "react/jsx-indent-props": "off",
     "react/prefer-stateless-function": 0,
     "react/jsx-one-expression-per-line": 0,
     "linebreak-style": 0,

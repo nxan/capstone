@@ -7,7 +7,9 @@ const nonce = require('nonce')();
 const axios = require('axios')
 const shop_db = require('../../db/shop_db')
 const page_db = require('../../db/page_db')
-
+const fs = require('fs')
+const cloudscraper = require('cloudscraper')
+const mkdirp = require('mkdirp')
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
 const scope = 'write_products,read_script_tags,write_script_tags';
@@ -77,21 +79,98 @@ router.get('/addScript', async (req, res) => {
             console.log(getProductsField)
             request.post({ url: createScriptTagUrl, form: scriptTagBody, headers: shopRequestHeaders })
                 .then(async (responses) => {
-                        await axios.post(process.env.DOMAIN + '/api/shopify/products', getProductsField)
+                    await axios.post(process.env.DOMAIN + '/api/shopify/products', getProductsField)
                         .then((response) => {
-                            res.send("Done")
+                            const state = nonce();
+                            const redirectUri = forwardingAddress + '/api/shopify/getPages';
+                            const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey
+                                + '&scope=' + scope
+                                + '&state=' + state
+                                + '&redirect_uri=' + redirectUri
+                                ;
+                            res.redirect(installUrl);
                         })
                         .catch((error) => {
                             // handle error
                             console.log(error);
                         })
-                    })
-                   
+                })
+
         })
         .catch((error) => {
             res.status(403).send(error.error.error_description);
         });
 })
+/**
+ * @route GET api 
+ * @desc crawl all pages
+ *  */
+router.get('/getPages', (req, res) => {
+    const { shop, hmac, code, state } = req.query;
+    const accessTokenRequestUrl = "https://" + shop + '/admin/oauth/access_token';
+    const accesTokenPayLoad = {
+        client_id: apiKey,
+        client_secret: apiKeySecret,
+        code
+    };
+    request.post(accessTokenRequestUrl, { json: accesTokenPayLoad })
+        .then((accessTokenResponse) => {
+            const accessToken = accessTokenResponse.access_token;
+            // DONE: Use access token to make API call to 'script_tags' endpoint
+            var request_page = 'https://' + shop + '/admin/products.json';
+            console.log(shop);
+            var shop_request_headers = {
+                'X-Shopify-Access-Token': accessToken,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            };
+            let options = {
+                method: 'GET',
+                uri: request_page,
+                json: true,
+                headers: {
+                    'X-Shopify-Access-Token': accessToken,
+                    'content-type': 'application/json'
+                }
+            };
+
+            crawlData(shop, '');
+            request(options)
+                .then(async function (response) {
+                    var products = response.products
+                    console.log(shop)
+                    Array.from(products).forEach((element) => {
+                        url = '/products/' + element.handle
+                        crawlData(shop, url);
+                    });
+                    res.end("OK")
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    res.json(err);
+                });
+        })
+})
+function crawlData(shop, url) {
+
+    var reqWeb = "http://" + shop + url;
+    var dir = './web/' + shop + '/' + url;
+    if (!fs.existsSync(dir)) {
+        mkdirp(dir, function (err) {
+            console.log('ok,');
+        });
+    }
+    cloudscraper.get(reqWeb).then(function (htmlString) {
+        var path = './web/' + shop + '/' + url + ".txt";
+        fs.writeFile(path, htmlString, (err) => {
+            if (err) console.log(err);
+            console.log("Successfully Written to File.");
+        });
+        // res.send(htmlString), console.error
+    }
+    );
+}
+
 /* ----- 
   @route  GET api/shopify/getScript
   @desc   get script file
@@ -137,7 +216,7 @@ router.post('/products', function (req, res, next) {
             console.log(shopId)
             Array.from(products).forEach((element) => {
                 url = shop + '/products/' + element.handle
-                console.log(url)                
+                console.log(url)
                 console.log(shopId)
                 page_db.addPage(url, shopId)
             });

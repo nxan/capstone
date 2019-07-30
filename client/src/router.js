@@ -74,6 +74,11 @@ const routes = [
     component: loadable(() => import('pages/recording/replay')),
     exact: true,
   },
+  {
+    path: '/heatmap',
+    component: loadable(() => import('pages/heatmap')),
+    exact: true,
+  },
   // AntDesign
   {
     path: '/antd',

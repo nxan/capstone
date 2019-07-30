@@ -108,7 +108,6 @@ class VideosList extends React.Component {
     let data = [];
     const { playerString } = this.state
     console.log(playerString.length)
-    console.log(events.length);
     // console.log(events)
     // for (let i = 0; i < playerString.length / 1000; i += 1) {
     //   data = data.concat(playerString[i]);

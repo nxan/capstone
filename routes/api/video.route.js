@@ -11,10 +11,10 @@ const
     , uploadStrategy = multer({ storage: inMemoryStorage }).single('image')
 
     , azureStorage = require('azure-storage')
-    , blobService = azureStorage.createBlobService()
+    , blobService = azureStorage.createBlobService('videoshopifystorage', '6cNKqrtKmKImlaq5GPH7GLDHBmE5C1roXWcfdu1clo4cbiELtm0jtw7dvflB7ILQSKb0fDimSQ9T37Sqi8l9xg==')
 
     , getStream = require('into-stream')
-    , containerName = 'videoshopify'
+    , containerName = 'heatmapshopify'
     ;
 var request = require('request');
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -55,7 +55,7 @@ router.get('/', async (req, res, next) => {
 router.get('/getOne/:video_id', async (req, res, next) => {
     // var condition = { where: id = req.params.video_id }
     // console.log(req.params.video_id)
-    var video = await video_db.getVideo(req.params.video_id);
+    //var video = await video_db.getVideo(req.params.video_id);
     var url = 'https://videoshopifystorage.blob.core.windows.net/videoshopify/' + req.params.video_id + '.json';
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -124,25 +124,98 @@ router.post('/sendVideo', async (req, res, next) => {
     })
 });
 router.post('/sendHeatMap', async (req, res, next) => {
-    console.log(req.body)
+    //convert array => string, getStream only accept String or Buffer
+
+    var shop = req.body.shop;
+    var heatmap = req.body.heat_map;
+    var stringStream = JSON.stringify(heatmap);
     var url = './heatmap/' + req.body.shop + '.json';
     fs.appendFile(url, JSON.stringify(req.body.heat_map) + ',', (err) => {
         if (err) {
             console.log(err);
-            res.status(400).send('error on recording');
+            //res.status(400).send('error on recording');
         } else {
             console.log('events updated');
-            res.send("event received");
+            // res.send("event received");
         }
     })
+    // const
+    //     blobName = shop + '.json'
+    //     , stream = getStream(stringStream)
+    //     , streamLength = stringStream.length
+    //     ;
+    // stringStream.pipe(blobService.createWriteStreamToBlockBlob(containerName, blobName, function (error) {
+    //     if (!error) {
+    //         console.log("upload file success");
+    //     } else {
+    //         console.log(error);
+    //     }
+    // }));
+    // blobService.createWriteStreamToBlockBlob(containerName, blobName, stream, streamLength, err => {
+    //     if (!err) {
+    //         console.log("upload file success");
+
+    //     }
+    //     else {
+    //         console.log(err);
+    //     }
+    // });
+    var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.body.shop + '.json';
+    request.get(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            // var data = body + '' + JSON.stringify(heatmap);
+            // var stringStream = JSON.stringify(data);
+            var filename = './heatmap/' + shop + '.json';
+            var buffer = bufferFile(filename);
+            const
+                blobName = shop + '.json'
+                , stream = getStream(buffer)
+                , streamLength = buffer.length
+                ;
+
+            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                if (!err) {
+                    console.log("upload file success");
+
+                }
+                else {
+                    console.log(err);
+                }
+            });
+            //res.send(readData);
+        }
+        else {
+            // var stringStream = JSON.stringify(heatmap);
+            var filename = './heatmap/' + shop + '.json';
+            var buffer = bufferFile(filename);
+            const
+                blobName = shop + '.json'
+
+                , stream = getStream(buffer)
+                , streamLength = buffer.length
+                ;
+
+            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                if (!err) {
+                    console.log("upload file success");
+
+                }
+                else {
+                    console.log(err);
+                }
+            });
+            //res.send(404)
+        }
+    });
+
 })
 
 router.get('/getOneHeatMap', async (req, res, next) => {
     var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.params.shop + '.json';
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            // var csv = body;
-            // readData = makePlayableString(csv);
+            var csv = body;
+            readData = makePlayableString(csv);
             res.send(body);
         }
         else {
@@ -151,4 +224,13 @@ router.get('/getOneHeatMap', async (req, res, next) => {
     });
 });
 
+function makePlayableString(argument) {
+    let stringArgument = argument.toString();
+    stringArgument = stringArgument.substring(0, stringArgument.length - 1);
+    let playableString = '[' + stringArgument + ']';
+    return playableString;
+}
+function bufferFile(relPath) {
+    return fs.readFileSync(relPath);
+}
 module.exports = router;

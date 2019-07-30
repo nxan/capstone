@@ -15,6 +15,5 @@ export function* LOAD_VIDEO() {
 export default function* rootSaga() {
     yield all([
         takeEvery(actions.LOAD_VIDEO, LOAD_VIDEO),
-        LOAD_VIDEO()
     ])
 }

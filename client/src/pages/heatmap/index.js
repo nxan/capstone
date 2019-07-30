@@ -4,14 +4,12 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import Modal from 'react-awesome-modal';
 import $ from 'jquery'
-import table from './data.json'
-import styles from './style.module.scss'
+// import styles from './style.module.scss'
 
-@connect(({ video }) => ({ video }))
-class VideosList extends React.Component {
+@connect(({ heatmap }) => ({ heatmap }))
+class HeatMapList extends React.Component {
     state = {
-        tableData: table.data,
-        video: this.props,
+        heatmap: this.props,
         filterDropdownVisible: false,
         searchText: '',
         playerString: [],
@@ -41,7 +39,7 @@ class VideosList extends React.Component {
         this.setState({
             filterDropdownVisible: false,
             filtered: !!searchText,
-            video: tableData
+            heatmap: tableData
                 .map(record => {
                     const match = record.name.match(reg)
                     if (!match) {
@@ -71,46 +69,65 @@ class VideosList extends React.Component {
 
 
 
-    closeModal() {
-        this.setState({
-            visibled: false
+
+
+    replayFormatSetter = (events) => {
+        let data = [];
+        const { playerString } = this.state
+        console.log(playerString.length)
+        console.log(events.length);
+        playerString.forEach((entry) => {
+            data = data.concat(entry);
         });
+        $('.frame').contents().find("body").append(this.heatMapScript(data))
+        // return playerString;
+    }
+
+
+
+
+
+    heatMapScript = (heatMap) => {
+        const data = JSON.parse(heatMap)
+        const script = "var heatmap = h337.create({container: document.body}); heatmap.setData({data:".concat(data).concat("});");
+        return script
     }
 
     openModal(id) {
-
         this.setState({
             visibled: true
         });
 
-        fetch('http://localhost:8888/api/video/getOneHeatMap/'.concat(id), {
+        fetch('http://localhost:8888/api/page/getOneHeatMap/'.concat(id), {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             }
-        }).then((data) => data.json()).then((data) => {
-            $('.frame').show();
-            $('.frame').html('')
-            $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
-            $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
-            $('.frame').contents().find("body").append(data.web)
-            $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
-        }).catch(error => console.log(error));
+        }).then((data) => data.json())
+            .then((data) => {
+                $('.frame').show();
+                $('.frame').html('')
+                $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
+                $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
+                $('.frame').contents().find("body").append(data.web);
+                // const heatmap = 
+                // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
+            }).catch(error => console.log(error));
 
 
     }
 
-    heatMapScript = (heatMap) => {
-        var data = JSON.parse(heatMap)
-        const script = "var heatmap = h337.create({container: document.body}); heatmap.setData({data:".concat(data).concat("});");
-        return script
+    closeModal() {
+        this.setState({
+            visibled: false
+        });
     }
 
     render() {
-        const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
-        const videoData = Object.values(video.video);
+        const { heatmap, searchText, filtered, filterDropdownVisible, visibled } = this.state
+        const heatmapData = Object.values(heatmap.heatmap);
 
         const columns = [
             {
@@ -133,7 +150,7 @@ class VideosList extends React.Component {
                         <Button onClick={() => this.openModal(record.id)}>Play</Button>
                         <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
                             <div>
-                                <iframe className='frame' className={styles.frame} />
+                                <iframe className='frame' title="myFrame" />
                                 <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
                             </div>
                         </Modal>
@@ -161,7 +178,7 @@ class VideosList extends React.Component {
                         />
                         <Button type="primary" onClick={this.onSearch}>
                             Search
-            </Button>
+                        </Button>
                     </div>
                 ),
                 filterIcon: <Icon type="search" style={{ color: filtered ? '#108ee9' : '#aaa' }} />,
@@ -182,7 +199,7 @@ class VideosList extends React.Component {
                     <span>
                         <Button icon="cross" size="small">
                             Remove
-            </Button>
+                        </Button>
                     </span>
                 ),
             },
@@ -203,7 +220,7 @@ class VideosList extends React.Component {
                             className="utils__scrollTable"
                             scroll={{ x: '100%' }}
                             columns={columns}
-                            dataSource={videoData[0]}
+                            dataSource={heatmapData[0]}
                         />
                     </div>
                 </div>
@@ -212,4 +229,4 @@ class VideosList extends React.Component {
     }
 }
 
-export default VideosList
+export default HeatMapList
