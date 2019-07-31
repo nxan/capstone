@@ -7,9 +7,9 @@ var coordinates = [],
 var events = [], session_id = 0;
 $(document).ready(() => {
 
-    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
-    $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    var script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided URL
+    // var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
+    // $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
     var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(script);
     //save_session()
@@ -64,7 +64,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://a10fa274.ngrok.io/api/session/save/resave', {
+        fetch('https://f45db262.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -91,7 +91,7 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://a10fa274.ngrok.io/api/session/save/resave', {
+        fetch('https://f45db262.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -146,20 +146,20 @@ function getMousePosition() {
 //         },
 //     });
 
-//     function save() {
-//         const body = JSON.stringify(events);
-//         console.log(events);
-//         events = [];
-//         fetch('http://localhost:8888/api', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body,
-//         });
-//     }
-//     setInterval(save, 0.2 * 10000);
-// }
+    function save() {
+        const body = JSON.stringify(events);
+        console.log(events);
+        events = [];
+        fetch('http://f45db262.ngrok.io/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body,
+        });
+    }
+    setInterval(save, 0.2 * 10000);
+}
 function loadAdditionJs() {
     var script = document.createElement("script");  // create a script DOM node
     script.src = 'https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js';  // set its src to the provided URL
@@ -233,7 +233,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://a10fa274.ngrok.io/api/session', {
+            fetch('https://f45db262.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
