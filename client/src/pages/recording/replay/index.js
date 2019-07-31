@@ -12,8 +12,6 @@ class Video extends React.Component {
         }
     }
 
-    
-
 
     componentDidMount() {
 
