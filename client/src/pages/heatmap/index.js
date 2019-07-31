@@ -82,6 +82,7 @@ class HeatMapList extends React.Component {
             data = data.concat(entry);
         });
         $('.spy_frame').contents().find("body").append(this.heatMapScript(data))
+        // $('.spy_frame').contents().find("body").abc()
         // return playerString;
     }
 
@@ -91,8 +92,10 @@ class HeatMapList extends React.Component {
 
     heatMapScript = (heatMap) => {
         // const data = JSON.parse(heatMap)
-        // console.log(data);
-        const script = "<script>var heatmap = h337.create({container: document.body}); heatmap.setData({data:".concat(heatMap).concat("});</script>");
+        console.log(heatMap.length);
+        localStorage.setItem('heatmap', JSON.stringify(heatMap));
+        // console.log(JSON.parse(localStorage.getItem('heatmap')))
+        const script = "<script>var heatmap = h337.create({container: document.body}); heatmap.setData({data : JSON.parse(localStorage.getItem('heatmap'))}) console.log(JSON.parse(localStorage.getItem('heatmap'));<\/script>)";
         return script
     }
 
@@ -177,7 +180,7 @@ class HeatMapList extends React.Component {
                 render: (text, record) => (
                     <span>
                         <Button onClick={() => this.openModal(record.id)}>Play</Button>
-                        <Modal visible={visibled} width="75%" height="100%" onClickAway={() => this.closeModal()}>
+                        <Modal visible={visibled} width="100%" height="100%" onClickAway={() => this.closeModal()}>
                             <div className={'frame '.concat(styles.frame)}>
                                 <iframe className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" />
                                 <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
