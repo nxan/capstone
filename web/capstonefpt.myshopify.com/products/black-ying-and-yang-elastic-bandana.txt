@@ -69,7 +69,7 @@ Shopify.theme.handle = "null";
 Shopify.theme.style = {"id":null,"handle":null};</script>
 <script>(function() {
   function asyncLoad() {
-    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
+    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/a10fa274.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
     for (var i = 0; i < urls.length; i++) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
@@ -85,7 +85,7 @@ Shopify.theme.style = {"id":null,"handle":null};</script>
     window.addEventListener('load', asyncLoad, false);
   }
 })();</script>
-<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"66df781a-c470-48e1-8a2d-ac333ae04ec4","pageurl":"capstonefpt.myshopify.com\/products\/black-ying-and-yang-elastic-bandana","u":"340549ba07d4","p":"product","rtyp":"product","rid":3593750315113};</script>
+<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"20fbf494-bf08-4eaf-ad50-741ac6d1254d","pageurl":"capstonefpt.myshopify.com\/products\/black-ying-and-yang-elastic-bandana","u":"be540a7bb7f7","p":"product","rtyp":"product","rid":3593750315113};</script>
 <script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
 <script>window.Shopify = window.Shopify || {};
 window.Shopify.Checkout = window.Shopify.Checkout || {};

@@ -4,7 +4,7 @@ import $ from 'jquery'
 import styles from './style.module.scss'
 
 class Video extends React.Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -63,13 +63,14 @@ class Video extends React.Component {
     replayFormatSetter = (events) => {
         let data = [];
         const { playerString } = this.state
-        console.log(playerString.length)
+        // console.log(playerString.length)
         console.log(events.length);
         // console.log(events)
         // for (let i = 0; i < playerString.length / 1000; i += 1) {
         //   data = data.concat(playerString[i]);
         //   console.log(data);
         // }
+        console.log(playerString);
         playerString.forEach((entry) => {
             data = data.concat(entry);
 

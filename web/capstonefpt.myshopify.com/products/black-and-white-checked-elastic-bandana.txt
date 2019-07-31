@@ -69,7 +69,7 @@ Shopify.theme.handle = "null";
 Shopify.theme.style = {"id":null,"handle":null};</script>
 <script>(function() {
   function asyncLoad() {
-    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
+    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/a10fa274.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
     for (var i = 0; i < urls.length; i++) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
@@ -85,7 +85,7 @@ Shopify.theme.style = {"id":null,"handle":null};</script>
     window.addEventListener('load', asyncLoad, false);
   }
 })();</script>
-<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"752c9846-c9a4-49e2-a2e9-7d040d0cff5b","pageurl":"capstonefpt.myshopify.com\/products\/black-and-white-checked-elastic-bandana","u":"515d93587df9","p":"product","rtyp":"product","rid":3593749364841};</script>
+<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"c5dfddee-531a-4ff1-879b-fe3158885eac","pageurl":"capstonefpt.myshopify.com\/products\/black-and-white-checked-elastic-bandana","u":"7b13b12fc1e8","p":"product","rtyp":"product","rid":3593749364841};</script>
 <script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
 <script>window.Shopify = window.Shopify || {};
 window.Shopify.Checkout = window.Shopify.Checkout || {};

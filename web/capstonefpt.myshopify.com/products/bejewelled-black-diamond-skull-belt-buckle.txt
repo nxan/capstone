@@ -69,7 +69,7 @@ Shopify.theme.handle = "null";
 Shopify.theme.style = {"id":null,"handle":null};</script>
 <script>(function() {
   function asyncLoad() {
-    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
+    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/a10fa274.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
     for (var i = 0; i < urls.length; i++) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
@@ -85,7 +85,7 @@ Shopify.theme.style = {"id":null,"handle":null};</script>
     window.addEventListener('load', asyncLoad, false);
   }
 })();</script>
-<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"adc76910-5102-4cc8-8586-7dcd0740011b","pageurl":"capstonefpt.myshopify.com\/products\/bejewelled-black-diamond-skull-belt-buckle","u":"b48a7464c34d","p":"product","rtyp":"product","rid":3593748938857};</script>
+<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"32d15c37-4bd5-43ca-9b93-b71c0a2b93c2","pageurl":"capstonefpt.myshopify.com\/products\/bejewelled-black-diamond-skull-belt-buckle","u":"0dce310daf43","p":"product","rtyp":"product","rid":3593748938857};</script>
 <script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
 <script>window.Shopify = window.Shopify || {};
 window.Shopify.Checkout = window.Shopify.Checkout || {};

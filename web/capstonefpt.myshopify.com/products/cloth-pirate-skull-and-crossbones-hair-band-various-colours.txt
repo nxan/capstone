@@ -69,7 +69,7 @@ Shopify.theme.handle = "null";
 Shopify.theme.style = {"id":null,"handle":null};</script>
 <script>(function() {
   function asyncLoad() {
-    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
+    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/a10fa274.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
     for (var i = 0; i < urls.length; i++) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
@@ -85,7 +85,7 @@ Shopify.theme.style = {"id":null,"handle":null};</script>
     window.addEventListener('load', asyncLoad, false);
   }
 })();</script>
-<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"8d8f910d-fa3b-454b-9f59-c0ba87a91c65","pageurl":"capstonefpt.myshopify.com\/products\/cloth-pirate-skull-and-crossbones-hair-band-various-colours","u":"67e5ccaee3ab","p":"product","rtyp":"product","rid":3593750577257};</script>
+<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"0130cbfe-4be5-4fc9-b8d5-42edf2981f37","pageurl":"capstonefpt.myshopify.com\/products\/cloth-pirate-skull-and-crossbones-hair-band-various-colours","u":"fcdf81285b87","p":"product","rtyp":"product","rid":3593750577257};</script>
 <script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
 <script>window.Shopify = window.Shopify || {};
 window.Shopify.Checkout = window.Shopify.Checkout || {};

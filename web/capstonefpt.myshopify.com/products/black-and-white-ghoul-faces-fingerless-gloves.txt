@@ -69,7 +69,7 @@ Shopify.theme.handle = "null";
 Shopify.theme.style = {"id":null,"handle":null};</script>
 <script>(function() {
   function asyncLoad() {
-    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
+    var urls = ["https:\/\/f45db262.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/70b5328c.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/10d42142.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/da4b482a.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com","https:\/\/a10fa274.ngrok.io\/api\/shopify\/getScript?shop=capstonefpt.myshopify.com"];
     for (var i = 0; i < urls.length; i++) {
       var s = document.createElement('script');
       s.type = 'text/javascript';
@@ -85,7 +85,7 @@ Shopify.theme.style = {"id":null,"handle":null};</script>
     window.addEventListener('load', asyncLoad, false);
   }
 })();</script>
-<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"b8650fe8-167e-4c3e-ad13-54a5c4ee1785","pageurl":"capstonefpt.myshopify.com\/products\/black-and-white-ghoul-faces-fingerless-gloves","u":"7d00fdfc22d7","p":"product","rtyp":"product","rid":3593749430377};</script>
+<script id="__st">var __st={"a":24656347241,"offset":-14400,"reqid":"d2b5bbd1-b222-4682-87f3-998e92b4750c","pageurl":"capstonefpt.myshopify.com\/products\/black-and-white-ghoul-faces-fingerless-gloves","u":"9ee1d07b4cca","p":"product","rtyp":"product","rid":3593749430377};</script>
 <script>window.ShopifyPaypalV4VisibilityTracking = true;</script>
 <script>window.Shopify = window.Shopify || {};
 window.Shopify.Checkout = window.Shopify.Checkout || {};

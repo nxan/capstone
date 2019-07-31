@@ -7,7 +7,6 @@ const initialState = {
     acquistionDirect: 0,
     acquistionOther: 0,
     acquistionTable: [],
-    heatmap:[]
 }
 
 export default function userReducer(state = initialState, action) {

@@ -4,15 +4,16 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import Modal from 'react-awesome-modal';
 import $ from 'jquery'
-// import styles from './style.module.scss'
+import styles from './style.module.scss'
 
-@connect(({ heatmap }) => ({ heatmap }))
+@connect(({ video }) => ({ video }))
 class HeatMapList extends React.Component {
     state = {
-        heatmap: this.props,
+        video: this.props,
         filterDropdownVisible: false,
         searchText: '',
-        playerString: [],
+        // events: [],
+        // playerString: [],
         filtered: false,
         visibled: false,
     }
@@ -39,7 +40,7 @@ class HeatMapList extends React.Component {
         this.setState({
             filterDropdownVisible: false,
             filtered: !!searchText,
-            heatmap: tableData
+            video: tableData
                 .map(record => {
                     const match = record.name.match(reg)
                     if (!match) {
@@ -73,13 +74,14 @@ class HeatMapList extends React.Component {
 
     replayFormatSetter = (events) => {
         let data = [];
-        const { playerString } = this.state
-        console.log(playerString.length)
-        console.log(events.length);
-        playerString.forEach((entry) => {
+        let array = [];
+        array = events
+        // console.log(playerString.length)
+        console.log(events);
+        array.forEach((entry) => {
             data = data.concat(entry);
         });
-        $('.frame').contents().find("body").append(this.heatMapScript(data))
+        $('.spy_frame').contents().find("body").append(this.heatMapScript(data))
         // return playerString;
     }
 
@@ -88,9 +90,30 @@ class HeatMapList extends React.Component {
 
 
     heatMapScript = (heatMap) => {
-        const data = JSON.parse(heatMap)
-        const script = "var heatmap = h337.create({container: document.body}); heatmap.setData({data:".concat(data).concat("});");
+        // const data = JSON.parse(heatMap)
+        // console.log(data);
+        const script = "<script>var heatmap = h337.create({container: document.body}); heatmap.setData({data:".concat(heatMap).concat("});</script>");
         return script
+    }
+
+    getArrayHeatMap = (id) => {
+        fetch('http://localhost:8888/api/page/getArrayHeatMap/'.concat(id), {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((data) => data.json())
+            .then((data) => {
+                // $('.frame').show();
+                // this.setState({
+                //     events: data.heatMap
+                // })
+                this.replayFormatSetter(data);
+                // const heatmap = 
+                // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
+            }).catch(error => console.log(error));
     }
 
     openModal(id) {
@@ -108,10 +131,16 @@ class HeatMapList extends React.Component {
         }).then((data) => data.json())
             .then((data) => {
                 $('.frame').show();
-                $('.frame').html('')
-                $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
-                $('.frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
-                $('.frame').contents().find("body").append(data.web);
+                $('.spy_frame').html('')
+                $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
+                $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
+                $('.spy_frame').contents().find("body").append(data.web);
+                this.getArrayHeatMap(id)
+                // console.log(data);
+                // this.setState({
+                //     events: data.heatMap
+                // })
+                // this.replayFormatSetter(data.heatMap);
                 // const heatmap = 
                 // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
             }).catch(error => console.log(error));
@@ -126,14 +155,14 @@ class HeatMapList extends React.Component {
     }
 
     render() {
-        const { heatmap, searchText, filtered, filterDropdownVisible, visibled } = this.state
-        const heatmapData = Object.values(heatmap.heatmap);
-
+        const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
+        // console.log(video.video.heatmap)
+        const heatmapData = Object.values(video.video.heatmap);
         const columns = [
             {
-                title: 'ID',
-                dataIndex: 'id',
-                key: 'id',
+                title: 'Page',
+                dataIndex: 'page_url',
+                key: 'page_url',
                 render: (text) => (
                     <a className="utils__link--underlined" href="javascript: void(0);">
                         {text}
@@ -148,9 +177,9 @@ class HeatMapList extends React.Component {
                 render: (text, record) => (
                     <span>
                         <Button onClick={() => this.openModal(record.id)}>Play</Button>
-                        <Modal visible={visibled} width="75%" height="75%" onClickAway={() => this.closeModal()}>
-                            <div>
-                                <iframe className='frame' title="myFrame" />
+                        <Modal visible={visibled} width="75%" height="100%" onClickAway={() => this.closeModal()}>
+                            <div className={'frame '.concat(styles.frame)}>
+                                <iframe className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" />
                                 <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
                             </div>
                         </Modal>
@@ -220,7 +249,7 @@ class HeatMapList extends React.Component {
                             className="utils__scrollTable"
                             scroll={{ x: '100%' }}
                             columns={columns}
-                            dataSource={heatmapData[0]}
+                            dataSource={heatmapData}
                         />
                     </div>
                 </div>

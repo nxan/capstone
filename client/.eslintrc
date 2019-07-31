@@ -1,7 +1,19 @@
 {
-  "extends": ["react-app", "airbnb", "prettier"],
+  "extends": [
+    "react-app",
+    "airbnb",
+    "prettier"
+  ],
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js",".jsx"] }],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
     "no-useless-escape": "off",
     "no-script-url": "off",
     "jsx-a11y/anchor-has-content": "off",
@@ -9,8 +21,9 @@
     "jsx-a11y/anchor-is-valid": "off",
     "no-template-curly-in-string": "off",
     "react/prop-types": 0,
-    "react/jsx-indent": "off", 
+    "react/jsx-indent": "off",
     "react/jsx-indent-props": "off",
+    "prefer-template": "off",
     "react/prefer-stateless-function": 0,
     "react/jsx-one-expression-per-line": 0,
     "linebreak-style": 0,

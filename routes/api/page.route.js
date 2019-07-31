@@ -73,6 +73,23 @@ router.post('/sendHeatMap', async (req, res, next) => {
             // res.send("event received");
         }
     })
+    var filename = './heatmap/' + page.id + '.json';
+    var buffer = bufferFile(filename);
+    const
+        blobName = page.id + '.json'
+        , stream = getStream(buffer)
+        , streamLength = buffer.length
+        ;
+
+    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+        if (!err) {
+            console.log("upload file success");
+
+        }
+        else {
+            console.log(err);
+        }
+    });
     // const
     //     blobName = shop + '.json'
     //     , stream = getStream(stringStream)
@@ -94,68 +111,80 @@ router.post('/sendHeatMap', async (req, res, next) => {
     //         console.log(err);
     //     }
     // });
-    var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
-    request.get(url, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            // var data = body + '' + JSON.stringify(heatmap);
-            // var stringStream = JSON.stringify(data);
-            var filename = './heatmap/' + page.id + '.json';
-            var buffer = bufferFile(filename);
-            const
-                blobName = page.id + '.json'
-                , stream = getStream(buffer)
-                , streamLength = buffer.length
-                ;
+    //var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
+    // request.get(url, function (error, response, body) {
+    //     if (!error && response.statusCode == 200) {
+    //         // var data = body + '' + JSON.stringify(heatmap);
+    //         // var stringStream = JSON.stringify(data);
+    //         var filename = './heatmap/' + page.id + '.json';
+    //         var buffer = bufferFile(filename);
+    //         const
+    //             blobName = page.id + '.json'
+    //             , stream = getStream(buffer)
+    //             , streamLength = buffer.length
+    //             ;
 
-            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                if (!err) {
-                    console.log("upload file success");
+    //         blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+    //             if (!err) {
+    //                 console.log("upload file success");
 
-                }
-                else {
-                    console.log(err);
-                }
-            });
-            //res.send(readData);
-        }
-        else {
-            // var stringStream = JSON.stringify(heatmap);
-            var filename = './heatmap/' + page.id + '.json';
-            var buffer = bufferFile(filename);
-            const
-                blobName = page.id + '.json'
+    //             }
+    //             else {
+    //                 console.log(err);
+    //             }
+    //         });
+    //         //res.send(readData);
+    //     }
+    //     else {
+    //         // var stringStream = JSON.stringify(heatmap);
+    //         var filename = './heatmap/' + page.id + '.json';
+    //         var buffer = bufferFile(filename);
+    //         const
+    //             blobName = page.id + '.json'
 
-                , stream = getStream(buffer)
-                , streamLength = buffer.length
-                ;
+    //             , stream = getStream(buffer)
+    //             , streamLength = buffer.length
+    //             ;
 
-            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                if (!err) {
-                    console.log("upload file success");
+    //         blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+    //             if (!err) {
+    //                 console.log("upload file success");
 
-                }
-                else {
-                    console.log(err);
-                }
-            });
-            //res.send(404)
-        }
-    });
+    //             }
+    //             else {
+    //                 console.log(err);
+    //             }
+    //         });
+    //         //res.send(404)
+    //     }
+    // });
 
 })
-router.get('/getOneHeatMap', async (req, res, next) => {
-    var page = await page_db.getPageById(req.param.id);
+router.get('/getArrayHeatMap/:id', async (req, res) => {
+    var page = await page_db.getPageById(req.params.id);
     var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var csv = body;
             readData = makePlayableString(csv);
-            res.send(body);
+            res.send(readData);
+
         }
         else {
             res.send(404)
         }
     });
+})
+router.get('/getOneHeatMap/:id', async (req, res, next) => {
+    var page = await page_db.getPageById(req.params.id);
+    var path = './web/' + page.page_url + '.txt';
+    fs.readFile(path, "utf-8", (err, data) => {
+        var result = {
+            web: data
+        }
+        res.send(result);
+    })
+
 });
 
 function makePlayableString(argument) {
