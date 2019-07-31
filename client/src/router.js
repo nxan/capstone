@@ -43,10 +43,6 @@ const routes = [
     path: '/dashboard',
     component: loadable(() => import('pages/dashboard')),
   },
-  {
-    path: '/playstore',
-    component: loadable(() => import('pages/heatmap/shop.html')),
-  },
   // Menu
   {
     path: '/realtime',
