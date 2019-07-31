@@ -389,7 +389,6 @@ app.use('/api/test', require('./routes/api/test.route'));
 app.use('/api/page', require('./routes/api/page.route'))
 app.use('/api/session_page', require('./routes/api/session_page.route'))
 app.use('/api/stats', require('./routes/api/stats.route'))
-
-
+app.use('/api/behavior', require('./routes/api/behavior.route'))
 
 //app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

@@ -2,7 +2,7 @@ import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import { connect } from 'react-redux'
-import { Tabs, Table , Select } from 'antd'
+import { Tabs, Table, Select } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
@@ -46,6 +46,20 @@ function areaData(series) {
     series: [series],
   }
 }
+function areaData2(series) {
+  return {
+    labels: [
+      '7',
+      '6',
+      '5',
+      '4',
+      '3',
+      '2 days ago',
+      'Yesterday',
+    ],
+    series: [series],
+  }
+}
 
 // const menu = (
 //   <Menu>
@@ -64,9 +78,9 @@ function areaData(series) {
 
 const { Option } = Select;
 
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
+// function handleChange(value) {
+//   console.log(`selected ${value}`);
+// }
 
 const colors = {
   primary: '#01a8fe',
@@ -159,6 +173,25 @@ class Audience extends React.Component {
         pattern: [colors.primary, colors.success],
       },
     }
+    const { value: propValue } = this.props;
+    const { value: stateValue } = this.state;
+    const value = this.isUpdatedByChange ? propValue : stateValue;
+    let chart;
+    if (value === 'lastmonth') {
+      chart = <ChartistGraph
+        className="height-300"
+        data={areaData(audience.sessionLastMonth)}
+        options={areaOptions}
+        type="Line"
+      />
+    } else {
+      chart = <ChartistGraph
+        className="height-300"
+        data={areaData2(audience.sessionLastWeek)}
+        options={areaOptions}
+        type="Line"
+      />
+    }
 
     return (
       <Authorize roles={['admin']}>
@@ -171,12 +204,8 @@ class Audience extends React.Component {
                   <strong>Overview</strong>
                   <br />
                   <br />
-                  {/* <Dropdown overlay={menu}>
-                    <a className="ant-dropdown-link" href="javascript:void(0)">
-                      Session <Icon type="down" />
-                    </a>
-                  </Dropdown> */}
-                  <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={handleChange}>
+
+                  <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={(e) => this.setState({ value: e.target.value })}>
                     <Option value="lastmonth">Last Month</Option>
                     <Option value="lastweek">Last Week</Option>
                   </Select>
@@ -184,12 +213,7 @@ class Audience extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <ChartistGraph
-                    className="height-300"
-                    data={areaData(audience.sessionLastMonth)}
-                    options={areaOptions}
-                    type="Line"
-                  />
+                  {chart}
                 </div>
               </div>
             </div>
