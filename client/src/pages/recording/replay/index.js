@@ -12,10 +12,23 @@ class Video extends React.Component {
         }
     }
 
+    
+
+
     componentDidMount() {
+
+        let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>'
+        $('head').prepend(script);
+        script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>'
+        $('head').prepend(script);
+        let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
+        $('head').prepend(link);
+        link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css" />'
+        $('head').prepend(link);
+        
         const { playerString } = this.props
         const { id } = this.state
-
+       
         console.log(playerString)
         console.log(id)
         if (id !== undefined) {
@@ -37,6 +50,10 @@ class Video extends React.Component {
             }).catch(error => console.log(error));
         }
 
+    }
+
+    componentWillUnmount() {
+       
     }
 
     replay = () => {
@@ -90,6 +107,7 @@ class Video extends React.Component {
     }
 
     render() {
+    
 
         return (
             <div>
@@ -99,7 +117,7 @@ class Video extends React.Component {
                         <div>
                             <div id="container" className={styles.container}>
                                 <div id="video" className={styles.video} />
-                                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+                                <a href="javascript:void(0);" onClick={() => this.closeModal()} />
                             </div>
                         </div>
                     </div>
