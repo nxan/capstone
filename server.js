@@ -154,7 +154,7 @@ function groupBy(allClients, key) {
     return countsExtended;
 }
 io.on("connection", function (socket) {
-    //console.log("Connecting:" + socket.id);
+    console.log("Connecting:" + socket.id);
     // for (var i = 0; i < allClients.length; i++) {
     //     console.log("model:" + allClients[i].socket_id);
 
@@ -211,24 +211,24 @@ io.on("connection", function (socket) {
             io.sockets.emit("Total-user", length + ". This is server ");
         }
     })
-    socket.on('client_send_video', function (data) {
-        var json = JSON.parse(data);
-        let dir = 'recordings/' + json.shop;
-        console.log('video:' + json.shop + '- ' + dir);
+    // socket.on('client_send_video', function (data) {
+    //     var json = JSON.parse(data);
+    //     let dir = 'recordings/' + json.shop;
+    //     console.log('video:' + json.shop + '- ' + dir);
 
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
-        fs.appendFile('recordings/' + json.shop + '/' + json.session_id + '.json', JSON.stringify(json.video) + ',', (err) => {
-            if (err) {
-                console.log(err);
-                // res.status(400).send('error on recording');
-            } else {
-                console.log('events updated');
-                //  res.send("event received");
-            }
-        })
-    })
+    //     if (!fs.existsSync(dir)) {
+    //         fs.mkdirSync(dir);
+    //     }
+    //     fs.appendFile('recordings/' + json.shop + '/' + json.session_id + '.json', JSON.stringify(json.video) + ',', (err) => {
+    //         if (err) {
+    //             console.log(err);
+    //             // res.status(400).send('error on recording');
+    //         } else {
+    //             console.log('events updated');
+    //             //  res.send("event received");
+    //         }
+    //     })
+    // })
     socket.on("disconnect", async function () {
         for (var i = 0; i < allClients.length; i++) {
             // console.log("c:" + allClients[i].socket_id);
@@ -268,7 +268,7 @@ io.on("connection", function (socket) {
 
         //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
-            if (onlines[i].socket_id == socket.id) {
+            if (onlines[i].socket_id == socket.id && onlines[i].session_length == 1) {
                 var videoFields = {};
                 videoFields.session_id = onlines[i].session_id;
                 videoFields.url_video = onlines[i].session_id;
@@ -283,7 +283,7 @@ io.on("connection", function (socket) {
                 blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
                     if (!err) {
                         console.log("upload file success");
-                       
+
                     }
                     else {
                         console.log(err);
@@ -293,16 +293,17 @@ io.on("connection", function (socket) {
                 fs.unlinkSync(filePath);
                 onlines.splice(i, 1);
             }
-
+           
+            onlines[i].session_length -= 1;
 
             //socket.leave(onlines[i].socket_id)
         }
-
+        console.log(onlines);
         console.log(socket.id + ":disconnected")
     })
     socket.on("client-send-session", function (data) {
         console.log(data);
-
+        var check_change_page = false;
         var json = JSON.parse(data);
         var socketModel = { session_id: 0, session_page_id: 0, socket_id: 0, page_id: 0, page_url: '', device: '', os: '', browser: '', acquistion: '' };
         socketModel['session_id'] = json.session_id;
@@ -338,12 +339,14 @@ io.on("connection", function (socket) {
             } else {
                 check_change_page = true;
                 onlines[i].socket_id = socket.id;
+                onlines[i].session_length = onlines[i].session_length + 1
                 onlines[i].page_url = json.page_url;
             }
             //console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
         }
 
         if (!check_change_page) {
+            socketModel.session_length = 1;
             onlines.push(socketModel);
             socket.join(process.env.ROOM);
         }
@@ -352,6 +355,9 @@ io.on("connection", function (socket) {
         io.sockets.emit("Server-send-data", data);
     })
 });
+function bufferFile(relPath) {
+    return fs.readFileSync(path.join(__dirname, relPath));
+}
 app.post('/api', (req, res) => {
     console.log(req.body)
     fs.appendFile('recordings/' + fileName + '.json', JSON.stringify(req.body) + ',', (err) => {
@@ -380,7 +386,6 @@ app.use('/api/test', require('./routes/api/test.route'));
 app.use('/api/page', require('./routes/api/page.route'))
 app.use('/api/session_page', require('./routes/api/session_page.route'))
 app.use('/api/stats', require('./routes/api/stats.route'))
-
-
+app.use('/api/behavior', require('./routes/api/behavior.route'))
 
 //app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
