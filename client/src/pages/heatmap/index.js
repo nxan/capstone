@@ -82,7 +82,8 @@ class HeatMapList extends React.Component {
             data = data.concat(entry);
         });
         $('.spy_frame').contents().find("body").append(this.heatMapScript(data))
-        // $('.spy_frame').contents().find("body").abc()
+        // /$('.spy_frame').heatmap()
+        $("iframe").contents().bind("heatmap1, fn");
         // return playerString;
     }
 
@@ -94,8 +95,10 @@ class HeatMapList extends React.Component {
         // const data = JSON.parse(heatMap)
         console.log(heatMap.length);
         localStorage.setItem('heatmap', JSON.stringify(heatMap));
+        document.getElementsByClassName('spy_frame').contentWindow.postMessage(JSON.stringify({ key: 'levi' }), "*");
         // console.log(JSON.parse(localStorage.getItem('heatmap')))
-        const script = "<script>var heatmap = h337.create({container: document.body}); heatmap.setData({data : JSON.parse(localStorage.getItem('heatmap'))}) console.log(JSON.parse(localStorage.getItem('heatmap'));<\/script>)";
+        // sconst script = '<script>alert(1)</script>'
+        const script = "<script>var heatmap1 = function(){  var heatmap = h337.create({container: document.body}); heatmap.setData({data : JSON.parse(localStorage.getItem('heatmap'))}) console.log(JSON.parse(localStorage.getItem('heatmap'));}<\/script>)";
         return script
     }
 
@@ -134,7 +137,8 @@ class HeatMapList extends React.Component {
         }).then((data) => data.json())
             .then((data) => {
                 $('.frame').show();
-                $('.spy_frame').html('')
+                $(".spy_frame").contents().find("body").html('');
+                // $('.spy_frame').html('')
                 $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
                 $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
                 $('.spy_frame').contents().find("body").append(data.web);

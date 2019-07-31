@@ -24,6 +24,7 @@
     "react/jsx-indent": "off",
     "react/jsx-indent-props": "off",
     "prefer-template": "off",
+    "no-return-assign": "off",
     "react/prefer-stateless-function": 0,
     "react/jsx-one-expression-per-line": 0,
     "linebreak-style": 0,
