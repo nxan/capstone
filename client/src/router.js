@@ -79,6 +79,12 @@ const routes = [
     component: loadable(() => import('pages/heatmap')),
     exact: true,
   },
+  
+  {
+    path: '/heatmap/shop',
+    component: loadable(() => import('pages/heatmap/shop')),
+    exact: true,
+  },
   // AntDesign
   {
     path: '/antd',

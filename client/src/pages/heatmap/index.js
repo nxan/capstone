@@ -2,9 +2,8 @@ import React from 'react'
 import { Table, Icon, Input, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import Modal from 'react-awesome-modal';
+import { Link } from 'react-router-dom'
 import $ from 'jquery'
-import styles from './style.module.scss'
 
 @connect(({ video }) => ({ video }))
 class HeatMapList extends React.Component {
@@ -15,7 +14,7 @@ class HeatMapList extends React.Component {
         // events: [],
         // playerString: [],
         filtered: false,
-        visibled: false,
+        // visibled: false,
     }
 
     componentDidMount() {
@@ -81,8 +80,18 @@ class HeatMapList extends React.Component {
         array.forEach((entry) => {
             data = data.concat(entry);
         });
-        $('.spy_frame').contents().find("body").append(this.heatMapScript(data))
-        // $('.spy_frame').contents().find("body").abc()
+        // $('.spy_frame').contents().find("body").append(this.heatMapScript(data));
+        // const script = "(function abc() {alert('hello world');})";
+        // $('.spy_frame').contents().find("body").append($('<script>').html(script));
+        this.heatMapScript(data)
+
+        // /$('.spy_frame').heatmap()
+        // const myFrame = document.getElementsByClassName('spy_frame').contentWindow;
+
+        // myFrame.window.eval('function foo() {\n'
+        //     + ' alert("Look at me, executed inside an iframe!");\n'
+        //     + '}');
+        // $('.spy_frame').contents().find("body").find('heatmap1');
         // return playerString;
     }
 
@@ -94,8 +103,21 @@ class HeatMapList extends React.Component {
         // const data = JSON.parse(heatMap)
         console.log(heatMap.length);
         localStorage.setItem('heatmap', JSON.stringify(heatMap));
+        /* eslint global-require: */
+        const h337 = require('heatmap.js')
+        const heatmap = h337.create({
+            container: document.getElementById('frame')
+        });
+        heatmap.setData({
+            data: JSON.parse(localStorage.getItem('heatmap'))
+        });
+        // document.getElementsByClassName('spy_frame').contentWindow.postMessage(JSON.stringify({ key: 'levi' }), "*");
         // console.log(JSON.parse(localStorage.getItem('heatmap')))
-        const script = "<script>var heatmap = h337.create({container: document.body}); heatmap.setData({data : JSON.parse(localStorage.getItem('heatmap'))}) console.log(JSON.parse(localStorage.getItem('heatmap'));<\/script>)";
+        let script = '<script>alert(1)<'
+        script += "/script>"
+
+        // const script = "<script type='text/javascript'>var heatmap1 = function(){  var heatmap = h337.create({container: document.body}); heatmap.setData({data : JSON.parse(localStorage.getItem('heatmap'))}) console.log(JSON.parse(localStorage.getItem('heatmap'));alert('Look at me, executed inside an iframe!');\n} <";
+        // script += "/script>)";
         return script
     }
 
@@ -121,7 +143,7 @@ class HeatMapList extends React.Component {
 
     openModal(id) {
         this.setState({
-            visibled: true
+          //  visibled: true
         });
 
         fetch('http://localhost:8888/api/page/getOneHeatMap/'.concat(id), {
@@ -134,7 +156,8 @@ class HeatMapList extends React.Component {
         }).then((data) => data.json())
             .then((data) => {
                 $('.frame').show();
-                $('.spy_frame').html('')
+                $(".spy_frame").contents().find("body").html('');
+                // $('.spy_frame').html('')
                 $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
                 $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
                 $('.spy_frame').contents().find("body").append(data.web);
@@ -153,12 +176,12 @@ class HeatMapList extends React.Component {
 
     closeModal() {
         this.setState({
-            visibled: false
+         //   visibled: false
         });
     }
 
     render() {
-        const { video, searchText, filtered, filterDropdownVisible, visibled } = this.state
+        const { video, searchText, filtered, filterDropdownVisible } = this.state
         // console.log(video.video.heatmap)
         const heatmapData = Object.values(video.video.heatmap);
         const columns = [
@@ -179,13 +202,19 @@ class HeatMapList extends React.Component {
                 key: 'play',
                 render: (text, record) => (
                     <span>
-                        <Button onClick={() => this.openModal(record.id)}>Play</Button>
-                        <Modal visible={visibled} width="100%" height="100%" onClickAway={() => this.closeModal()}>
-                            <div className={'frame '.concat(styles.frame)}>
-                                <iframe className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" />
-                                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
-                            </div>
-                        </Modal>
+                        <Link to={{
+                            pathname: '/heatmap/shop',
+                            id: record.id
+                        }}
+                        >
+                            <Button>Play</Button>
+                            {/* <Modal visible={visibled} width="80%" height="100%" onClickAway={() => this.closeModal()}>
+                                <div id="frame" className={'frame '.concat(styles.frame)}>
+                                    <iframe className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" />
+                                    <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+                                </div>
+                            </Modal> */}
+                        </Link>
                     </span>
                 ),
             },

@@ -177,7 +177,7 @@ router.get('/getArrayHeatMap/:id', async (req, res) => {
 })
 router.get('/getOneHeatMap/:id', async (req, res, next) => {
     var page = await page_db.getPageById(req.params.id);
-    var path = './web/' + page.page_url + '.txt';
+    var path = './web/' + page.page_url + '.html';
     fs.readFile(path, "utf-8", (err, data) => {
         var result = {
             web: data
