@@ -137,14 +137,14 @@ function getMousePosition() {
     getGroupedData();
 }
 
-// function record() {
-//     let events = []
+function record() {
+    let events = []
 
-//     rrweb.record({
-//         emit(event) {
-//             events.push(event);
-//         },
-//     });
+    rrweb.record({
+        emit(event) {
+            events.push(event);
+        },
+    });
 
     function save() {
         const body = JSON.stringify(events);
