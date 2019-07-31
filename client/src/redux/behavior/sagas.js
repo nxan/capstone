@@ -1,5 +1,5 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
-import { getBehavior } from 'services/behavior'
+import { getBehavior, getMostProduct } from 'services/behavior'
 import { loadProfile } from 'services/user'
 import actions from './actions'
 import * as selectors from './selectors'
@@ -36,17 +36,17 @@ export function* LOAD_CURRENT_ACCOUNT() {
     })
 }
 export function* LOAD_BEHAVIOR() {
-    const shopUrl = yield select(selectors.shopUrl);    
+    const shopUrl = yield select(selectors.shopUrl);
     console.log(shopUrl)
     const behavior = yield call(getBehavior, shopUrl);
-    if (behavior) {        
-        yield put({
-            type: 'behavior/SET_STATE',
-            payload: {
-                behavior
-            },
-        })
-    }
+    const mostProduct = yield call(getMostProduct, shopUrl);
+    yield put({
+        type: 'behavior/SET_STATE',
+        payload: {
+            behavior,
+            mostProduct
+        },
+    })
 }
 
 export default function* rootSaga() {

@@ -23,7 +23,23 @@ const columns = [
     key: 'endsession',
   },
 ];
-
+const columns2 = [
+  {
+    title: 'Page',
+    dataIndex: 'page_url',
+    key: 'page',
+  },
+  {
+    title: 'Total',
+    dataIndex: 'num',
+    key: 'total',
+  },
+  {
+    title: 'Rate',
+    dataIndex: 'rate',
+    key: 'rate',
+  },
+];
 @connect(({ behavior }) => ({ behavior }))
 class Behavior extends React.Component {
   componentDidMount = () => {
@@ -48,6 +64,20 @@ class Behavior extends React.Component {
             <div className="row">
               <div className="col-lg-12">
                 <Table columns={columns} dataSource={behavior.behavior} />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="card">
+          <div className="card-header">
+            <div className="utils__title">
+              <strong>Most visited product pages</strong>
+            </div>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <Table columns={columns2} dataSource={behavior.mostProduct} />
               </div>
             </div>
           </div>

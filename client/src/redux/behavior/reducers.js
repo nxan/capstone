@@ -2,6 +2,7 @@ import actions from './actions'
 
 const initialState = {
     behavior:[],
+    mostProduct:[]
 }
 
 export default function behaviorReducer(state = initialState, action) {
