@@ -2,7 +2,7 @@ import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import { connect } from 'react-redux'
-import { Tabs, Table, Select } from 'antd'
+import { Tabs, Table } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
@@ -46,17 +46,10 @@ function areaData(series) {
     series: [series],
   }
 }
+
 function areaData2(series) {
   return {
-    labels: [
-      '7',
-      '6',
-      '5',
-      '4',
-      '3',
-      '2 days ago',
-      'Yesterday',
-    ],
+    labels: ['7', '6', '5', '4', '3', '2 days ago', 'Yesterday'],
     series: [series],
   }
 }
@@ -76,10 +69,15 @@ function areaData2(series) {
 //   </Menu>
 // )
 
-const { Option } = Select;
+// const { Option } = Select
 
 // function handleChange(value) {
-//   console.log(`selected ${value}`);
+//   console.log(`selected ${value}`)
+//   if (value === 'lastmonth') {
+//     alert(value)
+//   } else if (value === 'lastweek') {
+//     alert(value)
+//   }
 // }
 
 const colors = {
@@ -173,25 +171,32 @@ class Audience extends React.Component {
         pattern: [colors.primary, colors.success],
       },
     }
-    const { value: propValue } = this.props;
-    const { value: stateValue } = this.state;
-    const value = this.isUpdatedByChange ? propValue : stateValue;
-    let chart;
-    if (value === 'lastmonth') {
-      chart = <ChartistGraph
-        className="height-300"
-        data={areaData(audience.sessionLastMonth)}
-        options={areaOptions}
-        type="Line"
-      />
-    } else {
-      chart = <ChartistGraph
-        className="height-300"
-        data={areaData2(audience.sessionLastWeek)}
-        options={areaOptions}
-        type="Line"
-      />
-    }
+    // const { value: propValue } = this.props
+    // const { value: stateValue } = this.state
+    // const value = this.isUpdatedByChange ? propValue : stateValue
+    // if (value === 'lastmonth') {
+    //  alert(value);
+    // }
+    // let chart
+    // if (value === 'lastmonth') {
+    //   chart = (
+    //     <ChartistGraph
+    //       className="height-300"
+    //       data={areaData(audience.sessionLastMonth)}
+    //       options={areaOptions}
+    //       type="Line"
+    //     />
+    //   )
+    // } else {
+    //   chart = (
+    //     <ChartistGraph
+    //       className="height-300"
+    //       data={areaData2(audience.sessionLastWeek)}
+    //       options={areaOptions}
+    //       type="Line"
+    //     />
+    //   )
+    // }
 
     return (
       <Authorize roles={['admin']}>
@@ -204,16 +209,37 @@ class Audience extends React.Component {
                   <strong>Overview</strong>
                   <br />
                   <br />
-
-                  <Select defaultValue="lastmonth" style={{ width: 120 }} onChange={(e) => this.setState({ value: e.target.value })}>
+                  {/* e => this.setState({ value: e.target.value }) */}
+                  {/* <Select
+                    defaultValue="lastmonth"
+                    style={{ width: 120 }}
+                    onChange={handleChange}
+                  >
                     <Option value="lastmonth">Last Month</Option>
                     <Option value="lastweek">Last Week</Option>
-                  </Select>
+                  </Select> */}
                 </h5>
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  {chart}
+                  <Tabs type="card">
+                    <TabPane tab="Last Month" key="1">
+                      <ChartistGraph
+                        className="height-300"
+                        data={areaData(audience.sessionLastMonth)}
+                        options={areaOptions}
+                        type="Line"
+                      />
+                    </TabPane>
+                    <TabPane tab="Last Week" key="2">
+                      <ChartistGraph
+                        className="height-300"
+                        data={areaData2(audience.sessionLastWeek)}
+                        options={areaOptions}
+                        type="Line"
+                      />
+                    </TabPane>
+                  </Tabs>
                 </div>
               </div>
             </div>
