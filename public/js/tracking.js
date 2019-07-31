@@ -17,10 +17,51 @@ $(document).ready(() => {
     $('head').prepend(link);
     //loadAdditionJs()
     save_session()
-    setInterval(record, 500);
+    //setInterval(record, 500);
     // record()
+    // setInterval(function () {
+    //     if (heatMap.length > 0) {
+    //         $.ajax({
+    //             url: 'http://localhost:8888/api/video/sendHeatMap',
+    //             method: 'post',
+    //             contentType: 'application/json',
+    //             data: JSON.stringify({
+    //                 heat_map: heatMap,
+    //                 shop: window.location.hostname
+    //             }),
+    //             complete: function () {
+    //                 window.positions = [];
+    //             },
+    //             success: function (data) {
+    //                 window.positions = [];
+    //             }
+    //         }).done(function () {
+    //             console.log('ok');
+    //         })
+    //     }
+
+    // }, 5000);
+    $(window).bind("beforeunload", function () {
+        console.log('change page')
+        var shop = window.location.hostname;
+        if (window.location.pathname != '/') {
+            shop = window.location.hostname + window.location.pathname
+        }
+        var data = JSON.stringify({
+            heat_map: heatMap,
+            shop: shop,
+            page: window.location.hostname + window.location.pathname
+            //script: scripts
+            // script: ""
+        });
+        navigator.sendBeacon('https://a10fa274.ngrok.io/api/page/sendHeatMap', data);
+    })
     document.onmousemove = handler;
-    setInterval(getMousePosition, 100); // setInterval repeats every X ms
+    //setInterval(getMousePosition, 100); // setInterval repeats every X ms
+    $(document).mousemove(function (event) {
+        handler(event)
+        getMousePosition();
+    })
 
     setInterval(function () {
         fetch('https://f45db262.ngrok.io/api/session/save/resave', {
@@ -84,16 +125,8 @@ function getGroupedData() {
     heatMap = grouped;
     //localStorage.setItem('heatMap', JSON.stringify(grouped));
     const body = JSON.stringify(grouped);
-    fetch('http://localhost:8889/api/video/sendHeatMap', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        data: JSON.stringify({
-            heatmap: grouped,
-            shop: window.location.hostname
-        })
-    });
+
+
 }
 function getMousePosition() {
     var pos = mousePos;
@@ -104,14 +137,14 @@ function getMousePosition() {
     getGroupedData();
 }
 
-function record() {
-    let events = []
+// function record() {
+//     let events = []
 
-    rrweb.record({
-        emit(event) {
-            events.push(event);
-        },
-    });
+//     rrweb.record({
+//         emit(event) {
+//             events.push(event);
+//         },
+//     });
 
     function save() {
         const body = JSON.stringify(events);
@@ -227,7 +260,7 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://d7786117.ngrok.io");
+                    socket = io.connect("https://a10fa274.ngrok.io");
                     connect_socket(socket, infor_tab);
 
                     /*socket here

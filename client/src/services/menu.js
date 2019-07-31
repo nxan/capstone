@@ -40,6 +40,12 @@ export async function getLeftMenuData() {
       icon: 'icmn icmn-stats-dots',
     }, 
     {
+      title: 'HeatMap',
+      key: 'heatmap',
+      url: '/heatmap',
+      icon: 'icmn icmn-stats-dots',
+    },
+    {
       title: 'Profile',
       key: 'profile',
       url: '/profile',

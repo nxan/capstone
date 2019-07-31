@@ -28,6 +28,8 @@ export function* LOAD_ACQUISTION() {
     })
 }
 
+
+
 export function* LOAD_CURRENT_ACCOUNT() {
     yield put({
         type: 'acquistion/SET_STATE',

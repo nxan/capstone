@@ -1,7 +1,8 @@
 import actions from './actions'
 
 const initialState = {
-  video: []
+  video: [],
+  heatmap: []
 }
 
 export default function videoReducer(state = initialState, action) {
