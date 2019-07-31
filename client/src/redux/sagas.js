@@ -6,7 +6,8 @@ import acquistion from './acquistion/sagas'
 import audience from './audience/sagas'
 import profile from './profile/sagas'
 import video from './video/sagas'
+import behavior from './behavior/sagas'
 
 export default function* rootSaga() {
-  yield all([user(), menu(), settings(), video(),acquistion(), audience(), profile()])
+  yield all([user(), menu(), settings(), video(), acquistion(), audience(), profile(),behavior()])
 }

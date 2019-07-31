@@ -24,7 +24,7 @@ export async function getLeftMenuData() {
     {
       title: 'Behavior',
       key: 'behavior',
-      url: '/behaviors',
+      url: '/behavior',
       icon: 'icmn icmn-stats-dots',
     },
     {

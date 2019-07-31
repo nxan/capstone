@@ -7,6 +7,7 @@ import acquistion from './acquistion/reducers'
 import audience from './audience/reducers'
 import profile from './profile/reducers'
 import video from './video/reducers'
+import behavior from './behavior/reducers'
 
 export default history =>
     combineReducers({
@@ -17,5 +18,6 @@ export default history =>
         settings,
         acquistion,
         audience,
-        profile
+        profile,
+        behavior
     })

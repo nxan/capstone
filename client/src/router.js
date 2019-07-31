@@ -60,8 +60,8 @@ const routes = [
     exact: true,
   },
   {
-    path: '/behaviors',
-    component: loadable(() => import('pages/behaviors')),
+    path: '/behavior',
+    component: loadable(() => import('pages/behavior')),
     exact: true,
   },
   {
