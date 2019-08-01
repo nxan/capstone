@@ -129,11 +129,11 @@ router.get('/most_page/:url', async (req, res) => {
       let totalRate = 0
       list_page.forEach((element,index)=>{         
          let r = element.num*100/total                
-         let rate = Math.round(r*100)/100
-         totalRate += rate
+         let rate = Math.round(r*100)/100         
          if(index == list_page.length-1){
-            rate = 100 - (totalRate-rate)
+            rate = (100*100- totalRate*100)/100         
          }
+         totalRate += rate
          element.rate = rate         
       })
       res.json(list_page)
