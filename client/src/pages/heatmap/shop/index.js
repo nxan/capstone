@@ -1,9 +1,9 @@
 import React from 'react'
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
 import $ from 'jquery'
 import styles from './style.module.scss'
 
-@connect(({ video }) => ({ video }))
+// @connect(({ video }) => ({ video }))
 class HeatMap extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ class HeatMap extends React.Component {
         }).then((data) => data.json())
             .then((data) => {
                 $('.frame').show();
-                $(".spy_frame").contents().find("body").html('');
+                // $(".spy_frame").contents().find("body").html('');
                 // $('.spy_frame').html('')
                 // $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
                 // $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
@@ -159,7 +159,7 @@ class HeatMap extends React.Component {
 
     render() {
         return (
-            <div id="shop" className={'frame '.concat(styles.frame)}>
+            <div id="shop" className={styles.frame}>
                 {/* <iframe id='frame2' className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" /> */}
                 <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
             </div>

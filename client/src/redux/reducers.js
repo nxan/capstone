@@ -8,6 +8,7 @@ import audience from './audience/reducers'
 import profile from './profile/reducers'
 import video from './video/reducers'
 import behavior from './behavior/reducers'
+import heatmap from './heatmap/reducers'
 
 export default history =>
     combineReducers({
@@ -15,6 +16,7 @@ export default history =>
         user,
         menu,
         video,
+        heatmap,
         settings,
         acquistion,
         audience,

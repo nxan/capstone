@@ -161,7 +161,7 @@ function crawlData(shop, url) {
         });
     }
     cloudscraper.get(reqWeb).then(function (htmlString) {
-        var path = './web/' + shop + '/' + url + ".txt";
+        var path = './web/' + shop + '/' + url + ".html";
         fs.writeFile(path, htmlString, (err) => {
             if (err) console.log(err);
             console.log("Successfully Written to File.");

@@ -118,7 +118,7 @@ router.post('/sendVideo', async (req, res, next) => {
             console.log(err);
             res.status(400).send('error on recording');
         } else {
-            console.log('events updated');
+            // console.log('events updated');
             res.send("event received");
         }
     })

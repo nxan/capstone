@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import $ from 'jquery'
 
-@connect(({ video }) => ({ video }))
+@connect(({ heatmap }) => ({ heatmap }))
 class HeatMapList extends React.Component {
     state = {
-        video: this.props,
+        heatmap: this.props,
         filterDropdownVisible: false,
         searchText: '',
         // events: [],
@@ -39,7 +39,7 @@ class HeatMapList extends React.Component {
         this.setState({
             filterDropdownVisible: false,
             filtered: !!searchText,
-            video: tableData
+            heatmap: tableData
                 .map(record => {
                     const match = record.name.match(reg)
                     if (!match) {
@@ -181,9 +181,9 @@ class HeatMapList extends React.Component {
     }
 
     render() {
-        const { video, searchText, filtered, filterDropdownVisible } = this.state
+        const { heatmap, searchText, filtered, filterDropdownVisible } = this.state
         // console.log(video.video.heatmap)
-        const heatmapData = Object.values(video.video.heatmap);
+        const heatmapData = Object.values(heatmap.heatmap);
         const columns = [
             {
                 title: 'Page',

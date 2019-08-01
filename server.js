@@ -180,28 +180,28 @@ io.on("connection", function (socket) {
     //     socket.emit('online_page', countsExtended);
     //     check = false;
     // }
-    // setInterval(function () {
-    //     //socket.emit('online', Object.keys(io.sockets.connected).length - 1);
-    //     socket.emit('online', onlines.length);
-    //     var counts = onlines.reduce((p, c) => {
-    //         var name = c.page_url;
-    //         if (!p.hasOwnProperty(name)) {
-    //             p[name] = 0;
-    //         }
-    //         p[name]++;
-    //         return p;
-    //     }, {});
-    //     var countsExtended = Object.keys(counts).map(k => {
-    //         return { name: k, count: counts[k] };
-    //     });
-    //     //console.log(countsExtended)
-    //     // socket.emit('locations', locations);
-    //     socket.emit('online_os', groupBy(onlines, 'os'));
-    //     socket.emit('online_dv', groupBy(onlines, 'device'));
-    //     socket.emit('online_bw', groupBy(onlines, 'browser'));
-    //     socket.emit('online_ac', groupBy(onlines, 'acquistion'));
-    //     socket.emit('online_page', countsExtended);
-    // }, 2000)
+    setInterval(function () {
+        //socket.emit('online', Object.keys(io.sockets.connected).length - 1);
+        socket.emit('online', onlines.length);
+        var counts = onlines.reduce((p, c) => {
+            var name = c.page_url;
+            if (!p.hasOwnProperty(name)) {
+                p[name] = 0;
+            }
+            p[name]++;
+            return p;
+        }, {});
+        var countsExtended = Object.keys(counts).map(k => {
+            return { name: k, count: counts[k] };
+        });
+        //console.log(countsExtended)
+        // socket.emit('locations', locations);
+        socket.emit('online_os', groupBy(onlines, 'os'));
+        socket.emit('online_dv', groupBy(onlines, 'device'));
+        socket.emit('online_bw', groupBy(onlines, 'browser'));
+        socket.emit('online_ac', groupBy(onlines, 'acquistion'));
+        socket.emit('online_page', countsExtended);
+    }, 2000)
 
     socket.on("session_live", function () {
         if (io.sockets.adapter.rooms[process.env.ROOM]) {

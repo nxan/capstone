@@ -7,8 +7,8 @@ var coordinates = [],
 var events = [], session_id = 0;
 $(document).ready(() => {
 
-    // var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
-    // $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
+    var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
+    $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     var script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
     var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(script);
@@ -17,30 +17,8 @@ $(document).ready(() => {
     $('head').prepend(link);
     //loadAdditionJs()
     save_session()
-    //setInterval(record, 500);
-    // record()
-    // setInterval(function () {
-    //     if (heatMap.length > 0) {
-    //         $.ajax({
-    //             url: 'http://localhost:8888/api/video/sendHeatMap',
-    //             method: 'post',
-    //             contentType: 'application/json',
-    //             data: JSON.stringify({
-    //                 heat_map: heatMap,
-    //                 shop: window.location.hostname
-    //             }),
-    //             complete: function () {
-    //                 window.positions = [];
-    //             },
-    //             success: function (data) {
-    //                 window.positions = [];
-    //             }
-    //         }).done(function () {
-    //             console.log('ok');
-    //         })
-    //     }
+    setInterval(record, 500);
 
-    // }, 5000);
     $(window).bind("beforeunload", function () {
         console.log('change page')
         var shop = window.location.hostname;
@@ -54,7 +32,7 @@ $(document).ready(() => {
             //script: scripts
             // script: ""
         });
-        navigator.sendBeacon('https://a10fa274.ngrok.io/api/page/sendHeatMap', data);
+        navigator.sendBeacon('https://ededf3f8.ngrok.io/api/page/sendHeatMap', data);
     })
     document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -64,7 +42,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://f45db262.ngrok.io/api/session/save/resave', {
+        fetch('https://ededf3f8.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -91,7 +69,7 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://f45db262.ngrok.io/api/session/save/resave', {
+        fetch('https://ededf3f8.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -137,29 +115,29 @@ function getMousePosition() {
     getGroupedData();
 }
 
-function record() {
-    let events = []
+// function record() {
+   
 
-    rrweb.record({
-        emit(event) {
-            events.push(event);
-        },
-    });
+//     rrweb.record({
+//         emit(event) {
+//             events.push(event);
+//         },
+//     });
 
-    function save() {
-        const body = JSON.stringify(events);
-        console.log(events);
-        events = [];
-        fetch('http://f45db262.ngrok.io/api', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body,
-        });
-    }
-    setInterval(save, 0.2 * 10000);
-}
+//     function save() {
+//         const body = JSON.stringify(events);
+//         console.log(events);
+//         events = [];
+//         fetch('http://ededf3f8.ngrok.io/api', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body,
+//         });
+//     }
+//     setInterval(save, 0.2 * 10000);
+// }
 function loadAdditionJs() {
     var script = document.createElement("script");  // create a script DOM node
     script.src = 'https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js';  // set its src to the provided URL
@@ -169,7 +147,7 @@ function loadAdditionJs() {
     $('head').append(link);
 }
 function record() {
-    let events = []
+    // let events = []
     rrweb.record({
         emit(event) {
             events.push(event);
@@ -233,7 +211,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://f45db262.ngrok.io/api/session', {
+            fetch('https://ededf3f8.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -260,7 +238,7 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://a10fa274.ngrok.io");
+                    socket = io.connect("https://ededf3f8.ngrok.io");
                     connect_socket(socket, infor_tab);
 
                     /*socket here
@@ -275,19 +253,6 @@ function connect_socket(socket, infor_tab) {
 
 
     socket.emit("client-send-session", JSON.stringify(infor_tab));
-    //const body = JSON.stringify(events);
-
-    //infor_tab.video = events;
-    //events = [];
-    //console.log(infor_tab)
-    // socket.emit('client_send_video', JSON.stringify(infor_tab));
-    // fetch('http://localhost:8889/api', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body,
-    // });
 }
 function getInfor() {
     var infor = {
