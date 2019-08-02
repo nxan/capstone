@@ -73,89 +73,21 @@ router.post('/sendHeatMap', async (req, res, next) => {
             // res.send("event received");
         }
     })
-    var filename = './heatmap/' + page.id + '.json';
-    var buffer = bufferFile(filename);
-    const
-        blobName = page.id + '.json'
-        , stream = getStream(buffer)
-        , streamLength = buffer.length
-        ;
-
-    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-        if (!err) {
-            console.log("upload file success");
-
-        }
-        else {
-            console.log(err);
-        }
-    });
+    // var filename = './heatmap/' + page.id + '.json';
+    // var buffer = bufferFile(filename);
     // const
-    //     blobName = shop + '.json'
-    //     , stream = getStream(stringStream)
-    //     , streamLength = stringStream.length
+    //     blobName = page.id + '.json'
+    //     , stream = getStream(buffer)
+    //     , streamLength = buffer.length
     //     ;
-    // stringStream.pipe(blobService.createWriteStreamToBlockBlob(containerName, blobName, function (error) {
-    //     if (!error) {
-    //         console.log("upload file success");
-    //     } else {
-    //         console.log(error);
-    //     }
-    // }));
-    // blobService.createWriteStreamToBlockBlob(containerName, blobName, stream, streamLength, err => {
+
+    // blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
     //     if (!err) {
     //         console.log("upload file success");
 
     //     }
     //     else {
     //         console.log(err);
-    //     }
-    // });
-    //var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
-    // request.get(url, function (error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //         // var data = body + '' + JSON.stringify(heatmap);
-    //         // var stringStream = JSON.stringify(data);
-    //         var filename = './heatmap/' + page.id + '.json';
-    //         var buffer = bufferFile(filename);
-    //         const
-    //             blobName = page.id + '.json'
-    //             , stream = getStream(buffer)
-    //             , streamLength = buffer.length
-    //             ;
-
-    //         blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-    //             if (!err) {
-    //                 console.log("upload file success");
-
-    //             }
-    //             else {
-    //                 console.log(err);
-    //             }
-    //         });
-    //         //res.send(readData);
-    //     }
-    //     else {
-    //         // var stringStream = JSON.stringify(heatmap);
-    //         var filename = './heatmap/' + page.id + '.json';
-    //         var buffer = bufferFile(filename);
-    //         const
-    //             blobName = page.id + '.json'
-
-    //             , stream = getStream(buffer)
-    //             , streamLength = buffer.length
-    //             ;
-
-    //         blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-    //             if (!err) {
-    //                 console.log("upload file success");
-
-    //             }
-    //             else {
-    //                 console.log(err);
-    //             }
-    //         });
-    //         //res.send(404)
     //     }
     // });
 
@@ -196,7 +128,8 @@ function makePlayableString(argument) {
 router.get('/getAll/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url);
-    var pages = await page_db.getAllPage(shop.id);
+    var pages = await page_db.getAllPageWithNotPage(shop);
+    console.log(pages);
     res.json(pages);
 })
 router.get('/page_url/:url', async (req, res) => {

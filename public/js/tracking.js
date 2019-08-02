@@ -32,7 +32,7 @@ $(document).ready(() => {
             //script: scripts
             // script: ""
         });
-        navigator.sendBeacon('https://ededf3f8.ngrok.io/api/page/sendHeatMap', data);
+        navigator.sendBeacon('https://95e84943.ngrok.io/api/page/sendHeatMap', data);
     })
     document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -42,7 +42,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://ededf3f8.ngrok.io/api/session/save/resave', {
+        fetch('https://95e84943.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -69,7 +69,7 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://ededf3f8.ngrok.io/api/session/save/resave', {
+        fetch('https://95e84943.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -128,7 +128,7 @@ function getMousePosition() {
 //         const body = JSON.stringify(events);
 //         console.log(events);
 //         events = [];
-//         fetch('http://ededf3f8.ngrok.io/api', {
+//         fetch('http://95e84943.ngrok.io/api', {
 //             method: 'POST',
 //             headers: {
 //                 'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://ededf3f8.ngrok.io/api/session', {
+            fetch('https://95e84943.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -238,7 +238,7 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://ededf3f8.ngrok.io");
+                    socket = io.connect("https://95e84943.ngrok.io");
                     connect_socket(socket, infor_tab);
 
                     /*socket here

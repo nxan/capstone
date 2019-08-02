@@ -96,11 +96,6 @@ class VideosList extends React.Component {
         events,
       }
     })
-    /* eslint object-shorthand: "error" */
-    // replayer.addEventListener('finish', () => console.log('finish'));
-    // /* global replayer  */
-    // /* eslint no-undef: "error" */
-    // replayer.play()
 
   }
 
@@ -108,12 +103,6 @@ class VideosList extends React.Component {
     let data = [];
     const { playerString } = this.state
     console.log(playerString.length)
-    // console.log(events.length);
-    // console.log(events)
-    // for (let i = 0; i < playerString.length / 1000; i += 1) {
-    //   data = data.concat(playerString[i]);
-    //   console.log(data);
-    // }
     playerString.forEach((entry) => {
       data = data.concat(entry);
 
@@ -124,11 +113,6 @@ class VideosList extends React.Component {
       //  visibled: true,
       events: data
     });
-    // return <Redirect to={{
-    //   pathname: '/replay',
-    //   state: { playerString: data }
-    // }}
-    // />
     this.replay();
     // return playerString;
   }
@@ -147,22 +131,6 @@ class VideosList extends React.Component {
     this.setState({
       //  visibled: true
     });
-
-    // fetch('http://localhost:8888/api/video/getOne/'.concat(id), {
-    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    //   credentials: 'include',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   }
-    // }).then((data) => data.json()).then((data) => {
-    //   this.setState({
-    //     visibled: true,
-    //     playerString: data.events
-    //   });
-    //   return this.replayFormatSetter();
-    // }).catch(error => console.log(error));
-
 
   }
 
@@ -200,8 +168,8 @@ class VideosList extends React.Component {
       },
       {
         title: 'Date',
-        dataIndex: 'video_time',
-        key: 'video_time',
+        dataIndex: 'date_time',
+        key: 'date_time',
         sorter: (a, b) => a.video_time.length - b.video_time.length,
         render: text => (
           <a className="utils__link--underlined" href="javascript: void(0);">
@@ -232,17 +200,6 @@ class VideosList extends React.Component {
             () => this.searchInput && this.searchInput.focus(),
           )
         },
-      },
-      {
-        title: 'Action',
-        key: 'remove',
-        render: () => (
-          <span>
-            <Button icon="cross" size="small">
-              Remove
-            </Button>
-          </span>
-        ),
       },
     ]
 

@@ -275,6 +275,7 @@ io.on("connection", function (socket) {
                 var videoFields = {};
                 videoFields.session_id = onlines[i].session_id;
                 videoFields.url_video = onlines[i].session_id;
+                videoFields.date_time = new Date(Date.now()).toISOString()
                 var video = await video_db.addVideo(videoFields);
                 var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
                 var buffer = bufferFile(filename);

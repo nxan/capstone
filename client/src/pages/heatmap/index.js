@@ -182,8 +182,9 @@ class HeatMapList extends React.Component {
 
     render() {
         const { heatmap, searchText, filtered, filterDropdownVisible } = this.state
-        // console.log(video.video.heatmap)
-        const heatmapData = Object.values(heatmap.heatmap);
+        console.log(heatmap.heatmap.heatmap)
+        const heatmapData = Object.values(heatmap.heatmap.heatmap);
+        // const heatmapData = heatmap.heatmap.heatmap;
         const columns = [
             {
                 title: 'Page',

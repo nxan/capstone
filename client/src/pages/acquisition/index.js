@@ -135,23 +135,6 @@ const columns = [
       },
     ],
   },
-  {
-    Header: 'Conversions',
-    columns: [
-      {
-        Header: 'Conversion Rate',
-        accessor: 'conversionrate',
-      },
-      {
-        Header: 'Completion',
-        accessor: 'completion',
-      },
-      {
-        Header: 'Value',
-        accessor: 'value',
-      },
-    ],
-  },
 ]
 
 @connect(({ acquistion }) => ({ acquistion }))

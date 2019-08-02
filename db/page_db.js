@@ -1,6 +1,6 @@
 const Page = require('../model/Page')
 const shop_db = require('../db/shop_db')
-
+const sequelize = require('sequelize');
 module.exports = {
     addPage: async (page_url, shop_id) => {
         Page.findOrCreate({
@@ -42,6 +42,16 @@ module.exports = {
             return result
         })
 
+    },
+    getAllPageWithNotPage: async (shop) => {
+        var query = "SELECT id, page_url, shop_id FROM [page] WHERE shop_id = " + shop.id + " and page_url not in ('" + shop.shop_url + "/collections/all','" + shop.shop_url + "/cart')";
+        console.log(query);
+        var page = await Page.sequelize.query(query, { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            return result
+            //res.json(formatSeconds(result[0].Avg))
+        });
+        return page;
     },
 
 }

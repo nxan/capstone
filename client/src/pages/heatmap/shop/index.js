@@ -34,20 +34,9 @@ class HeatMap extends React.Component {
         }).then((data) => data.json())
             .then((data) => {
                 $('.frame').show();
-                // $(".spy_frame").contents().find("body").html('');
-                // $('.spy_frame').html('')
-                // $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js'></script>")
-                // $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
-                // $('.spy_frame').contents().find("body").append(data.web);
                 document.getElementById('shop').innerHTML = data.web;
                 this.getArrayHeatMap(id)
-                // console.log(data);
-                // this.setState({
-                //     events: data.heatMap
-                // })
-                // this.replayFormatSetter(data.heatMap);
-                // const heatmap = 
-                // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
+
             }).catch(error => console.log(error));
 
     }
@@ -98,19 +87,7 @@ class HeatMap extends React.Component {
         array.forEach((entry) => {
             data = data.concat(entry);
         });
-        // $('.spy_frame').contents().find("body").append(this.heatMapScript(data));
-        // const script = "(function abc() {alert('hello world');})";
-        // $('.spy_frame').contents().find("body").append($('<script>').html(script));
         this.heatMapScript(data)
-
-        // /$('.spy_frame').heatmap()
-        // const myFrame = document.getElementsByClassName('spy_frame').contentWindow;
-
-        // myFrame.window.eval('function foo() {\n'
-        //     + ' alert("Look at me, executed inside an iframe!");\n'
-        //     + '}');
-        // $('.spy_frame').contents().find("body").find('heatmap1');
-        // return playerString;
     }
 
     heatMapScript = (heatMap) => {
@@ -119,10 +96,14 @@ class HeatMap extends React.Component {
         localStorage.setItem('heatmap', JSON.stringify(heatMap));
         /* eslint global-require: */
         const h337 = require('heatmap.js')
-   
-        const heatmap = h337.create({
-            container: document.getElementById('shop')
-        });
+        const config = {
+            container: document.getElementById('shop'),
+            radius: 20,
+            maxOpacity: .7,
+            minOpacity: 0,
+            blur: .75
+        };
+        const heatmap = h337.create(config);
         heatmap.setData({
             data: JSON.parse(localStorage.getItem('heatmap'))
         });

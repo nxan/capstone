@@ -8,6 +8,9 @@ const Video = db.define('video', {
     },
     url_video: {
         type: Sequelize.STRING
+    },
+    date_time:{
+        type: Sequelize.DATE
     }
 },
     {

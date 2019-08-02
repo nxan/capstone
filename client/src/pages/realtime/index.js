@@ -3,8 +3,8 @@ import io from 'socket.io-client';
 import { Table, Tabs } from 'antd'
 import Authorize from 'components/LayoutComponents/Authorize'
 import { Helmet } from 'react-helmet'
-import ChartistGraph from 'react-chartist'
-import ChartistTooltip from 'chartist-plugin-tooltips-updated'
+// import ChartistGraph from 'react-chartist'
+// import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import * as am4core from '@amcharts/amcharts4/core'
 // eslint-disable-next-line camelcase
 // eslint-disable-next-line camelcase
@@ -13,21 +13,21 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated'
 am4core.useTheme(am4themes_animated)
 
 const socket = io.connect('http://localhost:8888');
-const biPolarBarData = {
-  labels: ['20', '15', '10', '5', '1'],
-  series: [[1, 2, 1.5, 1, 1]],
-}
+// const biPolarBarData = {
+//   labels: ['20', '15', '10', '5', '1'],
+//   series: [[1, 2, 1.5, 1, 1]],
+// }
 
-const biPolarBarOptions = {
-  high: 2,
-  low: 0,
-  axisX: {
-    labelInterpolationFnc(value, index) {
-      return index % 1 === 0 ? value : null
-    },
-  },
-  plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
-}
+// const biPolarBarOptions = {
+//   high: 2,
+//   low: 0,
+//   axisX: {
+//     labelInterpolationFnc(value, index) {
+//       return index % 1 === 0 ? value : null
+//     },
+//   },
+//   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
+// }
 
 const taskTableColumns = [
   {
@@ -156,7 +156,7 @@ class Realtime extends React.Component {
       <Authorize roles={['admin']}>
         <Helmet title="Realtime" />
         <section className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-12">
             <section className="card text-center">
               <div className="card-header">
                 <div className="utils__title">
@@ -171,7 +171,7 @@ class Realtime extends React.Component {
               </div>
             </section>
           </div>
-          <div className="col-lg-8">
+          {/* <div className="col-lg-8">
             <section className="card">
               <div className="card-header">
                 <div className="utils__title">
@@ -190,7 +190,7 @@ class Realtime extends React.Component {
                 </div>
               </div>
             </section>
-          </div>
+          </div> */}
         </section>
         <section className="row">
           <div className="col-lg-12">
