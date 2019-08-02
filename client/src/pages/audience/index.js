@@ -153,7 +153,7 @@ class Audience extends React.Component {
     const y = parseInt(audience.newuser, 10)
     const pie = {
       data: {
-        columns: [['old users', x], ['new users', y]],
+        columns: [['OLD USERS', x], ['NEW USERS', y]],
         type: 'pie',
       },
       color: {
