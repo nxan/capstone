@@ -2,7 +2,7 @@ import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import { connect } from 'react-redux'
-import { Tabs, Table } from 'antd'
+import { Tabs, Table,Progress } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
@@ -80,6 +80,11 @@ const columnsdev = [
     dataIndex: 'percentuser',
     width: '30%',
     key: 'percentuser',
+    render: percentuser => (
+      <div style={{ width: 170 }}>
+      <Progress percent={percentuser} size="small" status="active" />
+      </div>
+    ),
   },
 ]
 
@@ -100,6 +105,11 @@ const columnsOS = [
     dataIndex: 'percentuser',
     width: '30%',
     key: 'percentuser',
+    render: percentuser => (
+      <div style={{ width: 170 }}>
+      <Progress percent={percentuser} size="small" status="active" />
+      </div>
+    ),
   },
 ]
 
@@ -120,6 +130,11 @@ const columnsbrowser = [
     dataIndex: 'percentuser',
     width: '30%',
     key: 'percentuser',
+    render: percentuser => (
+      <div style={{ width: 170 }}>
+      <Progress percent={percentuser} size="small" status="active" />
+      </div>
+    ),
   },
 ]
 
