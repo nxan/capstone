@@ -149,6 +149,7 @@ class Audience extends React.Component {
   render() {
     const { audience } = this.props
     const pagesession = audience.session + audience.pageView
+    const numberSessionUser = Math.round(audience.session/audience.user,2)
     const x = parseInt(audience.olduser, 10)
     const y = parseInt(audience.newuser, 10)
     const pie = {
@@ -338,7 +339,7 @@ class Audience extends React.Component {
           <div className="col-md-3">
             <ChartCard2
               title="Number sessions per User"
-              amount="240"
+              amount={numberSessionUser}
               chartProps={{
                 width: 180,
                 height: 107,
