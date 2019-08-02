@@ -7,6 +7,7 @@ const initialState = {
     acquistionDirect: 0,
     acquistionOther: 0,
     acquistionTable: [],
+    visitorLastMonth: [],
 }
 
 export default function userReducer(state = initialState, action) {

@@ -54,32 +54,6 @@ function areaData2(series) {
   }
 }
 
-// const menu = (
-//   <Menu>
-//     <Menu.Item>
-//       <a target="_blank" rel="noopener noreferrer" href="javascript:void(0)">
-//         last Week
-//       </a>
-//     </Menu.Item>
-//     <Menu.Item>
-//       <a target="_blank" rel="noopener noreferrer" href=" javascript:void(0)">
-//         Last Month
-//       </a>
-//     </Menu.Item>
-//   </Menu>
-// )
-
-// const { Option } = Select
-
-// function handleChange(value) {
-//   console.log(`selected ${value}`)
-//   if (value === 'lastmonth') {
-//     alert(value)
-//   } else if (value === 'lastweek') {
-//     alert(value)
-//   }
-// }
-
 const colors = {
   primary: '#01a8fe',
   def: '#acb7bf',
@@ -171,32 +145,6 @@ class Audience extends React.Component {
         pattern: [colors.primary, colors.success],
       },
     }
-    // const { value: propValue } = this.props
-    // const { value: stateValue } = this.state
-    // const value = this.isUpdatedByChange ? propValue : stateValue
-    // if (value === 'lastmonth') {
-    //  alert(value);
-    // }
-    // let chart
-    // if (value === 'lastmonth') {
-    //   chart = (
-    //     <ChartistGraph
-    //       className="height-300"
-    //       data={areaData(audience.sessionLastMonth)}
-    //       options={areaOptions}
-    //       type="Line"
-    //     />
-    //   )
-    // } else {
-    //   chart = (
-    //     <ChartistGraph
-    //       className="height-300"
-    //       data={areaData2(audience.sessionLastWeek)}
-    //       options={areaOptions}
-    //       type="Line"
-    //     />
-    //   )
-    // }
 
     return (
       <Authorize roles={['admin']}>
@@ -209,15 +157,6 @@ class Audience extends React.Component {
                   <strong>Overview</strong>
                   <br />
                   <br />
-                  {/* e => this.setState({ value: e.target.value }) */}
-                  {/* <Select
-                    defaultValue="lastmonth"
-                    style={{ width: 120 }}
-                    onChange={handleChange}
-                  >
-                    <Option value="lastmonth">Last Month</Option>
-                    <Option value="lastweek">Last Week</Option>
-                  </Select> */}
                 </h5>
               </div>
               <div className="card-body">
