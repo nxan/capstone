@@ -22,7 +22,8 @@ class HeatMap extends React.Component {
         link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
         $('head').prepend(link);
 
-        const { id } = this.state
+        const { id } = this.state;
+        // console.log("xem thử:" + this.state.id)
 
         fetch('http://localhost:8888/api/page/getOneHeatMap/'.concat(id), {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -41,38 +42,6 @@ class HeatMap extends React.Component {
 
     }
 
-    // onInputChange = e => {
-    //     this.setState({ searchText: e.target.value })
-    // }
-
-    // onSearch = () => {
-    //     const { searchText, tableData } = this.state
-    //     const reg = new RegExp(searchText, 'gi')
-    //     this.setState({
-    //         filterDropdownVisible: false,
-    //         filtered: !!searchText,
-    //         video: tableData
-    //             .map(record => {
-    //                 const match = record.name.match(reg)
-    //                 if (!match) {
-    //                     return null
-    //                 }
-    //                 return {
-    //                     ...record,
-    //                     name: (
-    //                         <span>
-    //                             {record.name
-    //                                 .split(reg)
-    //                                 .map((text, i) =>
-    //                                     i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text,
-    //                                 )}
-    //                         </span>
-    //                     ),
-    //                 }
-    //             })
-    //             .filter(record => !!record),
-    //     })
-    // }
 
     linkSearchInput = node => {
         this.searchInput = node
@@ -118,6 +87,7 @@ class HeatMap extends React.Component {
     }
 
     getArrayHeatMap = (id) => {
+
         fetch('http://localhost:8888/api/page/getArrayHeatMap/'.concat(id), {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             credentials: 'include',
@@ -139,10 +109,10 @@ class HeatMap extends React.Component {
 
 
     render() {
+
         return (
             <div id="shop" className={styles.frame}>
                 {/* <iframe id='frame2' className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" /> */}
-                <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
             </div>
         )
     }

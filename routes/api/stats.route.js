@@ -408,6 +408,8 @@ router.get('/count/newvisitor/lastmonth/:shop_url/', async (req, res) => {
     res.json(array_visitor_lastmonth)
 });
 
+
+
 /* ----- 
   @route  Count api/stats/count/oldvisitor/days/:shop_url/:day
   @desc   Count old visitor last n day
@@ -446,6 +448,75 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
         })
     }
     res.json(array_visitor_lastweek)
+});
+
+/* ----- 
+  @route  Count api/stats/count/visitor/day/:shop_url
+  @desc   Count visitor last n day
+-----*/
+
+router.get('/count/visitor/day/:shop_url/:from/:to', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_bydate = []
+    var sql = "select distinct(user_id) from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + "AND shop_id = " + shop.id;
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        array_visitor_bydate.unshift(result.length)
+    })
+    res.json(array_visitor_bydate)
+});
+
+/* ----- 
+  @route  Count api/stats/count/newvisitor/days/:shop_url/:day
+  @desc   Count new visitor by day
+-----*/
+router.get('/count/newvisitor/day/:shop_url/:from/:to', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_byday = []
+    var sql = "select count(user_id) as visitor from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        array_visitor_byday.unshift(result[0].visitor)
+    })
+    res.json(array_visitor_byday)
+});
+/* ----- 
+  @route  Count api/stats/count/session/day/:shop_url
+  @desc   Count session day y0 day
+-----*/
+router.get('/count/session/day/:shop_url/:from/:to', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_sessions_day = []
+    var sql = "select * from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + 'AND shop_id = ' + shop.id;
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        array_sessions_day.unshift(result.length)
+    })
+    res.json(array_sessions_day)
+});
+
+/* ----- 
+  @route  Count api/stats/count/oldvisitor/days/:shop_url/:day
+  @desc   Count old visitor day n day
+-----*/
+
+router.get('/count/oldvisitor/day/:shop_url/:from/:to', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_day = []
+    var sql = "select user_id from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + 'AND shop_id = ' + shop.id + 'group by user_id having count(user_id) > 1';
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        array_visitor_day.unshift(result.length)
+    })
+    res.json(array_visitor_day)
 });
 
 router.get('/user_browser/:shop_url', async (req, res) => {
@@ -601,10 +672,5 @@ router.get('/acquisition/:shop_url', async (req, res) => {
         result.push(model)
     }
     res.json(result);
-    //var result = groupArray(sessionData, 'acquistion_id');
-    // var resultCount = sessionData.reduce((acc, o) => (
-    //   acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
-    // //var result = groupArray(resultCount, 'acquistion_id');
-    // res.json(resultCount);
 });
 module.exports = router;

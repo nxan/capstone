@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Icon, Input, Button } from 'antd'
+import { Table, Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -9,12 +9,6 @@ import $ from 'jquery'
 class HeatMapList extends React.Component {
     state = {
         heatmap: this.props,
-        filterDropdownVisible: false,
-        searchText: '',
-        // events: [],
-        // playerString: [],
-        filtered: false,
-        // visibled: false,
     }
 
     componentDidMount() {
@@ -37,8 +31,6 @@ class HeatMapList extends React.Component {
         const { searchText, tableData } = this.state
         const reg = new RegExp(searchText, 'gi')
         this.setState({
-            filterDropdownVisible: false,
-            filtered: !!searchText,
             heatmap: tableData
                 .map(record => {
                     const match = record.name.match(reg)
@@ -80,19 +72,7 @@ class HeatMapList extends React.Component {
         array.forEach((entry) => {
             data = data.concat(entry);
         });
-        // $('.spy_frame').contents().find("body").append(this.heatMapScript(data));
-        // const script = "(function abc() {alert('hello world');})";
-        // $('.spy_frame').contents().find("body").append($('<script>').html(script));
         this.heatMapScript(data)
-
-        // /$('.spy_frame').heatmap()
-        // const myFrame = document.getElementsByClassName('spy_frame').contentWindow;
-
-        // myFrame.window.eval('function foo() {\n'
-        //     + ' alert("Look at me, executed inside an iframe!");\n'
-        //     + '}');
-        // $('.spy_frame').contents().find("body").find('heatmap1');
-        // return playerString;
     }
 
 
@@ -131,19 +111,13 @@ class HeatMapList extends React.Component {
             }
         }).then((data) => data.json())
             .then((data) => {
-                // $('.frame').show();
-                // this.setState({
-                //     events: data.heatMap
-                // })
                 this.replayFormatSetter(data);
-                // const heatmap = 
-                // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
             }).catch(error => console.log(error));
     }
 
     openModal(id) {
         this.setState({
-          //  visibled: true
+            //  visibled: true
         });
 
         fetch('http://localhost:8888/api/page/getOneHeatMap/'.concat(id), {
@@ -162,26 +136,14 @@ class HeatMapList extends React.Component {
                 $('.spy_frame').contents().find("head").append("<script src='https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.min.js'></script>")
                 $('.spy_frame').contents().find("body").append(data.web);
                 this.getArrayHeatMap(id)
-                // console.log(data);
-                // this.setState({
-                //     events: data.heatMap
-                // })
-                // this.replayFormatSetter(data.heatMap);
-                // const heatmap = 
-                // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
             }).catch(error => console.log(error));
 
 
     }
 
-    closeModal() {
-        this.setState({
-         //   visibled: false
-        });
-    }
 
     render() {
-        const { heatmap, searchText, filtered, filterDropdownVisible } = this.state
+        const { heatmap } = this.state
         console.log(heatmap.heatmap.heatmap)
         const heatmapData = Object.values(heatmap.heatmap.heatmap);
         // const heatmapData = heatmap.heatmap.heatmap;
@@ -195,7 +157,6 @@ class HeatMapList extends React.Component {
                         {text}
                     </a>
                 ),
-                sorter: (a, b) => a.id - b.id,
             },
             {
                 title: 'Action',
@@ -208,60 +169,8 @@ class HeatMapList extends React.Component {
                             id: record.id
                         }}
                         >
-                            <Button>Play</Button>
-                            {/* <Modal visible={visibled} width="80%" height="100%" onClickAway={() => this.closeModal()}>
-                                <div id="frame" className={'frame '.concat(styles.frame)}>
-                                    <iframe className={'spy_frame '.concat(styles.spy_frame)} title="myFrame" />
-                                    <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
-                                </div>
-                            </Modal> */}
+                            <Button>View</Button>
                         </Link>
-                    </span>
-                ),
-            },
-            {
-                title: 'Date',
-                dataIndex: 'video_time',
-                key: 'video_time',
-                sorter: (a, b) => a.video_time.length - b.video_time.length,
-                render: text => (
-                    <a className="utils__link--underlined" href="javascript: void(0);">
-                        {text}
-                    </a>
-                ),
-                filterDropdown: (
-                    <div className="custom-filter-dropdown">
-                        <Input
-                            ref={this.linkSearchInput}
-                            placeholder="Search name"
-                            value={searchText}
-                            onChange={this.onInputChange}
-                            onPressEnter={this.onSearch}
-                        />
-                        <Button type="primary" onClick={this.onSearch}>
-                            Search
-                        </Button>
-                    </div>
-                ),
-                filterIcon: <Icon type="search" style={{ color: filtered ? '#108ee9' : '#aaa' }} />,
-                filterDropdownVisible,
-                onFilterDropdownVisibleChange: visible => {
-                    this.setState(
-                        {
-                            filterDropdownVisible: visible,
-                        },
-                        () => this.searchInput && this.searchInput.focus(),
-                    )
-                },
-            },
-            {
-                title: 'Action',
-                key: 'remove',
-                render: () => (
-                    <span>
-                        <Button icon="cross" size="small">
-                            Remove
-                        </Button>
                     </span>
                 ),
             },
@@ -270,11 +179,11 @@ class HeatMapList extends React.Component {
         return (
 
             <div>
-                <Helmet title="Video List" />
+                <Helmet title="Heat Map List" />
                 <div className="card">
                     <div className="card-header">
                         <div className="utils__title">
-                            <strong>Video List</strong>
+                            <strong>Heat Map List </strong>
                         </div>
                     </div>
                     <div className="card-body">

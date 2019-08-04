@@ -46,7 +46,7 @@ module.exports = {
     },
     getAll: async (condition) => {
         return Video.findAll(
-            condition
+            condition,
         ).then((result) => {
             return result
         })

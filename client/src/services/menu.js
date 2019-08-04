@@ -10,7 +10,7 @@ export async function getLeftMenuData() {
       divider: true,
     },
     {
-      title: 'Realtime',
+      title: 'Real Time',
       key: 'realtime',
       url: '/realtime',
       icon: 'icmn icmn-clock',
@@ -40,7 +40,7 @@ export async function getLeftMenuData() {
       icon: 'icmn icmn-stats-dots',
     }, 
     {
-      title: 'HeatMap',
+      title: 'Heat Map',
       key: 'heatmap',
       url: '/heatmap',
       icon: 'icmn icmn-stats-dots',

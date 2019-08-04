@@ -171,36 +171,14 @@ class Realtime extends React.Component {
               </div>
             </section>
           </div>
-          {/* <div className="col-lg-8">
-            <section className="card">
-              <div className="card-header">
-                <div className="utils__title">
-                  <strong>PageViews</strong>
-                </div>
-              </div>
-              <div className="card-body">
-                <div className="mb-5">
-                  <span>Per min</span>
-                  <ChartistGraph
-                    className="height-100"
-                    data={biPolarBarData}
-                    options={biPolarBarOptions}
-                    type="Bar"
-                  />
-                </div>
-              </div>
-            </section>
-          </div> */}
+
         </section>
         <section className="row">
           <div className="col-lg-12">
             <section className="card">
               <div className="card-header">
                 <div className="utils__title">
-                  <strong>Task Table</strong>
-                </div>
-                <div className="utils__titleDescription">
-                  Block with important Task Table information
+                  <strong>User Table Page</strong>
                 </div>
               </div>
               <div className="card-body">

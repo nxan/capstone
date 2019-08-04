@@ -1,22 +1,15 @@
 import React from 'react'
-import { Table, Icon, Input, Button } from 'antd'
+import { Table,  Button } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import $ from 'jquery'
 import { Link } from 'react-router-dom'
-import table from './data.json'
-
 
 @connect(({ video }) => ({ video }))
 class VideosList extends React.Component {
   state = {
-    tableData: table.data,
     video: this.props,
-    filterDropdownVisible: false,
-    searchText: '',
-    // playerString: [],
-    filtered: false,
-    // visibled: false,
+
   }
 
   componentDidMount() {
@@ -29,56 +22,9 @@ class VideosList extends React.Component {
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);
     $('#close').click(function hideDiv() {
-      /* eslint-disable no-new */
-      /* eslint new-cap: ["error", { "newIsCap": false }] */
-      /* global rrwebPlayer  */
-      /* eslint no-undef: "error" */
-      // const events = [[], []]
-      // new rrwebPlayer({
-      //   target: document.getElementById('video'),
-      //   data: {
-      //     events,
-      //   }
-      // })
-      // $('#container').hide();
-      // $('#video').hide();
-      // $('#video').html('');
     });
   }
-
-  onInputChange = e => {
-    this.setState({ searchText: e.target.value })
-  }
-
-  onSearch = () => {
-    const { searchText, tableData } = this.state
-    const reg = new RegExp(searchText, 'gi')
-    this.setState({
-      filterDropdownVisible: false,
-      filtered: !!searchText,
-      video: tableData
-        .map(record => {
-          const match = record.name.match(reg)
-          if (!match) {
-            return null
-          }
-          return {
-            ...record,
-            name: (
-              <span>
-                {record.name
-                  .split(reg)
-                  .map((text, i) =>
-                    i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text,
-                )}
-              </span>
-            ),
-          }
-        })
-        .filter(record => !!record),
-    })
-  }
-
+  
   linkSearchInput = node => {
     this.searchInput = node
   }
@@ -135,7 +81,7 @@ class VideosList extends React.Component {
   }
 
   render() {
-    const { video, searchText, filtered, filterDropdownVisible } = this.state
+    const { video} = this.state
     const videoData = Object.values(video.video);
 
     const columns = [
@@ -148,7 +94,6 @@ class VideosList extends React.Component {
             {text}
           </a>
         ),
-        sorter: (a, b) => a.id - b.id,
       },
       {
         title: 'Action',
@@ -170,36 +115,11 @@ class VideosList extends React.Component {
         title: 'Date',
         dataIndex: 'date_time',
         key: 'date_time',
-        sorter: (a, b) => a.video_time.length - b.video_time.length,
         render: text => (
           <a className="utils__link--underlined" href="javascript: void(0);">
             {text}
           </a>
         ),
-        filterDropdown: (
-          <div className="custom-filter-dropdown">
-            <Input
-              ref={this.linkSearchInput}
-              placeholder="Search name"
-              value={searchText}
-              onChange={this.onInputChange}
-              onPressEnter={this.onSearch}
-            />
-            <Button type="primary" onClick={this.onSearch}>
-              Search
-            </Button>
-          </div>
-        ),
-        filterIcon: <Icon type="search" style={{ color: filtered ? '#108ee9' : '#aaa' }} />,
-        filterDropdownVisible,
-        onFilterDropdownVisibleChange: visible => {
-          this.setState(
-            {
-              filterDropdownVisible: visible,
-            },
-            () => this.searchInput && this.searchInput.focus(),
-          )
-        },
       },
     ]
 

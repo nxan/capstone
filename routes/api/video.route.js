@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Video = require('../../model/Video');
 const video_db = require('../../db/video_db')
 const bodyParser = require('body-parser')
 const app = express();
+const dateFormat = require('dateformat');
 const path = require('path');
 const
     multer = require('multer')
@@ -31,31 +31,24 @@ function makePlayableString(argument) {
     return playableString;
 }
 router.get('/', async (req, res, next) => {
-    //var condition = { where: session_id = req.body.session_id }
-    var video = await video_db.getAll();
-    // request.get('https://videoshopify.blob.core.windows.net/' + 'video/' + video.session_id + '.json', function (error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //         var csv = body;
-    //         readData = makePlayableString(csv);
-    //         res.send(readData);
-    //     }
+    var condition = {
+        order: [
+            ['id', 'DESC'],
+        ]
+    }
+    var video = await video_db.getAll(condition);
+    var result = []
+    for (var i = 0; i < video.length; i++) {
+        var model = {};
+        model.id = video[i].id;
+        //model.date_time =  video[i].date_time.toISOString().replace(/T/, " ").replace(/\..+/,'')
+        model.date_time = dateFormat(video[i].date_time, "ddd mmm dd yyyy HH:MM:ss ")
+        result.push(model);
+    }
+    res.json(result);
 
-    // });
-    res.json(video);
-    // fs.readFile('recordings/' + data.shop_url + '/' + req.body.session_id + '.json', (err, data) => {
-    //     if (err) {
-    //         res.status(400).send('error on reading');
-    //     } else {
-    //         readData = makePlayableString(data);
-    //         res.send(readData);
-    //     }
-
-    // });
 });
 router.get('/getOne/:video_id', async (req, res, next) => {
-    // var condition = { where: id = req.params.video_id }
-    // console.log(req.params.video_id)
-    //var video = await video_db.getVideo(req.params.video_id);
     var url = 'https://videoshopifystorage.blob.core.windows.net/videoshopify/' + req.params.video_id + '.json';
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -67,47 +60,11 @@ router.get('/getOne/:video_id', async (req, res, next) => {
             res.send(404)
         }
     });
-    // fs.readFile('recordings/capstonefpt.myshopify.com' + '/' + video.id + '.json', (err, data) => {
-    //     if (err) {
-    //         res.status(400).send('error on reading');
-    //     } else {
-    //         var readData = [];
-    //         readData = makePlayableString(data);
-    //         // video.events = readData;
-    //         // var data = {};
-    //         // data.video_id = video.id;
-    //         // data.session_id = video.session_id;
-    //         // data.url_video = video.url_video;
-    //         // data.events = readData
-    //         //console.log(readData)
-    //         res.send(readData);
-    //     }
-
-    // })
-
-
 });
 router.post('/', async (req, res, next) => {
     var condition = { where: session_id = req.body.session_id }
     var video = await video_db.getAll(condition);
-    // request.get('https://videoshopify.blob.core.windows.net/' + 'video/' + video.session_id + '.json', function (error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //         var csv = body;
-    //         readData = makePlayableString(csv);
-    //         res.send(readData);
-    //     }
-
-    // });
     res.json(video);
-    // fs.readFile('recordings/' + data.shop_url + '/' + req.body.session_id + '.json', (err, data) => {
-    //     if (err) {
-    //         res.status(400).send('error on reading');
-    //     } else {
-    //         readData = makePlayableString(data);
-    //         res.send(readData);
-    //     }
-
-    // });
 });
 
 
@@ -139,27 +96,6 @@ router.post('/sendHeatMap', async (req, res, next) => {
             // res.send("event received");
         }
     })
-    // const
-    //     blobName = shop + '.json'
-    //     , stream = getStream(stringStream)
-    //     , streamLength = stringStream.length
-    //     ;
-    // stringStream.pipe(blobService.createWriteStreamToBlockBlob(containerName, blobName, function (error) {
-    //     if (!error) {
-    //         console.log("upload file success");
-    //     } else {
-    //         console.log(error);
-    //     }
-    // }));
-    // blobService.createWriteStreamToBlockBlob(containerName, blobName, stream, streamLength, err => {
-    //     if (!err) {
-    //         console.log("upload file success");
-
-    //     }
-    //     else {
-    //         console.log(err);
-    //     }
-    // });
     var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.body.shop + '.json';
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
