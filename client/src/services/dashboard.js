@@ -24,6 +24,18 @@ export async function getSessionsLastWeek(shop_url) {
 }
 
 // eslint-disable-next-line camelcase
+export async function getSessionsByDate(shop_url,startDate,endDate) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/count/session/day/${shop_url}/${startDate}/${endDate}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
 export async function getSessionsLastMonth(shop_url) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/session/lastmonth/${shop_url}`

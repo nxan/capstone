@@ -459,7 +459,7 @@ router.get('/count/visitor/day/:shop_url/:from/:to', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_bydate = []
-    var sql = "select distinct(user_id) from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + "AND shop_id = " + shop.id;
+    var sql = "select distinct(user_id) from [session] where session_start_time between " + req.params.from + ' and ' + req.params.to + "AND shop_id = " + shop.id;
     await Session.sequelize.query(sql,
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {
@@ -476,7 +476,7 @@ router.get('/count/newvisitor/day/:shop_url/:from/:to', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_byday = []
-    var sql = "select count(user_id) as visitor from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
+    var sql = "select count(user_id) as visitor from [session] where session_start_time between " + req.params.from + ' and ' + req.params.to + ' AND is_first_visit = 1 AND shop_id = ' + shop.id;
     await Session.sequelize.query(sql,
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {
@@ -492,7 +492,7 @@ router.get('/count/session/day/:shop_url/:from/:to', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_sessions_day = []
-    var sql = "select * from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + 'AND shop_id = ' + shop.id;
+    var sql = "select * from [session] where session_start_time between " + req.params.from + ' and ' + req.params.to + ' AND shop_id = ' + shop.id;
     await Session.sequelize.query(sql,
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {
@@ -510,7 +510,7 @@ router.get('/count/oldvisitor/day/:shop_url/:from/:to', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_day = []
-    var sql = "select user_id from [session] where session_start_time <= " + req.params.from + ' and session_start_time >= ' + req.params.to + 'AND shop_id = ' + shop.id + 'group by user_id having count(user_id) > 1';
+    var sql = "select user_id from [session] where session_start_time between " + req.params.from + ' and ' + req.params.to + 'AND shop_id = ' + shop.id + 'group by user_id having count(user_id) > 1';
     await Session.sequelize.query(sql,
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {

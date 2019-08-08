@@ -6,7 +6,7 @@ import ChartistGraph from 'react-chartist'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
-import { Tabs } from 'antd'
+import { Tabs, DatePicker } from 'antd'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
 
@@ -139,7 +139,54 @@ const columns = [
 
 @connect(({ acquistion }) => ({ acquistion }))
 class Acquisition extends React.Component {
+  state = {
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  }
+
+  disabledStartDate = startValue => {
+    const { endValue } = this.state
+    if (!startValue || !endValue) {
+      return false
+    }
+    return startValue.valueOf() > endValue.valueOf()
+  }
+
+  disabledEndDate = endValue => {
+    const { startValue } = this.state
+    if (!endValue || !startValue) {
+      return false
+    }
+    return endValue.valueOf() <= startValue.valueOf()
+  }
+
+  onChange = (field, value) => {
+    this.setState({
+      [field]: value,
+    })
+  }
+
+  onStartChange = value => {
+    this.onChange('startValue', value)
+  }
+
+  onEndChange = value => {
+    this.onChange('endValue', value)
+  }
+
+  handleStartOpenChange = open => {
+    if (!open) {
+      this.setState({ endOpen: true })
+    }
+  }
+
+  handleEndOpenChange = open => {
+    this.setState({ endOpen: open })
+  }
+
   render() {
+    const { startValue, endValue, endOpen } = this.state
     const { acquistion } = this.props
     return (
       <Authorize roles={['admin']}>
@@ -192,6 +239,33 @@ class Acquisition extends React.Component {
                       />
                     </TabPane>
                     <TabPane tab="Last Week" key="2">
+                      <ChartistGraph
+                        className="height-300"
+                        data={lineData2(acquistion.visitorLastMonth)}
+                        options={lineOptions}
+                        type="Line"
+                      />
+                    </TabPane>
+                    <TabPane tab="Date" key="3">
+                      <DatePicker
+                        disabledDate={this.disabledStartDate}
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        value={startValue}
+                        placeholder="Start"
+                        onChange={this.onStartChange}
+                        onOpenChange={this.handleStartOpenChange}
+                      />
+                      <DatePicker
+                        disabledDate={this.disabledEndDate}
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        value={endValue}
+                        placeholder="End"
+                        onChange={this.onEndChange}
+                        open={endOpen}
+                        onOpenChange={this.handleEndOpenChange}
+                      />
                       <ChartistGraph
                         className="height-300"
                         data={lineData2(acquistion.visitorLastMonth)}

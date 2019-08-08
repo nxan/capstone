@@ -2,7 +2,7 @@ import React from 'react'
 import Authorize from 'components/LayoutComponents/Authorize'
 import ChartistGraph from 'react-chartist'
 import { connect } from 'react-redux'
-import { Tabs, Table,Progress } from 'antd'
+import { Tabs, Table, Progress, DatePicker } from 'antd'
 import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
@@ -82,7 +82,7 @@ const columnsdev = [
     key: 'percentuser',
     render: percentuser => (
       <div style={{ width: 170 }}>
-      <Progress percent={percentuser} size="small" status="active" />
+        <Progress percent={percentuser} size="small" status="active" />
       </div>
     ),
   },
@@ -107,7 +107,7 @@ const columnsOS = [
     key: 'percentuser',
     render: percentuser => (
       <div style={{ width: 170 }}>
-      <Progress percent={percentuser} size="small" status="active" />
+        <Progress percent={percentuser} size="small" status="active" />
       </div>
     ),
   },
@@ -132,7 +132,7 @@ const columnsbrowser = [
     key: 'percentuser',
     render: percentuser => (
       <div style={{ width: 170 }}>
-      <Progress percent={percentuser} size="small" status="active" />
+        <Progress percent={percentuser} size="small" status="active" />
       </div>
     ),
   },
@@ -146,10 +146,57 @@ const areaOptions = {
 
 @connect(({ audience }) => ({ audience }))
 class Audience extends React.Component {
+  state = {
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  }
+
+  disabledStartDate = startValue => {
+    const { endValue } = this.state
+    if (!startValue || !endValue) {
+      return false
+    }
+    return startValue.valueOf() > endValue.valueOf()
+  }
+
+  disabledEndDate = endValue => {
+    const { startValue } = this.state
+    if (!endValue || !startValue) {
+      return false
+    }
+    return endValue.valueOf() <= startValue.valueOf()
+  }
+
+  onChange = (field, value) => {
+    this.setState({
+      [field]: value,
+    })
+  }
+
+  onStartChange = value => {
+    this.onChange('startValue', value)
+  }
+
+  onEndChange = value => {
+    this.onChange('endValue', value)
+  }
+
+  handleStartOpenChange = open => {
+    if (!open) {
+      this.setState({ endOpen: true })
+    }
+  }
+
+  handleEndOpenChange = open => {
+    this.setState({ endOpen: open })
+  }
+
   render() {
+    const { startValue, endValue, endOpen } = this.state
     const { audience } = this.props
     const pagesession = audience.session + audience.pageView
-    const numberSessionUser = Math.round(audience.session/audience.user,2)
+    const numberSessionUser = Math.round(audience.session / audience.user, 2)
     const x = parseInt(audience.olduser, 10)
     const y = parseInt(audience.newuser, 10)
     const pie = {
@@ -187,6 +234,33 @@ class Audience extends React.Component {
                       />
                     </TabPane>
                     <TabPane tab="Last Week" key="2">
+                      <ChartistGraph
+                        className="height-300"
+                        data={areaData2(audience.sessionLastWeek)}
+                        options={areaOptions}
+                        type="Line"
+                      />
+                    </TabPane>
+                    <TabPane tab="Date" key="3">
+                      <DatePicker
+                        disabledDate={this.disabledStartDate}
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        value={startValue}
+                        placeholder="Start"
+                        onChange={this.onStartChange}
+                        onOpenChange={this.handleStartOpenChange}
+                      />
+                      <DatePicker
+                        disabledDate={this.disabledEndDate}
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        value={endValue}
+                        placeholder="End"
+                        onChange={this.onEndChange}
+                        open={endOpen}
+                        onOpenChange={this.handleEndOpenChange}
+                      />
                       <ChartistGraph
                         className="height-300"
                         data={areaData2(audience.sessionLastWeek)}
