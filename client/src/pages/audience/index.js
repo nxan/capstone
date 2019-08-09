@@ -217,7 +217,7 @@ class Audience extends React.Component {
             <div className="card">
               <div className="card-header">
                 <h5 className="text-black">
-                  <strong>Overview</strong>
+                  <strong>OVERVIEW SESSION BY TIME</strong>
                   <br />
                   <br />
                 </h5>

@@ -192,11 +192,35 @@ class Acquisition extends React.Component {
       <Authorize roles={['admin']}>
         <Helmet title="Acquisition" />
         <div className="row">
+          <div className="col-lg-8" />
+          <div className="col-lg-4">
+            <DatePicker
+              disabledDate={this.disabledStartDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={startValue}
+              placeholder="Start"
+              onChange={this.onStartChange}
+              onOpenChange={this.handleStartOpenChange}
+            />
+            <DatePicker
+              disabledDate={this.disabledEndDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={endValue}
+              placeholder="End"
+              onChange={this.onEndChange}
+              open={endOpen}
+              onOpenChange={this.handleEndOpenChange}
+            />
+          </div>
+        </div>
+        <div className="row">
           <div className="col-lg-4">
             <div className="card card--fullHeight">
               <div className="card-header">
                 <div className="utils__title row">
-                  <div className="col-xl-7">
+                  <div className="col-xl-5">
                     <strong> Aquisition</strong>
                   </div>
                 </div>
@@ -247,25 +271,6 @@ class Acquisition extends React.Component {
                       />
                     </TabPane>
                     <TabPane tab="Date" key="3">
-                      <DatePicker
-                        disabledDate={this.disabledStartDate}
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        value={startValue}
-                        placeholder="Start"
-                        onChange={this.onStartChange}
-                        onOpenChange={this.handleStartOpenChange}
-                      />
-                      <DatePicker
-                        disabledDate={this.disabledEndDate}
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        value={endValue}
-                        placeholder="End"
-                        onChange={this.onEndChange}
-                        open={endOpen}
-                        onOpenChange={this.handleEndOpenChange}
-                      />
                       <ChartistGraph
                         className="height-300"
                         data={lineData2(acquistion.visitorLastMonth)}
