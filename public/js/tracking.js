@@ -4,7 +4,8 @@ var set = false; var socket;
 var coordinates = [],
     mousePos,
     heatMap = [];
-var events = [], session_id = 0;
+var events = [];
+var session_id = 0;
 $(document).ready(() => {
 
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>'
@@ -15,10 +16,12 @@ $(document).ready(() => {
     //save_session()
     //setInterval(record, 500);
     $('head').prepend(link);
+    localStorage.setItem('video', JSON.stringify([]));
     //loadAdditionJs()
+    var is_change_page = false;
     save_session()
     setInterval(record, 500);
-
+    // setInterval(sendVideo, 2000);
     $(window).bind("beforeunload", function () {
         console.log('change page')
         var shop = window.location.hostname;
@@ -32,9 +35,22 @@ $(document).ready(() => {
             //script: scripts
             // script: ""
         });
-        navigator.sendBeacon('https://dbdda11a.ngrok.io/api/page/sendHeatMap', data);
+        // send_video(true);
+        //var video_data = JSON.parse(localStorage.getItem('video'));
+
+        // var video = JSON.stringify({
+        //     session_id: session_id,
+        //     video: [],
+        //     shop: window.location.hostname
+        // })
+        //localStorage.setItem('video', JSON.stringify([]));
+        //navigator.sendBeacon('https://8addaaf4.ngrok.io/api/video/sendVideo', video);
+        events = []
+
+        //navigator.sendBeacon('https://8addaaf4.ngrok.io/api/video/sendVideo', video);
+        navigator.sendBeacon('https://8addaaf4.ngrok.io/api/page/sendHeatMap', data);
     })
-    document.onmousemove = handler;
+    // document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
     $(document).mousemove(function (event) {
         handler(event)
@@ -42,7 +58,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://dbdda11a.ngrok.io/api/session/save/resave', {
+        fetch('https://8addaaf4.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -56,31 +72,6 @@ $(document).ready(() => {
     }, 333333 * 1000);
 
 
-    // function save() {
-    //     const body = JSON.stringify(events);
-    //     events = [];
-    //     fetch('http://localhost:8889/api', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         body,
-    //     });
-    // }
-    //setInterval(save, 0.3 * 1000);
-
-    setInterval(function () {
-        fetch('https://dbdda11a.ngrok.io/api/session/save/resave', {
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            // mode: 'cors', // no-cors, cors, *same-origin
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        }).then((res) => {
-            console.log("OK")
-        })
-    }, 1000 * 3555);
 })
 document.addEventListener('visibilitychange', () => {
     save_session();
@@ -115,29 +106,6 @@ function getMousePosition() {
     getGroupedData();
 }
 
-// function record() {
-   
-
-//     rrweb.record({
-//         emit(event) {
-//             events.push(event);
-//         },
-//     });
-
-//     function save() {
-//         const body = JSON.stringify(events);
-//         console.log(events);
-//         events = [];
-//         fetch('http://dbdda11a.ngrok.io/api', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body,
-//         });
-//     }
-//     setInterval(save, 0.2 * 10000);
-// }
 function loadAdditionJs() {
     var script = document.createElement("script");  // create a script DOM node
     script.src = 'https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js';  // set its src to the provided URL
@@ -153,35 +121,60 @@ function record() {
             events.push(event);
         },
     });
-    function save() {
-        // const body = JSON.stringify(events);
-        //console.log(events);
-        console.log(session_id)
-        if (session_id != 0) {
-            const body = events;
-            events = [];
-            $.ajax({
-                url: 'http://localhost:8888/api/video/sendVideo',
-                method: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    session_id: session_id,
-                    video: body,
-                    shop: window.location.hostname
-                }),
-                complete: function () {
-                    window.positions = [];
-                },
-                success: function (data) {
-                    window.positions = [];
-                }
-            }).done(function () {
-                console.log('ok');
-            })
+    // localStorage.setItem('video', JSON.stringify(events));
+    if (typeof socket !== 'undefined') {
+        var video = {
+            session_id: session_id,
+            video: events,
+            shop: window.location.hostname
         }
-
+        events = []
+        socket.emit("client-send-video", JSON.stringify(video));
     }
-    setInterval(save, 0.1 * 10000);
+
+}
+function sendVideoSocket(socket) {
+
+    rrweb.record({
+        emit(event) {
+            events.push(event);
+        },
+    });
+    var video = {
+        session_id: session_id,
+        video: events,
+        shop: window.location.hostname
+    }
+    events = []
+    socket.emit("client-send-video", JSON.stringify(video));
+}
+function sendVideo() {
+    if (session_id != 0) {
+        const body = events;
+        events = [];
+        // navigator.sendBeacon('http://8addaaf4.ngrok.io/api/video/sendVideo', data);
+
+        $.ajax({
+            url: 'https://8addaaf4.ngrok.io/api/video/sendVideo',
+            method: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                session_id: session_id,
+                video: body,
+                shop: window.location.hostname
+            }),
+            complete: function () {
+                window.positions = [];
+                // window.event = []
+            },
+            success: function (data) {
+                window.positions = [];
+                // window.event = []
+            }
+        }).done(function () {
+            console.log('ok');
+        })
+    }
 }
 function handler(event) {
     var dot,
@@ -211,7 +204,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://dbdda11a.ngrok.io/api/session', {
+            fetch('https://8addaaf4.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
@@ -238,9 +231,11 @@ function save_session(set) {
                     }
                     session_id = json.session_id;
                     console.log(infor_tab);
-                    socket = io.connect("https://dbdda11a.ngrok.io");
-                    connect_socket(socket, infor_tab);
+                    socket = io.connect("https://8addaaf4.ngrok.io");
 
+                    //setInterval(sendVideoSocket, 500, socket);
+                    connect_socket(socket, infor_tab);
+                    console.log(socket)
                     /*socket here
      
                     */
@@ -249,9 +244,8 @@ function save_session(set) {
         }
     }
 }
+
 function connect_socket(socket, infor_tab) {
-
-
     socket.emit("client-send-session", JSON.stringify(infor_tab));
 }
 function getInfor() {

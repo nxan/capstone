@@ -268,10 +268,7 @@ io.on("connection", function (socket) {
 
         //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
-            if(onlines[i].socket_id == socket.id){
-                onlines[i].session_length = 1;
-            }
-            if (onlines[i].socket_id == socket.id && onlines[i].session_length == 1) {
+            if (onlines[i].socket_id == socket.id) {
                 var videoFields = {};
                 videoFields.session_id = onlines[i].session_id;
                 videoFields.url_video = onlines[i].session_id;
@@ -297,8 +294,8 @@ io.on("connection", function (socket) {
                 fs.unlinkSync(filePath);
                 onlines.splice(i, 1);
             }
-           
-            
+
+
 
             //socket.leave(onlines[i].socket_id)
         }
@@ -357,6 +354,20 @@ io.on("connection", function (socket) {
 
         socket.join(json.session_id);
         io.sockets.emit("Server-send-data", data);
+    })
+    socket.on("client-send-video", function (data) {
+        var json = JSON.parse(data);
+        console.log('video okokokoko');
+        var url = 'recordings/' + json.shop + '/' + json.session_id + '.json';
+        fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {
+            if (err) {
+                console.log(err);
+                //res.status(400).send('error on recording');
+            } else {
+                // console.log('events updated');
+                //res.send("event received");
+            }
+        })
     })
 });
 function bufferFile(relPath) {

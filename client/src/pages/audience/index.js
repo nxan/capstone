@@ -138,6 +138,31 @@ const columnsbrowser = [
   },
 ]
 
+const columnslocation = [
+  {
+    title: 'Location',
+    dataIndex: 'location_name',
+    key: 'location_name',
+  },
+  {
+    title: 'Users',
+    dataIndex: 'totalCount',
+    key: 'totalCount',
+    width: '12%',
+  },
+  {
+    title: '% Users',
+    dataIndex: 'percentuser',
+    width: '30%',
+    key: 'percentuser',
+    render: percentuser => (
+      <div style={{ width: 170 }}>
+        <Progress percent={percentuser} size="small" status="active" />
+      </div>
+    ),
+  },
+]
+
 const areaOptions = {
   low: 0,
   showArea: true,
@@ -335,7 +360,7 @@ class Audience extends React.Component {
           <div className="col-md-2">
             <ChartCard2
               title="Bounce Rate"
-              amount="240"
+              amount="80%"
               chartProps={{
                 width: 180,
                 height: 107,
@@ -455,6 +480,9 @@ class Audience extends React.Component {
                       </TabPane>
                       <TabPane tab="Browser" key="3">
                         <Table columns={columnsbrowser} dataSource={audience.usrbrowser} />
+                      </TabPane>
+                      <TabPane tab="Locations" key="4 ">
+                        <Table columns={columnslocation} dataSource={audience.usrbrowser} />
                       </TabPane>
                     </Tabs>
                   </div>

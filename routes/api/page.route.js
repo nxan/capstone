@@ -96,18 +96,26 @@ router.post('/sendHeatMap', async (req, res, next) => {
 })
 router.get('/getArrayHeatMap/:id', async (req, res) => {
     var page = await page_db.getPageById(req.params.id);
-    var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
-    request.get(url, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var csv = body;
-            readData = makePlayableString(csv);
-            res.send(readData);
+    var path = './heatmap/' + page.id + '.json';
+    fs.readFile(path, "utf-8", (err, data) => {
+        // var result = {
+        //     web: data
+        // }
+        var readData = makePlayableString(data);
+        res.send(readData);
+    })
+    // var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
+    // request.get(url, function (error, response, body) {
+    //     if (!error && response.statusCode == 200) {
+    //         var csv = body;
+    //         readData = makePlayableString(csv);
+    //         res.send(readData);
 
-        }
-        else {
-            res.send(404)
-        }
-    });
+    //     }
+    //     else {
+    //         res.send(404)
+    //     }
+    // });
 })
 async function crawlWeb(url, res) {
 
