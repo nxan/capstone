@@ -60,24 +60,7 @@ app.use(session({
 app.get('/', (req, res) => {
     res.send("API running");
 });
-// app.use(function (req, res, next) {
 
-//     // Website you wish to allow to connect
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-
-//     // Request methods you wish to allow
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-//     // Request headers you wish to allow
-//     // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     // Set to true if you need the website to include cookies in the requests sent
-//     // to the API (e.g. in case you use sessions)
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-
-//     // Pass to next layer of middleware
-//     next();
-// });
 function getAquision(number) {
     switch (number) {
         case 1: return process.env.Social
@@ -153,34 +136,47 @@ function groupBy(allClients, key) {
     });
     return countsExtended;
 }
+
+var interval = setInterval(uploadVideo, 30000);
+async function uploadVideo() {
+    console.log(onlines)
+    for (var i = 0; i < onlines.length; i++) {
+        if (onlines[i].session_length == 0) {
+            var videoFields = {};
+            videoFields.session_id = onlines[i].session_id;
+            videoFields.url_video = onlines[i].session_id;
+            videoFields.date_time = new Date(Date.now()).toISOString()
+            var video = await video_db.addVideo(videoFields);
+            var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+            var buffer = bufferFile(filename);
+            const
+                blobName = video.id + '.json'
+                , stream = getStream(buffer)
+                , streamLength = buffer.length
+                ;
+            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                if (!err) {
+                    console.log("upload file success");
+
+                }
+                else {
+                    console.log(err);
+                }
+            });
+            var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+            fs.unlinkSync(filePath);
+            onlines.splice(i, 1);
+        }
+    }
+}
+function reset() {
+    console.log(" OKKKKKKKKKKKKKKKKKKKK IS CLEARRRRRRRRRRRR")
+    clearInterval(interval);
+    interval = setInterval(uploadVideo, 30000);
+}
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
-    // for (var i = 0; i < allClients.length; i++) {
-    //     console.log("model:" + allClients[i].socket_id);
-
-    // }
-    // if(check){
-    //     socket.emit('online', allClients.length);
-    //     var counts = allClients.reduce((p, c) => {
-    //         var name = c.page_url;
-    //         if (!p.hasOwnProperty(name)) {
-    //             p[name] = 0;
-    //         }
-    //         p[name]++;
-    //         return p;
-    //     }, {});
-    //     countsExtended = Object.keys(counts).map(k => {
-    //         return { name: k, count: counts[k] };
-    //     });
-    //     // socket.emit('locations', locations);
-    //     socket.emit('online_os', groupBy(allClients, 'os'));
-    //     socket.emit('online_dv', groupBy(allClients, 'device'));
-    //     socket.emit('online_bw', groupBy(allClients, 'browser'));
-    //     socket.emit('online_ac', groupBy(allClients, 'acquistion'));
-    //     socket.emit('online_page', countsExtended);
-    //     check = false;
-    // }
-    setInterval(function () {
+    setInterval(async function () {
         //socket.emit('online', Object.keys(io.sockets.connected).length - 1);
         socket.emit('online', onlines.length);
         var counts = onlines.reduce((p, c) => {
@@ -263,37 +259,37 @@ io.on("connection", function (socket) {
             }
 
         }
-        //console.log(socket.adapter.rooms)
-
-        console.log(onlines);
-        //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
+        console.log("disconect true")
         for (var i = 0; i < onlines.length; i++) {
             if (onlines[i].socket_id == socket.id) {
-                var videoFields = {};
-                videoFields.session_id = onlines[i].session_id;
-                videoFields.url_video = onlines[i].session_id;
-                videoFields.date_time = new Date(Date.now()).toISOString()
-                var video = await video_db.addVideo(videoFields);
-                var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
-                var buffer = bufferFile(filename);
-                const
-                    blobName = video.id + '.json'
-                    , stream = getStream(buffer)
-                    , streamLength = buffer.length
-                    ;
-                blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                    if (!err) {
-                        console.log("upload file success");
+                // var videoFields = {};
+                // videoFields.session_id = onlines[i].session_id;
+                // videoFields.url_video = onlines[i].session_id;
+                // videoFields.date_time = new Date(Date.now()).toISOString()
+                // var video = await video_db.addVideo(videoFields);
+                // var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+                // var buffer = bufferFile(filename);
+                // const
+                //     blobName = video.id + '.json'
+                //     , stream = getStream(buffer)
+                //     , streamLength = buffer.length
+                //     ;
+                // blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                //     if (!err) {
+                //         console.log("upload file success");
 
-                    }
-                    else {
-                        console.log(err);
-                    }
-                });
-                var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
-                fs.unlinkSync(filePath);
-                onlines.splice(i, 1);
+                //     }
+                //     else {
+                //         console.log(err);
+                //     }
+                // });
+                // var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+                // fs.unlinkSync(filePath);
+                // onlines.splice(i, 1);
+                onlines[i].session_length -= 1;
+
             }
+
 
 
 
@@ -323,14 +319,16 @@ io.on("connection", function (socket) {
 
             } else {
                 check_change_page = true;
+                reset();
                 onlines[i].socket_id = socket.id;
-                onlines[i].session_length = onlines[i].session_length + 1
+                onlines[i].session_length += 1
                 onlines[i].page_url = json.page_url;
             }
             //console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
         }
 
         if (!check_change_page) {
+
             socketModel.session_length = 1;
             onlines.push(socketModel);
             socket.join(process.env.ROOM);
