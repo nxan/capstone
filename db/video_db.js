@@ -12,25 +12,6 @@ module.exports = {
             console.log(err);
         }
 
-        // await newVideo.save().then((item) => {
-        //     return item;
-        // })
-        // let { session_id, session_page_id, folder_url, url, parent_id, is_parent, is_image, next_page, is_next_page, is_redirect } = newVideoFields;
-        // await Video.create({
-        //     session_id,
-        //     session_page_id,
-        //     folder_url,
-        //     url,
-        //     parent_id,
-        //     is_parent,
-        //     is_image,
-        //     next_page,
-        //     is_next_page,
-        //     is_redirect,
-        // }).then(item => {
-        //     return item;
-        // });
-
     },
     getVideo: async (video_id) => {
         return Video.findOne(

@@ -7,7 +7,7 @@ import styles from './style.module.scss'
 @connect(({ user }) => ({ user }))
 class ProfileMenu extends React.Component {
   state = {
-    count: 7,
+    count: 0,
   }
 
   logout = () => {
@@ -17,13 +17,13 @@ class ProfileMenu extends React.Component {
     })
   }
 
-  addCount = () => {
-    let { count } = this.state
-    count += 1
-    this.setState({
-      count,
-    })
-  }
+  // addCount = () => {
+  //   let { count } = this.state
+  //   count += 1
+  //   this.setState({
+  //     count,
+  //   })
+  // }
 
   render() {
     const { user } = this.props
@@ -78,7 +78,7 @@ class ProfileMenu extends React.Component {
       </Menu>
     )
     return (
-      <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.addCount}>
+      <Dropdown overlay={menu} trigger={['click']}>
         <div className={styles.dropdown}>
           <Badge count={count}>
             <Avatar className={styles.avatar} shape="square" size="large" icon="user" />
