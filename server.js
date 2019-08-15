@@ -265,7 +265,7 @@ io.on("connection", function (socket) {
         }
         //console.log(socket.adapter.rooms)
 
-
+        console.log(onlines);
         //console.log(io.sockets.adapter.rooms[onlines[i].session_id].length)
         for (var i = 0; i < onlines.length; i++) {
             if (onlines[i].socket_id == socket.id) {
@@ -299,7 +299,7 @@ io.on("connection", function (socket) {
 
             //socket.leave(onlines[i].socket_id)
         }
-        console.log(onlines);
+
         console.log(socket.id + ":disconnected")
     })
     socket.on("client-send-session", function (data) {
@@ -318,22 +318,6 @@ io.on("connection", function (socket) {
         socketModel['browser'] = getBrowser(json.browser_id);
         socketModel['acquistion'] = getAquision(json.acquistion_id);
         allClients.push(socketModel)
-        //console.log(json);
-        // if (allClients.length <= 0) {
-        //     allClients.push(socketModel);
-        //     console.log(allClients)
-        //     socket.join(process.env.ROOM);
-        // } else {
-        //     for (var i = 0; i < allClients.length; i++) {
-        //         if (allClients[i].session_id != json.session_id) {
-        //             // allClients.push(socketModel);
-        //         } else {
-        //             allClients[i].page_url = json.page_url;
-        //         }
-        //         console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
-        //     }
-        // }
-
         for (var i = 0; i < onlines.length; i++) {
             if (onlines[i].session_id != json.session_id) {
 
@@ -357,7 +341,7 @@ io.on("connection", function (socket) {
     })
     socket.on("client-send-video", function (data) {
         var json = JSON.parse(data);
-        console.log('video okokokoko');
+        console.log('video received');
         var url = 'recordings/' + json.shop + '/' + json.session_id + '.json';
         fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {
             if (err) {
