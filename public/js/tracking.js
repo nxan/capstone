@@ -3,22 +3,24 @@ var send = 0; check_redirect = false;
 var set = false; var socket;
 var coordinates = [],
     mousePos,
-    heatMap = [];
+    heatMap = [],
+    eventsMatrix = [[]]
+    ;
 var events = [], interval;
 var session_id = 0;
 $(document).ready(() => {
 
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@0.7.0/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
+    script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
     var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(script);
     //save_session()
     //setInterval(record, 500);
     $('head').prepend(link);
     save_session()
-    setInterval(record, 500);
-    setInterval(sendVideoSocket, 500);
+    setInterval(record, 1000);
+    setInterval(sendVideoSocket, 3000);
     $(window).bind("beforeunload", function () {
         console.log('change page')
         var shop = window.location.hostname;
@@ -33,11 +35,11 @@ $(document).ready(() => {
         console.log('socket true')
         var video = {
             session_id: session_id,
-            video: events,
+            video: [],
             shop: window.location.hostname,
             is_change_page: false
         }
-        clearTimeout(interval)
+        // clearTimeout(interval)
         // let stopFn = rrweb.record({
         //     emit(event) {
         //         // stop after 100 events
@@ -47,7 +49,7 @@ $(document).ready(() => {
         // });
         events = []
         socket.emit("client-change-page");
-        //socket.emit("client-send-video", JSON.stringify(video));
+        socket.emit("client-send-video", JSON.stringify(video));
         navigator.sendBeacon('https://34e99e02.ngrok.io/api/page/sendHeatMap', data);
     })
     // document.onmousemove = handler;
@@ -73,10 +75,10 @@ $(document).ready(() => {
 
 
 })
-// document.addEventListener('visibilitychange', () => {
-//     save_session();
+document.addEventListener('visibilitychange', () => {
+    save_session();
 
-// });
+});
 function getGroupedData() {
     var positions = coordinates
     var grouped = [];
@@ -115,7 +117,7 @@ function record() {
             events.push(event);
         },
     });
-
+    // setTimeout(sendVideo, 2000);
     // function save() {
     //     const body = JSON.stringify({
     //         session_id: session_id,
@@ -279,12 +281,13 @@ function save_session(set) {
                         video: ''
                     }
                     session_id = json.session_id;
-                    console.log(infor_tab);
                     socket = io.connect("http://localhost:8888");
 
                     //setInterval(sendVideoSocket, 500, socket);
                     connect_socket(socket, infor_tab);
                     console.log(socket)
+
+
                     /*socket here
      
                     */

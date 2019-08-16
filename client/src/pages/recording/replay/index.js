@@ -15,18 +15,18 @@ class Video extends React.Component {
 
     componentDidMount() {
 
-        let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>'
+        let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb/dist/rrweb.min.js"></script>'
         $('head').prepend(script);
-        script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>'
+        script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player/dist/index.js"></script>'
         $('head').prepend(script);
         let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
         $('head').prepend(link);
         link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css" />'
         $('head').prepend(link);
-        
+
         const { playerString } = this.props
         const { id } = this.state
-       
+
         console.log(playerString)
         console.log(id)
         if (id !== undefined) {
@@ -51,7 +51,7 @@ class Video extends React.Component {
     }
 
     componentWillUnmount() {
-       
+
     }
 
     replay = () => {
@@ -60,7 +60,6 @@ class Video extends React.Component {
         /* global rrwebPlayer  */
         /* eslint no-undef: "error" */
         const { events } = this.state
-        console.log(events.length)
         new rrwebPlayer({
             target: document.getElementById('video'),
             data: {
@@ -106,7 +105,7 @@ class Video extends React.Component {
     }
 
     render() {
-    
+
 
         return (
             <div>
