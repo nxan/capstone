@@ -17,7 +17,7 @@ class Video extends React.Component {
 
         let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb/dist/rrweb.min.js"></script>'
         $('head').prepend(script);
-        script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player/dist/index.js"></script>'
+        script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@0.3.14/dist/index.js"></script>'
         $('head').prepend(script);
         let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
         $('head').prepend(link);
