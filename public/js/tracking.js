@@ -4,24 +4,21 @@ var set = false; var socket;
 var coordinates = [],
     mousePos,
     heatMap = [];
-var events = [];
+var events = [], interval;
 var session_id = 0;
 $(document).ready(() => {
 
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    var script = '<script id="rrweb" src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
+    script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@0.7.0/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
     var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(script);
     //save_session()
     //setInterval(record, 500);
     $('head').prepend(link);
-    localStorage.setItem('video', JSON.stringify([]));
-    //loadAdditionJs()
-    var is_change_page = false;
     save_session()
     setInterval(record, 500);
-    //setInterval(sendVideoSocket, 500);
+    setInterval(sendVideoSocket, 500);
     $(window).bind("beforeunload", function () {
         console.log('change page')
         var shop = window.location.hostname;
@@ -32,23 +29,26 @@ $(document).ready(() => {
             heat_map: heatMap,
             shop: shop,
             page: window.location.hostname + window.location.pathname
-            //script: scripts
-            // script: ""
         });
-        // send_video(true);
-        //var video_data = JSON.parse(localStorage.getItem('video'));
+        console.log('socket true')
+        var video = {
+            session_id: session_id,
+            video: events,
+            shop: window.location.hostname,
+            is_change_page: false
+        }
+        clearTimeout(interval)
+        // let stopFn = rrweb.record({
+        //     emit(event) {
+        //         // stop after 100 events
+        //         stopFn();
 
-        // var video = JSON.stringify({
-        //     session_id: session_id,
-        //     video: [],
-        //     shop: window.location.hostname
-        // })
-        //localStorage.setItem('video', JSON.stringify([]));
-        //navigator.sendBeacon('https://5ca73c35.ngrok.io/api/video/sendVideo', video);
-        //events = []
-
-        //navigator.sendBeacon('https://5ca73c35.ngrok.io/api/video/sendVideo', video);
-        navigator.sendBeacon('https://5ca73c35.ngrok.io/api/page/sendHeatMap', data);
+        //     },
+        // });
+        events = []
+        socket.emit("client-change-page");
+        //socket.emit("client-send-video", JSON.stringify(video));
+        navigator.sendBeacon('https://34e99e02.ngrok.io/api/page/sendHeatMap', data);
     })
     // document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -58,7 +58,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://5ca73c35.ngrok.io/api/session/save/resave', {
+        fetch('https://34e99e02.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -106,56 +106,102 @@ function getMousePosition() {
     getGroupedData();
 }
 
-function loadAdditionJs() {
-    var script = document.createElement("script");  // create a script DOM node
-    script.src = 'https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js';  // set its src to the provided URL
 
-    document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    var link = ' <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
-    $('head').append(link);
-}
 function record() {
-    // let events = []
+    //let events = []
+
     rrweb.record({
         emit(event) {
             events.push(event);
         },
     });
-    // localStorage.setItem('video', JSON.stringify(events));
-    setTimeout(function () {
-        if (typeof socket !== 'undefined') {
-            console.log('socket true')
-            var video = {
-                session_id: session_id,
-                video: events,
-                shop: window.location.hostname
-            }
-            events = []
-            socket.emit("client-send-video", JSON.stringify(video));
 
-        }
-    }, 1000)
+    // function save() {
+    //     const body = JSON.stringify({
+    //         session_id: session_id,
+    //         video: events,
+    //         shop: window.location.hostname
+    //     });
+
+    //     events = [];
+    //     fetch('http://localhost:8888/api/video/sendVideo', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body,
+    //     });
+    // }
+
+    // // save events every 10 seconds
+    // setInterval(save, 2000);
+
+
+    // function savevideo() {
+    //     // const body = JSON.stringify(events);
+    //     //console.log(events);
+    //     console.log(session_id)
+    //     if (session_id != 0) {
+    //         const body = events;
+    //         events = [];
+    //         $.ajax({
+    //             url: 'http://localhost:8888/api/video/sendVideo',
+    //             method: 'post',
+    //             contentType: 'application/json',
+    //             data: JSON.stringify({
+    //                 session_id: session_id,
+    //                 video: body,
+    //                 shop: window.location.hostname
+    //             }),
+    //             complete: function () {
+    //                 window.positions = [];
+    //             },
+    //             success: function (data) {
+    //                 window.positions = [];
+    //             }
+    //         }).done(function () {
+    //             console.log('ok');
+    //         })
+    //     }
+    // }
+    // setInterval(savevideo, 0.1 * 20000);
+    // interval = setTimeout(function () {
+    //     if (typeof socket !== 'undefined') {
+    //         console.log('socket true')
+    //         var video = {
+    //             session_id: session_id,
+    //             video: events,
+    //             shop: window.location.hostname,
+    //             is_change_page: false
+    //         }
+    //         console.log(events)
+    //         events = []
+    //         socket.emit("client-send-video", JSON.stringify(video));
+
+    //     }
+    // }, 1000)
 
 }
 function sendVideoSocket() {
 
     if (typeof socket !== 'undefined') {
         console.log('socket true')
+
         var video = {
             session_id: session_id,
             video: events,
-            shop: window.location.hostname
+            shop: window.location.hostname,
+            is_change_page: false
         }
-        events = []
         socket.emit("client-send-video", JSON.stringify(video));
-
+        window.events = []
     }
 }
 function sendVideo() {
     if (session_id != 0) {
         const body = events;
         events = [];
-        // navigator.sendBeacon('http://5ca73c35.ngrok.io/api/video/sendVideo', data);
+        // navigator.sendBeacon('http://34e99e02.ngrok.io/api/video/sendVideo', data);
 
         $.ajax({
             url: 'http://localhost:8888/api/video/sendVideo',
@@ -207,7 +253,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://5ca73c35.ngrok.io/api/session', {
+            fetch('https://34e99e02.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit

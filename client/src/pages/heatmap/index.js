@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Button } from 'antd'
+import { Table, Button, DatePicker } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -9,6 +9,9 @@ import $ from 'jquery'
 class HeatMapList extends React.Component {
     state = {
         heatmap: this.props,
+        startValue: null,
+        endValue: null,
+        endOpen: false,
     }
 
     componentDidMount() {
@@ -22,6 +25,48 @@ class HeatMapList extends React.Component {
         $('head').prepend(link);
 
     }
+
+    disabledStartDate = startValue => {
+        const { endValue } = this.state
+        if (!startValue || !endValue) {
+            return false
+        }
+        return startValue.valueOf() > endValue.valueOf()
+    }
+
+    disabledEndDate = endValue => {
+        const { startValue } = this.state
+        if (!endValue || !startValue) {
+            return false
+        }
+        return endValue.valueOf() <= startValue.valueOf()
+    }
+
+    onChange = (field, value) => {
+        this.setState({
+            [field]: value,
+        })
+    }
+
+    onStartChange = value => {
+        this.onChange('startValue', value)
+    }
+
+    onEndChange = value => {
+        this.onChange('endValue', value)
+    }
+
+    handleStartOpenChange = open => {
+        if (!open) {
+            this.setState({ endOpen: true })
+        }
+    }
+
+    handleEndOpenChange = open => {
+        this.setState({ endOpen: open })
+    }
+
+    
 
     onInputChange = e => {
         this.setState({ searchText: e.target.value })
@@ -143,7 +188,7 @@ class HeatMapList extends React.Component {
 
 
     render() {
-        const { heatmap } = this.state
+        const { heatmap, startValue, endValue, endOpen } = this.state
         console.log(heatmap.heatmap.heatmap)
         const heatmapData = Object.values(heatmap.heatmap.heatmap);
         // const heatmapData = heatmap.heatmap.heatmap;
@@ -180,6 +225,30 @@ class HeatMapList extends React.Component {
 
             <div>
                 <Helmet title="Heat Map List" />
+                <div className="row">
+                    <div className="col-lg-8" />
+                    <div className="col-lg-4 text-right">
+                        <DatePicker
+                            disabledDate={this.disabledStartDate}
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value={startValue}
+                            placeholder="Start"
+                            onChange={this.onStartChange}
+                            onOpenChange={this.handleStartOpenChange}
+                        />
+                        <DatePicker
+                            disabledDate={this.disabledEndDate}
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value={endValue}
+                            placeholder="End"
+                            onChange={this.onEndChange}
+                            open={endOpen}
+                            onOpenChange={this.handleEndOpenChange}
+                        />
+                    </div>
+                </div>
                 <div className="card">
                     <div className="card-header">
                         <div className="utils__title">

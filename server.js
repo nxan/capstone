@@ -319,7 +319,7 @@ io.on("connection", function (socket) {
 
             } else {
                 check_change_page = true;
-                reset();
+                //ư reset();
                 onlines[i].socket_id = socket.id;
                 onlines[i].session_length += 1
                 onlines[i].page_url = json.page_url;
@@ -341,15 +341,21 @@ io.on("connection", function (socket) {
         var json = JSON.parse(data);
         console.log('video received');
         var url = 'recordings/' + json.shop + '/' + json.session_id + '.json';
-        fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {
-            if (err) {
-                console.log(err);
-                //res.status(400).send('error on recording');
-            } else {
-                // console.log('events updated');
-                //res.send("event received");
-            }
-        })
+        if (!json.is_change_page) {
+            fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {
+                if (err) {
+                    console.log(err);
+                    //res.status(400).send('error on recording');
+                } else {
+                    // console.log('events updated');
+                    //res.send("event received");
+                }
+            })
+        }
+
+    })
+    socket.on('client-change-page', function () {
+        reset();
     })
 });
 function bufferFile(relPath) {
