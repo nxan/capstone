@@ -123,6 +123,11 @@ router.get('/most_page/:url', async (req, res) => {
          })
       let total = 0
       list_page.forEach(element=>{
+         let str = element.page_url
+         let res = str.substr(str.lastIndexOf("/")+1);
+         res = res.replace(/-/g," ")
+         res = res.charAt(0).toUpperCase() + res.slice(1)
+         element.page_name = res
          total+=element.num
          element.key = total
       })
@@ -131,7 +136,7 @@ router.get('/most_page/:url', async (req, res) => {
          let r = element.num*100/total                
          let rate = Math.round(r*100)/100         
          if(index == list_page.length-1){
-            rate = (100*100- totalRate*100)/100         
+            rate = Math.round(100*100- totalRate*100)/100         
          }
          totalRate += rate
          element.rate = rate         

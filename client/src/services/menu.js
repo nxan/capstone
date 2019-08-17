@@ -13,7 +13,7 @@ export async function getLeftMenuData() {
       title: 'Real Time',
       key: 'realtime',
       url: '/realtime',
-      icon: 'icmn icmn-clock',
+      icon: 'icmn icmn-feed',
     },
     {
       title: 'Acquisition',
@@ -25,7 +25,7 @@ export async function getLeftMenuData() {
       title: 'Behavior',
       key: 'behavior',
       url: '/behavior',
-      icon: 'icmn icmn-stats-dots',
+      icon: 'icmn icmn-opt',
     },
     {
       title: 'Audience',
@@ -37,13 +37,19 @@ export async function getLeftMenuData() {
       title: 'Recoding',
       key: 'recording',
       url: '/recording',
-      icon: 'icmn icmn-stats-dots',
+      icon: 'icmn icmn-film',
     }, 
     {
       title: 'Heat Map',
       key: 'heatmap',
       url: '/heatmap',
-      icon: 'icmn icmn-stats-dots',
+      icon: 'icmn icmn-fire',
+    },
+    {
+      title: 'Suggest',
+      key: 'suggest',
+      url: '/suggest',
+      icon: 'icmn icmn-magic-wand',
     },
     {
       title: 'Profile',
@@ -54,6 +60,7 @@ export async function getLeftMenuData() {
     {
       title: 'Setting',
       key: 'setting',
+      url: '/settings',
       icon: 'icmn icmn-cog',
     },
   ]

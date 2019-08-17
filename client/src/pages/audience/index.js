@@ -138,6 +138,46 @@ const columnsbrowser = [
   },
 ]
 
+const columnsLocation = [
+  {
+    title: 'Country',
+    dataIndex: 'location',
+    key: 'country_name',
+  },
+  {
+    title: 'Users',
+    dataIndex: 'users',
+    key: 'totalUsers',
+    width: '12%',
+  },
+  {
+    title: '% Users',
+    dataIndex: 'percentuser',
+    width: '30%',
+    key: 'percentuser',
+    render: percentuser => (
+      <div style={{ width: 170 }}>
+        <Progress percent={percentuser} size="small" status="active" />
+      </div>
+    ),
+  },
+]
+const data = [
+  {
+    location: 'Vietnam',
+    users: '23',
+    percentuser: '100',
+    key:'VN',
+    children: [
+      {
+        location: 'HCM',
+        users: '23',
+        percentuser: '100',
+        key:'HCM'
+      },
+    ]
+  },
+]
 const areaOptions = {
   low: 0,
   showArea: true,
@@ -455,6 +495,9 @@ class Audience extends React.Component {
                       </TabPane>
                       <TabPane tab="Browser" key="3">
                         <Table columns={columnsbrowser} dataSource={audience.usrbrowser} />
+                      </TabPane>
+                      <TabPane tab="Location" key="4">
+                        <Table columns={columnsLocation} dataSource={data} />
                       </TabPane>
                     </Tabs>
                   </div>

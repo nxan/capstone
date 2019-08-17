@@ -19,14 +19,31 @@ const columns = [
   {
     title: 'End here',
     dataIndex: 'end_session',
-    width: '30%',
+    width: '30%',    
     key: 'endsession',
   },
 ];
 const columns2 = [
   {
-    title: 'Page',
+    title: '',
     dataIndex: 'page_url',
+    key: 'page_url',
+    render: url=>(
+      <a
+        href={'https://'+url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="utils__link--blue utils__link--underlined"
+      >
+        <small>
+              <i className="icmn-link ml-1" />
+        </small>
+      </a>
+      )
+  },
+  {
+    title: 'Product',
+    dataIndex: 'page_name',
     key: 'page',
   },
   {
@@ -38,6 +55,9 @@ const columns2 = [
     title: 'Rate',
     dataIndex: 'rate',
     key: 'rate',
+    render: rate =>(
+      <div>{rate}%</div>
+    )
   },
 ];
 @connect(({ behavior }) => ({ behavior }))

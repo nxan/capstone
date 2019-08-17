@@ -32,7 +32,7 @@ router.post(
       });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password, shopName, name, shop } = req.body;
 
     try {
       console.log(req.body);
@@ -41,15 +41,21 @@ router.post(
           email: email
         },
       });
-
+      let shop_infor = await Shop.findOne({
+        where:{
+          shop_url: shop
+        }
+      })
       if (user) {
         return res.status(400).json({ errors: [{ message: 'User already exists' }] })
       }
-
+      if (shop_infor){
+        return res.status(400).json({ errors: [{ message: 'Shop already exists' }] })
+      }
       user = new User({
         email, password, name
       });
-
+      
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       await user.save();
@@ -63,7 +69,11 @@ router.post(
         if (err) throw err;
         res.json({ token });
       });
-
+      shop_infor = new Shop({
+        user_id:user.id,
+        shop_url: shop,
+        name_shop: shopName,
+      })
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');

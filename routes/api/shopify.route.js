@@ -27,8 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 router.get('/', async (req, res) => {
     const shop = req.query.shop;
     if (shop) {
+        console.log(shop)
+        const shop_exist = await shop_db.getShop(shop)        
         const state = nonce();
-        const redirectUri = forwardingAddress + '/api/shopify/addScript';
+        let redirectUri = "https://kieng.pagekite.me/user/login";
+        if(shop_exist == null){
+            redirectUri = "https://kieng.pagekite.me/user/register"
+        }
+        console.log(redirectUri)
         const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey
             + '&scope=' + scope
             + '&state=' + state

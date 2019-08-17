@@ -32,7 +32,7 @@ $(document).ready(() => {
             //script: scripts
             // script: ""
         });
-        navigator.sendBeacon('https://5675fcc9.ngrok.io/api/page/sendHeatMap', data);
+        navigator.sendBeacon('https://84524ecb.ngrok.io/api/page/sendHeatMap', data);
     })
     document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -42,7 +42,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://5675fcc9.ngrok.io/api/session/save/resave', {
+        fetch('https://84524ecb.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -69,7 +69,7 @@ $(document).ready(() => {
     //setInterval(save, 0.3 * 1000);
 
     setInterval(function () {
-        fetch('https://5675fcc9.ngrok.io/api/session/save/resave', {
+        fetch('https://84524ecb.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -211,7 +211,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://5675fcc9.ngrok.io/api/session', {
+            fetch('https://84524ecb.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit

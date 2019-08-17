@@ -4,7 +4,7 @@ const sequelize = require('sequelize');
 
 const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
-
+const db = require('../../config/db');
 const shop_db = require('../../db/shop_db')
 const session_db = require('../../db/session_db')
 const session_page_db = require('../../db/session_page_db')
@@ -673,4 +673,16 @@ router.get('/acquisition/:shop_url', async (req, res) => {
     }
     res.json(result);
 });
+
+router.get('/audience/location/:url', async (req, res) => {
+    try {
+        const url = req.params.url
+        let shop = await shop_db.getShop(url)
+        let id = shop.id
+        
+    } catch (error) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+})
 module.exports = router;

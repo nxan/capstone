@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Icon, Checkbox, Button } from 'antd'
+import { Form, Input, Icon, Button } from 'antd'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -9,6 +9,14 @@ const FormItem = Form.Item
 class RegisterFormComponent extends React.Component {
   state = {
     confirmDirty: false,
+  }
+
+  componentDidMount = ()=>{
+    const {form, shop} = this.props
+    console.log(shop)
+    form.setFieldsValue({
+      shop
+    })
   }
 
   handleConfirmBlur = e => {
@@ -21,12 +29,17 @@ class RegisterFormComponent extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault()
-    const { form, dispatch } = this.props
+    const { form, dispatch, code, hmac, stateShop } = this.props
     form.validateFields((error, values) => {
       if (!error) {
         dispatch({
           type: 'user/REGISTER',
-          payload: values,
+          payload: {
+            values,
+            code,
+            hmac,
+            stateShop
+          },
         })
       }
     })
@@ -52,7 +65,7 @@ class RegisterFormComponent extends React.Component {
 
   render() {
     const {
-      form,
+      form
     } = this.props
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
@@ -62,7 +75,27 @@ class RegisterFormComponent extends React.Component {
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Email or Nickname"
+              placeholder="Email"
+            />,
+          )}
+        </FormItem>
+        <FormItem validateStatus="validating">
+          {form.getFieldDecorator('name', {
+            rules: [{ required: true, message: 'Please input your name!' }],
+          })(
+            <Input
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Your Name"
+            />,
+          )}
+        </FormItem>
+        <FormItem validateStatus="validating">
+          {form.getFieldDecorator('shopName', {
+            rules: [{ required: true, message: 'Please input your shop name!' }],
+          })(
+            <Input
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Shop Name"
             />,
           )}
         </FormItem>
@@ -109,7 +142,8 @@ class RegisterFormComponent extends React.Component {
           })(
             <Input
               prefix={<Icon type="shop" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Example: nxan.shopify.com"
+              placeholder="Shop URL"
+              disabled
             />,
           )}
         </FormItem>
@@ -118,12 +152,6 @@ class RegisterFormComponent extends React.Component {
           <Button type="primary" htmlType="submit" className="login-form-button">
             Sign Up
           </Button>
-          <span className="ml-3">
-            {form.getFieldDecorator('mailsubscription', {
-              valuePropName: 'checked',
-              initialValue: true,
-            })(<Checkbox>Mail Subscription</Checkbox>)}
-          </span>
           <span className="ml-3 register-link">
             Back to {' '}
             <Link

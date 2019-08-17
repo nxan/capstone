@@ -37,18 +37,18 @@ export function* LOGIN({ payload }) {
 }
 
 export function* REGISTER({ payload }) {
-    const { email, password, shop } = payload
+    const { email, password, shop, shopName, name, hmac, code, stateShop } = payload
     yield put({
         type: 'user/SET_STATE',
         payload: {
             loading: true,
         },
     })
-    const success = yield call(register, email, password, shop)
+    const success = yield call(register, email, password, shopName, name, shop, hmac, code, stateShop)
     if (success) {
         notification.success({
             message: 'Registered',
-            description: 'You have successfully logged in to Shopify Analytics!',
+            description: 'You have successfully registered!',
         })
         yield put(push('/user/login'));
     }

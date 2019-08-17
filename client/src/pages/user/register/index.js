@@ -4,18 +4,22 @@ import styles from './style.module.scss'
 import RegisterForm from './RegisterForm'
 
 class Register extends React.Component {
-
+  
   render() {
-
+    const params = new URLSearchParams(window.location.search)
+    const shop = params.get('shop')
+    const code = params.get('code')
+    const hmac = params.get('hmac')
+    const stateShop = params.get('state')    
     return (
       <div>
-        <Helmet title="Login" />
+        <Helmet title="Register" />
         <div className={`${styles.title} login-heading`}>
           <h1>
             <strong>WELCOME TO SHOPIFY ANALYTICS</strong>
           </h1>
           <p>
-          Shopify analytics and reports give you the means to review your store recent activity,
+            Shopify analytics and reports give you the means to review your store recent activity,
             <br />
             get insight into your visitors, and analyze your store transactions.
             <br />
@@ -31,7 +35,12 @@ class Register extends React.Component {
                     <strong>Please register</strong>
                   </h4>
                   <br />
-                  <RegisterForm />
+                  <RegisterForm 
+                  shop={shop} 
+                  code={code}
+                  hmac={hmac}
+                  stateShop={stateShop}                  
+                  />
                 </div>
               </div>
             </div>

@@ -1,10 +1,9 @@
 import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import { ConnectedRouter } from 'connected-react-router'
+import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom'
 import Loadable from 'react-loadable'
-
-import Loader from 'components/LayoutComponents/Loader'
+import { ConnectedRouter } from 'connected-react-router'
 import IndexLayout from 'layouts'
+import Loader from 'components/LayoutComponents/Loader'
 import NotFoundPage from 'pages/404'
 
 const loadable = loader =>
@@ -79,16 +78,22 @@ const routes = [
     component: loadable(() => import('pages/heatmap')),
     exact: true,
   },
-  
+
   {
     path: '/heatmap/shop',
     component: loadable(() => import('pages/heatmap/shop')),
     exact: true,
   },
-  // AntDesign
+
   {
-    path: '/antd',
-    component: loadable(() => import('pages/antd')),
+    path: '/suggest',
+    component: loadable(() => import('pages/suggest')),
+    exact: true,
+  },
+
+  {
+    path: '/settings',
+    component: loadable(() => import('pages/settings')),
     exact: true,
   },
 ]
@@ -97,22 +102,24 @@ class Router extends React.Component {
   render() {
     const { history } = this.props
     return (
+      <BrowserRouter>
       <ConnectedRouter history={history}>
         <IndexLayout>
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
-            {routes.map(route => (
-              <Route
-                path={route.path}
-                component={route.component}
-                key={route.path}
-                exact={route.exact}
-              />
-            ))}
-            <Route component={NotFoundPage} />
+              <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
+              {routes.map(route => (
+                <Route
+                  path={route.path}
+                  component={route.component}
+                  key={route.path}
+                  exact={route.exact}
+                />
+              ))}
+              <Route component={NotFoundPage} />
           </Switch>
         </IndexLayout>
       </ConnectedRouter>
+      </BrowserRouter>
     )
   }
 }
