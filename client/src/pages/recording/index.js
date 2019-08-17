@@ -15,9 +15,9 @@ class VideosList extends React.Component {
   componentDidMount() {
     let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>'
     $('head').prepend(script);
-    script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>'
+    script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@0.3.14/dist/index.js"></script>'
     $('head').prepend(script);
-    let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
+    let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.csss" />';
     $('head').prepend(link);
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);

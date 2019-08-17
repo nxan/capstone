@@ -8,6 +8,8 @@ const fs = require("fs");
 const app = express();
 const bodyParser = require('body-parser')
 const shop_db = require('../../db/shop_db')
+const cloudscraper = require('cloudscraper');
+const mkdirp = require('mkdirp')
 const
     multer = require('multer')
     , inMemoryStorage = multer.memoryStorage()
@@ -94,28 +96,68 @@ router.post('/sendHeatMap', async (req, res, next) => {
 })
 router.get('/getArrayHeatMap/:id', async (req, res) => {
     var page = await page_db.getPageById(req.params.id);
-    var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
-    request.get(url, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var csv = body;
-            readData = makePlayableString(csv);
-            res.send(readData);
+    var path = './heatmap/' + page.id + '.json';
+    fs.readFile(path, "utf-8", (err, data) => {
+        // var result = {
+        //     web: data
+        // }
+        var readData = makePlayableString(data);
+        res.send(readData);
+    })
+    // var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + page.id + '.json';
+    // request.get(url, function (error, response, body) {
+    //     if (!error && response.statusCode == 200) {
+    //         var csv = body;
+    //         readData = makePlayableString(csv);
+    //         res.send(readData);
 
-        }
-        else {
-            res.send(404)
-        }
-    });
+    //     }
+    //     else {
+    //         res.send(404)
+    //     }
+    // });
 })
+async function crawlWeb(url, res) {
+
+    var reqWeb = "http://" + url;
+    var dir = './web/' + url;
+    if (!fs.existsSync(dir)) {
+        mkdirp(dir, function (err) {
+            console.log('ok,');
+        });
+    }
+    cloudscraper.get(reqWeb).then(function (htmlString) {
+        var path = './web/' + url + ".html";
+        fs.writeFile(path, htmlString, (err) => {
+            if (err) console.log(err);
+            else {
+                console.log("Successfully Written to File.");
+                fs.readFile(path, "utf-8", (err, data) => {
+                    var result = {
+                        web: data
+                    }
+                    res.send(result);
+                })
+            }
+        });
+        // res.send(htmlString), console.error
+    }
+    );
+}
 router.get('/getOneHeatMap/:id', async (req, res, next) => {
     var page = await page_db.getPageById(req.params.id);
     var path = './web/' + page.page_url + '.html';
-    fs.readFile(path, "utf-8", (err, data) => {
-        var result = {
-            web: data
-        }
-        res.send(result);
-    })
+    if (!fs.existsSync(path)) {
+        var crawl = await crawlWeb(page.page_url, res)
+    } else {
+        fs.readFile(path, "utf-8", (err, data) => {
+            var result = {
+                web: data
+            }
+            res.send(result);
+        })
+    }
+
 
 });
 

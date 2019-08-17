@@ -213,7 +213,7 @@ class Realtime extends React.Component {
                       <TabPane tab="Operating System" key="3">
                         <Table columns={columnsOs} dataSource={os} />
                       </TabPane>
-                      <TabPane tab="Acquition" key="4">
+                      <TabPane tab="Acquisition" key="4">
                         <Table columns={columnsAcquistion} dataSource={ac} />
                       </TabPane>
                       <TabPane tab="Browser" key="5 ">

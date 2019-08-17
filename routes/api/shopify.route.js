@@ -12,10 +12,9 @@ const cloudscraper = require('cloudscraper')
 const mkdirp = require('mkdirp')
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiKeySecret = process.env.SHOPIFY_API_SECRET;
-const scope = 'write_products,read_script_tags,write_script_tags';
+const scope = 'write_products,read_script_tags,write_script_tags, read_product_listings';
 const forwardingAddress = process.env.DOMAIN;
 const app = express();
-
 // var func = require('./../func')
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -40,7 +39,7 @@ router.get('/', async (req, res) => {
             + '&state=' + state
             + '&redirect_uri=' + redirectUri
             ;
-        console.log(installUrl)
+        // console.log(installUrl)
         res.cookie('state', state);
 
         res.redirect(installUrl);
@@ -119,12 +118,14 @@ router.get('/getPages', (req, res) => {
         client_secret: apiKeySecret,
         code
     };
+
+
     request.post(accessTokenRequestUrl, { json: accesTokenPayLoad })
         .then((accessTokenResponse) => {
             const accessToken = accessTokenResponse.access_token;
-            // DONE: Use access token to make API call to 'script_tags' endpoint
-            var request_page = 'https://' + shop + '/admin/products.json';
-            console.log(shop);
+            //DONE: Use access token to make API call to 'products' endpoint
+            var request_page = 'https://' + shop + '/admin/api/2019-07/products.json?limit=250';
+            //console.log(shop);
             var shop_request_headers = {
                 'X-Shopify-Access-Token': accessToken,
                 "Content-Type": "application/json",
@@ -145,11 +146,13 @@ router.get('/getPages', (req, res) => {
                 .then(async function (response) {
                     var products = response.products
                     console.log(shop)
+                    var pages = [];
                     Array.from(products).forEach((element) => {
                         url = '/products/' + element.handle
+                        pages.push(url);
                         crawlData(shop, url);
                     });
-                    res.end("OK")
+                    res.json(pages)
                 })
                 .catch(function (err) {
                     console.log(err);

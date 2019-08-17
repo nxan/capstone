@@ -24,43 +24,43 @@ function lineData(series) {
     series: [series],
   }
 }
-function lineData2(series) {
-  return {
-    labels: [
-      '30',
-      '29',
-      '28',
-      '27',
-      '26',
-      '25',
-      '24',
-      '23',
-      '22',
-      '21',
-      '20',
-      '19',
-      '18',
-      '17',
-      '16',
-      '15',
-      '14',
-      '13',
-      '12',
-      '11',
-      '10',
-      '9',
-      '8',
-      '7 day ago',
-      '6 day ago',
-      '5 day ago',
-      '4 day ago',
-      '3 day ago',
-      '2 day ago',
-      'Yesterday',
-    ],
-    series: [series],
-  }
-}
+// function lineData2(series) {
+//   return {
+//     labels: [
+//       '30',
+//       '29',
+//       '28',
+//       '27',
+//       '26',
+//       '25',
+//       '24',
+//       '23',
+//       '22',
+//       '21',
+//       '20',
+//       '19',
+//       '18',
+//       '17',
+//       '16',
+//       '15',
+//       '14',
+//       '13',
+//       '12',
+//       '11',
+//       '10',
+//       '9',
+//       '8',
+//       '7 day ago',
+//       '6 day ago',
+//       '5 day ago',
+//       '4 day ago',
+//       '3 day ago',
+//       '2 day ago',
+//       'Yesterday',
+//     ],
+//     series: [series],
+//   }
+// }
 
 const { TabPane } = Tabs
 
@@ -193,7 +193,7 @@ class Acquisition extends React.Component {
         <Helmet title="Acquisition" />
         <div className="row">
           <div className="col-lg-8" />
-          <div className="col-lg-4">
+          <div className="col-lg-4 text-right">
             <DatePicker
               disabledDate={this.disabledStartDate}
               showTime
@@ -254,7 +254,15 @@ class Acquisition extends React.Component {
               <div className="card-body">
                 <div className="mb-5">
                   <Tabs type="card">
-                    <TabPane tab="Last Month" key="1">
+                    {/* <TabPane tab="Last Month" key="1">
+                      <ChartistGraph
+                        className="height-300"
+                        data={lineData(acquistion.visitorLastWeek)}
+                        options={lineOptions}
+                        type="Line"
+                      />
+                    </TabPane> */}
+                    <TabPane tab="Last Week" key="2">
                       <ChartistGraph
                         className="height-300"
                         data={lineData(acquistion.visitorLastWeek)}
@@ -262,22 +270,14 @@ class Acquisition extends React.Component {
                         type="Line"
                       />
                     </TabPane>
-                    <TabPane tab="Last Week" key="2">
+                    {/* <TabPane tab="Date" key="3">
                       <ChartistGraph
                         className="height-300"
                         data={lineData2(acquistion.visitorLastMonth)}
                         options={lineOptions}
                         type="Line"
                       />
-                    </TabPane>
-                    <TabPane tab="Date" key="3">
-                      <ChartistGraph
-                        className="height-300"
-                        data={lineData2(acquistion.visitorLastMonth)}
-                        options={lineOptions}
-                        type="Line"
-                      />
-                    </TabPane>
+                    </TabPane> */}
                   </Tabs>
                 </div>
               </div>

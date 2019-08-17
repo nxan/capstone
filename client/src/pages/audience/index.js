@@ -9,43 +9,43 @@ import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 // import styles from './style.module.scss'
 
-function areaData(series) {
-  return {
-    labels: [
-      '30',
-      '29',
-      '28',
-      '27',
-      '26',
-      '25',
-      '24',
-      '23',
-      '22',
-      '21',
-      '20',
-      '19',
-      '18',
-      '17',
-      '16',
-      '15',
-      '14',
-      '13',
-      '12',
-      '11',
-      '10',
-      '9',
-      '8',
-      '7',
-      '6',
-      '5',
-      '4',
-      '3',
-      '2 days ago',
-      'Yesterday',
-    ],
-    series: [series],
-  }
-}
+// function areaData(series) {
+//   return {
+//     labels: [
+//       '30',
+//       '29',
+//       '28',
+//       '27',
+//       '26',
+//       '25',
+//       '24',
+//       '23',
+//       '22',
+//       '21',
+//       '20',
+//       '19',
+//       '18',
+//       '17',
+//       '16',
+//       '15',
+//       '14',
+//       '13',
+//       '12',
+//       '11',
+//       '10',
+//       '9',
+//       '8',
+//       '7',
+//       '6',
+//       '5',
+//       '4',
+//       '3',
+//       '2 days ago',
+//       'Yesterday',
+//     ],
+//     series: [series],
+//   }
+// }
 
 function areaData2(series) {
   return {
@@ -253,6 +253,30 @@ class Audience extends React.Component {
       <Authorize roles={['admin']}>
         <Helmet title="Audience" />
         <div className="row">
+          <div className="col-lg-8" />
+          <div className="col-lg-4 text-right">
+            <DatePicker
+              disabledDate={this.disabledStartDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={startValue}
+              placeholder="Start"
+              onChange={this.onStartChange}
+              onOpenChange={this.handleStartOpenChange}
+            />
+            <DatePicker
+              disabledDate={this.disabledEndDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={endValue}
+              placeholder="End"
+              onChange={this.onEndChange}
+              open={endOpen}
+              onOpenChange={this.handleEndOpenChange}
+            />
+          </div>
+        </div>
+        <div className="row">
           <div className="col-lg-12">
             <div className="card">
               <div className="card-header">
@@ -265,14 +289,14 @@ class Audience extends React.Component {
               <div className="card-body">
                 <div className="mb-5">
                   <Tabs type="card">
-                    <TabPane tab="Last Month" key="1">
+                    {/* <TabPane tab="Last Month" key="1">
                       <ChartistGraph
                         className="height-300"
                         data={areaData(audience.sessionLastMonth)}
                         options={areaOptions}
                         type="Line"
                       />
-                    </TabPane>
+                    </TabPane> */}
                     <TabPane tab="Last Week" key="2">
                       <ChartistGraph
                         className="height-300"
@@ -281,7 +305,7 @@ class Audience extends React.Component {
                         type="Line"
                       />
                     </TabPane>
-                    <TabPane tab="Date" key="3">
+                    {/* <TabPane tab="Date" key="3">
                       <DatePicker
                         disabledDate={this.disabledStartDate}
                         showTime
@@ -307,7 +331,7 @@ class Audience extends React.Component {
                         options={areaOptions}
                         type="Line"
                       />
-                    </TabPane>
+                    </TabPane> */}
                   </Tabs>
                 </div>
               </div>
@@ -324,7 +348,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [1, 2, 1, 2, 1, 2, 1, 2, 0,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -343,7 +367,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [2, 2, 3, 2, 3, 2, 1, 2, 3,1, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -362,7 +386,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [2, 1, 2, 1, 2, 2, 1, 1, 3, 1, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -375,13 +399,13 @@ class Audience extends React.Component {
           <div className="col-md-2">
             <ChartCard2
               title="Bounce Rate"
-              amount="240"
+              amount="80%"
               chartProps={{
                 width: 180,
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [3, 1, 1, 3, 3, 5, 3, 3, 4,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -400,7 +424,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [1, 3, 2, 5, 2, 4, 1, 2, 0,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -419,7 +443,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [5, 3, 2, 2, 3, 1, 1, 2, 0,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -440,7 +464,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [3, 1, 1, 2, 1, 2, 1, 2, 0,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -459,7 +483,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 1, 1, 1, 18, 20, 26],
+                    values: [4, 2, 3, 2, 1, 2, 1, 2, 0,18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
