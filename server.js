@@ -172,7 +172,7 @@ async function uploadVideo() {
 function reset() {
     console.log(" OKKKKKKKKKKKKKKKKKKKK IS CLEARRRRRRRRRRRR")
     clearInterval(interval);
-    interval = setInterval(uploadVideo, 30000);
+    interval = setInterval(uploadVideo, 20000);
 }
 io.on("connection", function (socket) {
     console.log("Connecting:" + socket.id);
@@ -288,14 +288,16 @@ io.on("connection", function (socket) {
                 // onlines.splice(i, 1);
                 onlines[i].session_length -= 1;
 
+            } else if (onlines[i].session_length >= 1) {
+                onlines[i].socket_id = socket.id;
+                onlines[i].session_length -= 1;
             }
-
 
 
 
             //socket.leave(onlines[i].socket_id)
         }
-
+        console.log(onlines)
         console.log(socket.id + ":disconnected")
     })
     socket.on("client-send-session", function (data) {
@@ -322,6 +324,7 @@ io.on("connection", function (socket) {
                 //ư reset();
                 onlines[i].socket_id = socket.id;
                 onlines[i].session_length += 1
+
                 onlines[i].page_url = json.page_url;
             }
             //console.log("online: " + io.sockets.adapter.rooms[process.env.ROOM].length);
@@ -339,7 +342,7 @@ io.on("connection", function (socket) {
     })
     socket.on("client-send-video", function (data) {
         var json = JSON.parse(data);
-        console.log('video received');
+        console.log('video received:' + socket.id);
         var url = 'recordings/' + json.shop + '/' + json.session_id + '.json';
         if (!json.is_change_page) {
             fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {

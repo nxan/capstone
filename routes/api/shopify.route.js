@@ -29,10 +29,11 @@ router.get('/', async (req, res) => {
         console.log(shop)
         const shop_exist = await shop_db.getShop(shop)        
         const state = nonce();
-        let redirectUri = "https://kieng.pagekite.me/user/login";
-        if(shop_exist == null){
-            redirectUri = "https://kieng.pagekite.me/user/register"
-        }
+        let redirectUri = forwardingAddress + '/api/shopify/addScript';
+        // let redirectUri = "https://kieng.pagekite.me/user/login";
+        // if(shop_exist == null){
+        //     redirectUri = "https://kieng.pagekite.me/user/register"
+        // }
         console.log(redirectUri)
         const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey
             + '&scope=' + scope

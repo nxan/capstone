@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const sequelize = require('sequelize');
-
+const dateFormat = require('dateformat');
 const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
 const db = require('../../config/db');
@@ -677,12 +677,207 @@ router.get('/acquisition/:shop_url', async (req, res) => {
 router.get('/audience/location/:url', async (req, res) => {
     try {
         const url = req.params.url
-        let shop = await shop_db.getShop(url)
-        let id = shop.id
-        
+        let shop = await shop_db.gcount / visitors
     } catch (error) {
         console.log(err.message);
         res.status(500).send('Server error');
+    }
+})
+
+router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
+    try {
+        const url = req.params.shop_url
+        let shop = await shop_db.getShop(url)
+        const from = req.params.from;
+        const to = req.params.to;
+        const Op = sequelize.Op
+        const condition = {
+            where: {
+                shop_id: shop.id,
+                session_start_time: {
+                    [Op.gte]: from
+                },
+                session_end_time: {
+                    [Op.lte]: to
+                }
+
+            }
+        }
+        // var session = await Session.sequelize.query("select * from session where session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'",
+        //     { type: sequelize.QueryTypes.SELECT }
+        // ).then(function (result) {
+        //     return formatSeconds(result[0].Avg)
+        // })
+        const session = await session_db.getAllSessionsByCondition(condition);
+        var obj = {};
+
+        for (var i = 0, len = session.length; i < len; i++) {
+            obj[session[i]['user_id']] = session[i];
+        }
+        // getVisitor
+        // obj.length;
+        var newSession = [], session_array = [], array_usrbrowser = [], array_usrdevice = [], array_usrOS = []
+        for (var key in obj) {
+            newSession.push(obj[key]);
+        }
+        var newvisitor = session.filter(function (session) {
+            return session.is_first_visit == true
+        })
+
+        var avgduration = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'",
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            return formatSeconds(result[0].Avg)
+        })
+
+        for (var i = 0; i <= session.length - 1; i++) {
+            session_array.push(session[i].id)
+        }
+        const pageview = await SessionPage.count({
+            where: {
+                session_id: session_array
+            }
+        })
+        const oldvisitor = session.filter(function (session) {
+            return session.is_first_visit == false
+        })
+
+        // //getUserBrowser
+        var sql = "SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id =" + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + " GROUP BY br.id, br.browser_name"
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while (result.length > 0) {
+                array_usrbrowser.unshift(result.pop())
+            }
+        })
+        //getUserDevice
+        var sql = "SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + "GROUP BY br.id, br.device_type_name"
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while (result.length > 0) {
+                array_usrdevice.unshift(result.pop())
+            }
+        })
+        //getUserOS
+        var sql = "SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "' GROUP BY br.id, br.os_name"
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while (result.length > 0) {
+                array_usrOS.unshift(result.pop())
+            }
+        })
+        // const count = await Session.count({
+        //     col: 'user_id',
+        //     distinct: true,
+        //     where: {
+        //         shop_id: shop.id,
+        //         session_start_time: {
+        //             [Op.gte]: from
+        //         },
+        //         session_end_time: {
+        //             [Op.lte]: to
+        //         }
+        //     }
+        // })
+        // //getNewVisitors
+        // const count = await Session.count({
+        //     where: { shop_id: shop.id, is_first_visit: true }
+        // })
+        // // getAvgDurationSession
+        // await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id,
+        //     { type: sequelize.QueryTypes.SELECT }
+        // ).then(function (result) {
+        //     res.json(formatSeconds(result[0].Avg))
+        // })
+        // //getTotalPageView
+        // const session = await Session.findAll({
+        //     where: {
+        //         shop_id: shop.id
+        //     }
+        // })
+        // var session_array = []
+        // var session_json = JSON.parse(JSON.stringify(session))
+        // for (var i in session_json) {
+        //     session_array.push(session_json[i].id)
+        // }
+        // const pageview = await SessionPage.count({
+        //     where: {
+        //         session_id: session_array
+        //     }
+        // })
+        // //getOldVistor
+        // const count = await Session.count({
+        //     where: { shop_id: shop.id, is_first_visit: false }
+        // })
+        // //getUserBrowser
+        // var sql = 'USE [shopify] SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.browser_name'
+        // await Session.sequelize.query(sql,
+        //     { type: sequelize.QueryTypes.SELECT }
+        // ).then(function (result) {
+        //     while (result.length > 0) {
+        //         array_usrbrowser.unshift(result.pop())
+        //     }
+        // })
+        // //getUserDevice
+        // var sql = 'USE [shopify] SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.device_type_name'
+        // await Session.sequelize.query(sql,
+        //     { type: sequelize.QueryTypes.SELECT }
+        // ).then(function (result) {
+        //     while (result.length > 0) {
+        //         array_usrdevice.unshift(result.pop())
+        //     }
+        // })
+        // //getUserOS
+        // var sql = 'USE [shopify] SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.os_name'
+        // await Session.sequelize.query(sql,
+        //     { type: sequelize.QueryTypes.SELECT }
+        // ).then(function (result) {
+        //     while (result.length > 0) {
+        //         array_usrOS.unshift(result.pop())
+        //     }
+        // })
+
+        // const count = await Session.count({
+        //     where: { shop_id: shop.id }
+        // })
+        var array_sessions_lastweek = []
+        var theDate = new Date(from);
+        //theDate = dateFormat(theDate, "YYYY-MM-DD")
+        for (var i = 1; i < 8; i++) {
+            console.log(i)
+            console.log(theDate.getDate())
+            var time = theDate.getFullYear() + "-" + (theDate.getMonth() + 1) + "-" + (theDate.getDate());
+            var sql = "select * from session where cast(session_start_time as date) = N'" + time + "' AND shop_id = " + shop.id;
+            theDate = new Date(theDate.setDate(theDate.getDate() + 1))
+            //theDate = dateFormat(theDate, "YYYY-MM-DD")
+            await Session.sequelize.query(sql,
+                { type: sequelize.QueryTypes.SELECT }
+            ).then(function (result) {
+                array_sessions_lastweek.unshift(result.length)
+            })
+            //array_sessions_lastweek.unshift(session.length);
+        }
+        var result = {
+            audience: {
+                avgDuration: avgduration,
+                newuser: newvisitor.length,
+                olduser: oldvisitor.length,
+                pageView: pageview,
+                session: session.length,
+                usrOs: array_usrOS,
+                usrbrowser: array_usrbrowser,
+                usrdev: array_usrdevice,
+                user: newSession.length,
+                sessionLastWeek: array_sessions_lastweek
+            }
+        }
+        res.json(result);
+    } catch (error) {
+        console.log(error)
+        res.json(error);
     }
 })
 module.exports = router;

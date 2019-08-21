@@ -17,10 +17,11 @@ class VideosList extends React.Component {
     $('head').prepend(script);
     script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@0.3.14/dist/index.js"></script>'
     $('head').prepend(script);
-    let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.csss" />';
+    let link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />';
     $('head').prepend(link);
     link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
     $('head').prepend(link);
+
     $('#close').click(function hideDiv() {
     });
   }

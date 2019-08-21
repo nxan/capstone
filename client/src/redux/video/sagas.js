@@ -1,13 +1,13 @@
-import { all, takeEvery, put, call } from 'redux-saga/effects'
+import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import { getVideo } from 'services/video'
 import { loadProfile } from 'services/user'
 import actions from './actions'
 
-// import * as selectors from './selectors';
+import * as selectors from './selectors';
 
 export function* LOAD_VIDEO() {
-    // const shopUrl = yield select(selectors.shopUrl)
-    const video = yield call(getVideo)
+    const shopUrl = yield select(selectors.shopUrl)
+    const video = yield call(getVideo, shopUrl)
     yield put({
         type: 'video/SET_STATE',
         payload: {

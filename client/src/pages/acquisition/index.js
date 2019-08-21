@@ -24,43 +24,7 @@ function lineData(series) {
     series: [series],
   }
 }
-// function lineData2(series) {
-//   return {
-//     labels: [
-//       '30',
-//       '29',
-//       '28',
-//       '27',
-//       '26',
-//       '25',
-//       '24',
-//       '23',
-//       '22',
-//       '21',
-//       '20',
-//       '19',
-//       '18',
-//       '17',
-//       '16',
-//       '15',
-//       '14',
-//       '13',
-//       '12',
-//       '11',
-//       '10',
-//       '9',
-//       '8',
-//       '7 day ago',
-//       '6 day ago',
-//       '5 day ago',
-//       '4 day ago',
-//       '3 day ago',
-//       '2 day ago',
-//       'Yesterday',
-//     ],
-//     series: [series],
-//   }
-// }
+
 
 const { TabPane } = Tabs
 
@@ -173,6 +137,10 @@ class Acquisition extends React.Component {
 
   onEndChange = value => {
     this.onChange('endValue', value)
+    // const endValue = this.state;
+    // if(endValue != null){
+  
+    // }
   }
 
   handleStartOpenChange = open => {
@@ -196,8 +164,7 @@ class Acquisition extends React.Component {
           <div className="col-lg-4 text-right">
             <DatePicker
               disabledDate={this.disabledStartDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={startValue}
               placeholder="Start"
               onChange={this.onStartChange}
@@ -205,8 +172,7 @@ class Acquisition extends React.Component {
             />
             <DatePicker
               disabledDate={this.disabledEndDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={endValue}
               placeholder="End"
               onChange={this.onEndChange}

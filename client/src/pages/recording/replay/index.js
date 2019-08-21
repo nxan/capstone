@@ -12,10 +12,8 @@ class Video extends React.Component {
         }
     }
 
-
     componentDidMount() {
-
-        let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb/dist/rrweb.min.js"></script>'
+        let script = '<script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/record/rrweb-record.min.js"></script>'
         $('head').prepend(script);
         script = '<script src="https://cdn.jsdelivr.net/npm/rrweb-player@0.3.14/dist/index.js"></script>'
         $('head').prepend(script);
@@ -60,18 +58,14 @@ class Video extends React.Component {
         /* global rrwebPlayer  */
         /* eslint no-undef: "error" */
         const { events } = this.state
+        
         new rrwebPlayer({
             target: document.getElementById('video'),
             data: {
                 events,
+                autoPlay: true
             }
         })
-        /* eslint object-shorthand: "error" */
-        // replayer.addEventListener('finish', () => console.log('finish'));
-        // /* global replayer  */
-        // /* eslint no-undef: "error" */
-        // replayer.play()
-
     }
 
     replayFormatSetter = (events) => {
@@ -84,10 +78,9 @@ class Video extends React.Component {
         //   data = data.concat(playerString[i]);
         //   console.log(data);
         // }
-        console.log(playerString);
         playerString.forEach((entry) => {
             data = data.concat(entry);
-
+            console.log(data)
             // return data;
         });
         // this.setState({ playerString: data })
@@ -115,7 +108,6 @@ class Video extends React.Component {
                         <div>
                             <div id="container" className={styles.container}>
                                 <div id="video" className={styles.video} />
-                                <a href="javascript:void(0);" onClick={() => this.closeModal()} />
                             </div>
                         </div>
                     </div>
