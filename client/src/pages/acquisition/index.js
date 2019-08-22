@@ -152,7 +152,9 @@ class Acquisition extends React.Component {
   handleChange = (date, dateString) => {
     this.setState({ date })
     const { dispatch } = this.props
+    // With `object` enabled
     const startValue = dateString[0]
+    // With `object` enabled
     const endValue = dateString[1]
     const values = { startValue, endValue }
     dispatch({

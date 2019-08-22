@@ -458,9 +458,9 @@ router.get('/count/visitor/date/:shop_url/:start_date/:end_date', async (req, re
     let end = new Date(end_date);
     console.log(`${start} and ${end}`)
     let loop = new Date(start);
-    let months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+    let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     while (loop <= end) {
-        
+
         let day = `${loop.getFullYear()}-${months[loop.getMonth()]}-${loop.getDate()}`
         console.log(day)
         let sql = `select distinct(user_id) from [session] where CONVERT(VARCHAR, session_start_time , 120) like '${day}%' ` + 'AND shop_id = ' + shop.id;
@@ -627,7 +627,7 @@ router.get('/acquisition/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var condition = { where: shop_id = shop.id }
-    var sessionData = await session_db.getAllSessionsByCondition(condition);
+    var sessionData = await session_db.getAllByCondition(condition);
     // var sessionPageData = await Session_page.sequelize.query('select * from session_page where session_id in (select session_id from session where shop_id =' + shop.id + ')',
     //   { type: sequelize.QueryTypes.SELECT }).then(function (result) {
     //     return result
@@ -697,6 +697,98 @@ router.get('/acquisition/:shop_url', async (req, res) => {
     }
     res.json(result);
 });
+router.get('/acquisition/date/:shop_url/:from/:to', async (req, res) => {
+    const { shop_url, from, to } = req.params
+    let shop = await shop_db.getShop(shop_url)
+    const Op = sequelize.Op
+    const condition = {
+        where: {
+            shop_id: shop.id,
+            session_start_time: {
+                [Op.gte]: from
+            },
+            session_end_time: {
+                [Op.lte]: to
+            }
+
+        }
+    }
+    var sessionData = await session_db.getAllSessionsByDate(shop.id, from, to);
+    // var sessionPageData = await Session_page.sequelize.query('select * from session_page where session_id in (select session_id from session where shop_id =' + shop.id + ')',
+    //   { type: sequelize.QueryTypes.SELECT }).then(function (result) {
+    //     return result
+    //   })
+    var sessionPageData = await session_page_db.getAllSessionPageFilterDate(shop.id, from, to);
+    sessionData.sort();
+    var obj = {};
+
+    for (var i = 0, len = sessionData.length; i < len; i++) {
+        obj[sessionData[i]['user_id']] = sessionData[i];
+    }
+
+
+    var newSession = []
+    for (var key in obj) {
+        newSession.push(obj[key]);
+    }
+    var re_vis = newSession.filter(function (session) {
+        return session.is_first_visit == '0'
+    })
+
+    // var numBoys = sessionData.reduce(function (n, s) {
+    //   return n + (s.acquistion_id || 0) + 1;
+    // }, s);
+    var result_re_vis = re_vis.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var result_vis = newSession.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+    var session = sessionData.reduce((acc, o) => (
+        acc[o.acquistion_id] = (acc[o.acquistion_id] || 0) + 1, acc), {});
+
+    var session_page = sessionPageData.reduce((acc, o) => (
+        acc[o.session.acquistion_id] = (acc[o.session.acquistion_id] || 0) + 1, acc), {});
+    var result = [];
+
+    var avg = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + " group by acquistion_id",
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        return result
+        //res.json(formatSeconds(result[0].Avg))
+    })
+    for (var i = 1; i <= 4; i++) {
+        var model = {}
+        if (i == 1) {
+            model.acquistion = 'Social';
+        }
+        if (i == 2) {
+            model.acquistion = 'Search';
+        }
+        if (i == 3) {
+            model.acquistion = 'Direct';
+        }
+        if (i == 4) {
+            model.acquistion = 'Other';
+        }
+        var bounce_num = await session_page_db.getSessionPageWithCountFilterDate(shop.id, i, from, to);
+        model.visitor = result_vis['' + i] == undefined ? 0 : result_vis['' + i]
+        model.revisitor = result_re_vis['' + i] == undefined ? 0 : result_re_vis['' + i];
+        model.sessions = session['' + i] == undefined ? 0 : session['' + i];
+        var sessionnum = session['' + i] == undefined ? 1 : session['' + i];
+        model.bouncerate = ((bounce_num.length / sessionnum) * 100).toFixed(1) + '%';
+        if (session['' + i] == undefined || session_page['' + i] == undefined) {
+            model.pagessession = 0;
+        } else {
+            model.pagessession = sessionnum + session_page['' + i];
+        }
+
+        model.avgsessionduration = formatSeconds(avg[i - 1] == undefined ? 0 : avg[i - 1].Avg);
+        model.conversionrate = 0;
+        model.completion = 0;
+        model.value = 0;
+        result.push(model)
+    }
+    res.json(result);
+});
 
 router.get('/audience/location/:url', async (req, res) => {
     try {
@@ -704,6 +796,20 @@ router.get('/audience/location/:url', async (req, res) => {
         let shop = await shop_db.gcount / visitors
     } catch (error) {
         console.log(err.message);
+        res.status(500).send('Server error');
+    }
+})
+
+router.get('/audience/bouncrate/:url', async (req, res) => {
+    try {
+        const url = req.params.url
+        let shop = await shop_db.getShop(url)
+        var sessionPageData = await session_page_db.get_all_session_page(shop.id);
+        var bounce_num = await session_page_db.getSessionPageWithCountNoAcquisition(shop.id);
+        var bounceRate = ((bounce_num.length / sessionPageData.length) * 100).toFixed(1) + '%';
+        res.json(bounceRate);
+    } catch (error) {
+        console.log(error.message);
         res.status(500).send('Server error');
     }
 })
@@ -732,6 +838,10 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
         // ).then(function (result) {
         //     return formatSeconds(result[0].Avg)
         // })
+        var sessionPageData = await session_page_db.getAllSessionPageFilterDate(shop.id, from, to);
+        var bounce_num = await session_page_db.getSessionPageWithCountNoAcquisitionFilterDate(shop.id, from, to);
+        var bounceRate = ((bounce_num.length / sessionPageData.length) * 100).toFixed(1) + '%';
+
         const session = await session_db.getAllSessionsByCondition(condition);
         var obj = {};
 
@@ -885,18 +995,18 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             //array_sessions_lastweek.unshift(session.length);
         }
         var result = {
-            audience: {
-                avgDuration: avgduration,
-                newuser: newvisitor.length,
-                olduser: oldvisitor.length,
-                pageView: pageview,
-                session: session.length,
-                usrOs: array_usrOS,
-                usrbrowser: array_usrbrowser,
-                usrdev: array_usrdevice,
-                user: newSession.length,
-                sessionLastWeek: array_sessions_lastweek
-            }
+            avgDuration: avgduration,
+            newuser: newvisitor.length,
+            olduser: oldvisitor.length,
+            pageView: pageview,
+            session: session.length,
+            usrOs: array_usrOS,
+            usrbrowser: array_usrbrowser,
+            usrdev: array_usrdevice,
+            user: newSession.length,
+            bounceRate: bounceRate,
+            sessionLastWeek: array_sessions_lastweek
+
         }
         res.json(result);
     } catch (error) {
