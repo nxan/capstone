@@ -2,6 +2,7 @@ import actions from './actions'
 
 const initialState = {
     visitorLastWeek: [],
+    visitorByDate:[],
     acquistionSocial: 0,
     acquistionSearch: 0,
     acquistionDirect: 0,

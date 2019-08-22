@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom'
 import Loadable from 'react-loadable'
-import { ConnectedRouter } from 'connected-react-router'
 import IndexLayout from 'layouts'
 import Loader from 'components/LayoutComponents/Loader'
 import NotFoundPage from 'pages/404'
@@ -102,8 +101,7 @@ class Router extends React.Component {
   render() {
     const { history } = this.props
     return (
-      <BrowserRouter>
-      <ConnectedRouter history={history}>
+      <BrowserRouter forceRefresh={!history}>      
         <IndexLayout>
           <Switch>
               <Route exact path="/" render={() => <Redirect to="/dashboard" />} />
@@ -118,7 +116,6 @@ class Router extends React.Component {
               <Route component={NotFoundPage} />
           </Switch>
         </IndexLayout>
-      </ConnectedRouter>
       </BrowserRouter>
     )
   }

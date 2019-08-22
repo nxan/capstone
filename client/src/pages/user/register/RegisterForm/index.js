@@ -32,14 +32,12 @@ class RegisterFormComponent extends React.Component {
     const { form, dispatch, code, hmac, stateShop } = this.props
     form.validateFields((error, values) => {
       if (!error) {
+        values.code = code
+        values.hmac = hmac
+        values.stateShop = stateShop
         dispatch({
           type: 'user/REGISTER',
-          payload: {
-            values,
-            code,
-            hmac,
-            stateShop
-          },
+          payload: values
         })
       }
     })

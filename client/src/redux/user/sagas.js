@@ -12,7 +12,7 @@ import actions from './actions'
 import * as selectors from './selectors';
 
 export function* LOGIN({ payload }) {
-    const { email, password } = payload
+    const { email, password, shop, hmac, code, stateShop, installed } = payload
     yield put({
         type: 'user/SET_STATE',
         payload: {
@@ -20,7 +20,7 @@ export function* LOGIN({ payload }) {
             loading: true,
         },
     })
-    const success = yield call(login, email, password)
+    const success = yield call(login, email, password, shop, hmac, code, stateShop, installed)
     if (success) {
         localStorage.setItem('token', success.token);
         console.log(success.token);

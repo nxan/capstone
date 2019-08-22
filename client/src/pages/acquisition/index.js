@@ -10,6 +10,9 @@ import { Tabs, DatePicker } from 'antd'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
 
+const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY-MM-DD';
+
 function lineData(series) {
   return {
     labels: [
@@ -70,7 +73,6 @@ const colors = {
   success: '#46be8a',
   danger: '#fb434a',
 }
-
 const lineOptions = {
   fullWidth: !0,
   chartPadding: {
@@ -140,10 +142,8 @@ const columns = [
 @connect(({ acquistion }) => ({ acquistion }))
 class Acquisition extends React.Component {
   state = {
-    startValue: null,
-    endValue: null,
-    endOpen: false,
-  }
+    date: [],
+  };
 
   disabledStartDate = startValue => {
     const { endValue } = this.state
@@ -165,28 +165,42 @@ class Acquisition extends React.Component {
     this.setState({
       [field]: value,
     })
-  }
-
-  onStartChange = value => {
-    this.onChange('startValue', value)
-  }
-
-  onEndChange = value => {
-    this.onChange('endValue', value)
-  }
-
-  handleStartOpenChange = open => {
-    if (!open) {
-      this.setState({ endOpen: true })
+    const { startValue, endValue } = this.state
+    console.log(value)
+    if (startValue != null && endValue != null) {
+      const { dispatch } = this.props
+      const values = { startValue, endValue }
+      console.log(startValue)
+      console.log(endValue)
+      dispatch({
+        type: 'acquistion/LOAD_ACQUISTION_DATE',
+        payload: values
+      })
     }
   }
 
-  handleEndOpenChange = open => {
-    this.setState({ endOpen: open })
+  onStartChange = (date, dateString) => {
+    this.onChange('startValue', dateString)
   }
 
+  onEndChange = (date, dateString) => {
+    this.onChange('endValue', dateString)
+  }
+
+  handleChange = (date, dateString) => {
+    this.setState({date})
+    const { dispatch } = this.props
+    const startValue = dateString[0]
+    const endValue = dateString[1]
+    const values = { startValue, endValue }
+      dispatch({
+        type: 'acquistion/LOAD_ACQUISTION_DATE',
+        payload: values
+      })
+  };
+
   render() {
-    const { startValue, endValue, endOpen } = this.state
+    const { date } = this.state;
     const { acquistion } = this.props
     return (
       <Authorize roles={['admin']}>
@@ -194,25 +208,12 @@ class Acquisition extends React.Component {
         <div className="row">
           <div className="col-lg-8" />
           <div className="col-lg-4 text-right">
-            <DatePicker
-              disabledDate={this.disabledStartDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              value={startValue}
-              placeholder="Start"
-              onChange={this.onStartChange}
-              onOpenChange={this.handleStartOpenChange}
+            <RangePicker
+              format={dateFormat}
+              onChange={this.handleChange}
+              value={date}
             />
-            <DatePicker
-              disabledDate={this.disabledEndDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              value={endValue}
-              placeholder="End"
-              onChange={this.onEndChange}
-              open={endOpen}
-              onOpenChange={this.handleEndOpenChange}
-            />
+
           </div>
         </div>
         <div className="row">

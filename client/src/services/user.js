@@ -1,24 +1,36 @@
 import axios from "axios";
 import { notification } from 'antd'
 
-export async function login(email, password) {
+export async function login(email, password, shop, hmac, code, stateShop, installed) {
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
+  const state = stateShop
+  console.log(shop)
+  console.log(code)
+  console.log(stateShop)
+console.log(installed)
   const body = JSON.stringify({ email, password });
-  return axios.post('http://localhost:8888/api/auth', body, config)
+  
+  return axios.post('https://646640e8.ngrok.io/api/auth', body, config)
     .then((result) => {
-      return result.data
-    })
-    .catch(() => {
+      if (installed) {        
+        const url = "https://646640e8.ngrok.io/api/shopify/addScript"
+        axios.get(url, {
+          params: {
+            shop, hmac, code, state
+          }
+        })        
+      }      
+      return result.data      
+    }).catch(() => {
       notification.warning({
         message: "Login Failed",
         description: "Invalid email or password",
       })
     })
-
 }
 
 // eslint-disable-next-line camelcase
@@ -28,30 +40,29 @@ export async function register(email, password, shopName, name, shop, hmac, code
       'Content-Type': 'application/json'
     }
   };
+  const state = stateShop
   const body = JSON.stringify({ email, password, shopName, name, shop });
-  console.log(body);
-  return axios.post('http://localhost:8888/api/user', body, config)
-    .then((result) => {
-      addScript(shop, hmac, code, stateShop)
-      return result
+  return axios.post('https://646640e8.ngrok.io/api/user', body, config)
+    .then(() => {
+      const url = "https://646640e8.ngrok.io/api/shopify/addScript"
+      return axios.get(url, {
+        params: {
+          shop, hmac, code, state
+        }
+      }).then((result) => {
+        return result
+      }).catch(() => {
+        notification.warning({
+          message: "Register Failed",
+        })
+      })
     })
-    .catch((errors) => {
-      const error = errors.response;
+    .catch(() => {
       notification.warning({
         message: "Register Failed",
-        description: error.msg,
       })
     })
 
-}
-
-function addScript(shop, hmac, code, state) {
-  const url = "https://kieng.pagekite.me/api/shopify/addScript"
-  return axios.get(url, {
-    params: {
-      shop, hmac, code, state
-    }
-  })
 }
 
 export async function loadProfile() {
@@ -64,7 +75,7 @@ export async function loadProfile() {
   }
   if (localStorage.token) {
     setAuthToken(localStorage.token);
-    return axios.get('http://localhost:8888/api/shop/me')
+    return axios.get('https://646640e8.ngrok.io/api/shop/me')
       .then((result) => {
         return result.data
       })

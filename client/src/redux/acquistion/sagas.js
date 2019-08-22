@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
     getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
-    getVisitorLastWeek, getAcquistionTable,getVisitorLastMonth
+    getVisitorLastWeek, getAcquistionTable, getVisitorLastMonth, getVisitorByDate
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
@@ -29,7 +29,19 @@ export function* LOAD_ACQUISTION() {
         },
     })
 }
-
+export function* LOAD_ACQUISTION_DATE({payload}) {
+    const { startValue, endValue } = payload
+    console.log(startValue)
+    console.log(endValue)
+    const shopUrl = yield select(selectors.shopUrl);
+    const visitorLastWeek = yield call(getVisitorByDate, shopUrl, startValue, endValue)
+    yield put({
+        type: 'acquistion/SET_STATE',
+        payload: {
+            visitorLastWeek
+        },
+    })
+}
 
 
 export function* LOAD_CURRENT_ACCOUNT() {
@@ -68,6 +80,7 @@ export default function* rootSaga() {
     yield all([
         takeEvery(actions.LOAD_ACQUISTION, LOAD_ACQUISTION),
         takeEvery(actions.LOAD_CURRENT_ACCOUNT, LOAD_CURRENT_ACCOUNT),
+        takeEvery(actions.LOAD_ACQUISTION_DATE, LOAD_ACQUISTION_DATE),
         LOAD_CURRENT_ACCOUNT(),
     ])
 }

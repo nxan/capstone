@@ -25,13 +25,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 router.get('/', async (req, res) => {
     const shop = req.query.shop;
-    if (shop) {
-        console.log(shop)
+    const hmac = req.query.hmac;
+
+    console.log(req.query)
+    if (shop) {        
         const shop_exist = await shop_db.getShop(shop)        
         const state = nonce();
         let redirectUri = "https://kieng.pagekite.me/user/login";
         if(shop_exist == null){
             redirectUri = "https://kieng.pagekite.me/user/register"
+        }
+        if(!hmac){
+            redirectUri = "https://kieng.pagekite.me/user/login?installed=0";
         }
         console.log(redirectUri)
         const installUrl = 'https://' + shop + '/admin/oauth/authorize?client_id=' + apiKey

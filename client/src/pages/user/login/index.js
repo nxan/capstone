@@ -10,9 +10,22 @@ import styles from './style.module.scss'
 class Login extends Component {
   onSubmit = event => {
     event.preventDefault()
+    const params = new URLSearchParams(window.location.search)
+    const shop = params.get('shop')
+    const code = params.get('code')
+    const hmac = params.get('hmac')
+    const installed = params.get('installed')
+    const stateShop = params.get('state')
     const { form, dispatch } = this.props
     form.validateFields((error, values) => {
       if (!error) {
+        if (shop && code && hmac && stateShop) {
+          values.shop = shop
+          values.code = code
+          values.hmac = hmac
+          values.stateShop = stateShop
+          values.installed = installed
+        }
         dispatch({
           type: 'user/LOGIN',
           payload: values,

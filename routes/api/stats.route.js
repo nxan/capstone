@@ -450,6 +450,18 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
     res.json(array_visitor_lastweek)
 });
 
+router.get('/count/visitor/date/:shop_url/:start_date/:end_date', async (req, res) => {
+    const {shop_url,start_date,end_date} = req.params
+    let shop = await shop_db.getShop(shop_url)
+    var array_visitor_lastweek = []
+    var sql = `select distinct(user_id) from [session] where session_start_time between ${start_date} and ${end_date} ` + 'AND shop_id = ' + shop.id;
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            array_visitor_lastweek.unshift(result.length)
+        })
+    res.json(array_visitor_lastweek)
+});
 /* ----- 
   @route  Count api/stats/count/visitor/day/:shop_url
   @desc   Count visitor last n day
