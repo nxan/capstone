@@ -31,13 +31,23 @@ export function* LOAD_ACQUISTION() {
 }
 export function* LOAD_ACQUISTION_DATE({payload}) {
     const { startValue, endValue } = payload
-    console.log(startValue)
-    console.log(endValue)
+    const labels = []
+    const start = new Date(startValue);
+    const end = new Date(endValue);
+    let loop = new Date(start);
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+    while (loop <= end) {        
+        const day = `${months[loop.getMonth()]}/${loop.getDate()}`
+        labels.push(day)
+        const newDate = loop.setDate(loop.getDate() + 1);
+        loop = new Date(newDate);
+    }
     const shopUrl = yield select(selectors.shopUrl);
     const visitorLastWeek = yield call(getVisitorByDate, shopUrl, startValue, endValue)
     yield put({
         type: 'acquistion/SET_STATE',
         payload: {
+            labels,
             visitorLastWeek
         },
     })

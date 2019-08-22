@@ -11,13 +11,13 @@ export async function login(email, password, shop, hmac, code, stateShop, instal
   console.log(shop)
   console.log(code)
   console.log(stateShop)
-console.log(installed)
+  console.log(installed)
   const body = JSON.stringify({ email, password });
   
-  return axios.post('https://646640e8.ngrok.io/api/auth', body, config)
+  return axios.post('https://f3e92b74.ngrok.io/api/auth', body, config)
     .then((result) => {
       if (installed) {        
-        const url = "https://646640e8.ngrok.io/api/shopify/addScript"
+        const url = "https://f3e92b74.ngrok.io/api/shopify/addScript"
         axios.get(url, {
           params: {
             shop, hmac, code, state
@@ -42,9 +42,9 @@ export async function register(email, password, shopName, name, shop, hmac, code
   };
   const state = stateShop
   const body = JSON.stringify({ email, password, shopName, name, shop });
-  return axios.post('https://646640e8.ngrok.io/api/user', body, config)
+  return axios.post('https://f3e92b74.ngrok.io/api/user', body, config)
     .then(() => {
-      const url = "https://646640e8.ngrok.io/api/shopify/addScript"
+      const url = "https://f3e92b74.ngrok.io/api/shopify/addScript"
       return axios.get(url, {
         params: {
           shop, hmac, code, state
@@ -75,7 +75,7 @@ export async function loadProfile() {
   }
   if (localStorage.token) {
     setAuthToken(localStorage.token);
-    return axios.get('https://646640e8.ngrok.io/api/shop/me')
+    return axios.get('https://f3e92b74.ngrok.io/api/shop/me')
       .then((result) => {
         return result.data
       })

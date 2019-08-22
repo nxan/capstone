@@ -13,22 +13,6 @@ import styles from './style.module.scss'
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD';
 
-function lineData(series) {
-  return {
-    labels: [
-      '7 day ago',
-      '6 day ago',
-      '5 day ago',
-      '4 day ago',
-      '3 day ago',
-      '2 day ago',
-      'Yesterday',
-    ],
-    series: [series],
-  }
-}
-
-
 const { TabPane } = Tabs
 
 const colors = {
@@ -109,6 +93,20 @@ class Acquisition extends React.Component {
     date: [],
   };
 
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'acquistion/LOAD_ACQUISTION',
+    })
+  }
+
+  lineData = (labels,series) => {
+    return {
+      labels,
+      series: [series],
+    }
+  }
+
   disabledStartDate = startValue => {
     const { endValue } = this.state
     if (!startValue || !endValue) {
@@ -152,15 +150,15 @@ class Acquisition extends React.Component {
   }
 
   handleChange = (date, dateString) => {
-    this.setState({date})
+    this.setState({ date })
     const { dispatch } = this.props
     const startValue = dateString[0]
     const endValue = dateString[1]
     const values = { startValue, endValue }
-      dispatch({
-        type: 'acquistion/LOAD_ACQUISTION_DATE',
-        payload: values
-      })
+    dispatch({
+      type: 'acquistion/LOAD_ACQUISTION_DATE',
+      payload: values
+    })
   };
 
   render() {
@@ -230,7 +228,7 @@ class Acquisition extends React.Component {
                     <TabPane tab="Last Week" key="2">
                       <ChartistGraph
                         className="height-300"
-                        data={lineData(acquistion.visitorLastWeek)}
+                        data={this.lineData(acquistion.labels,acquistion.visitorLastWeek)}
                         options={lineOptions}
                         type="Line"
                       />

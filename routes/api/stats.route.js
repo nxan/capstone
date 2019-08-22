@@ -451,15 +451,27 @@ router.get('/count/visitor/lastweek/:shop_url/', async (req, res) => {
 });
 
 router.get('/count/visitor/date/:shop_url/:start_date/:end_date', async (req, res) => {
-    const {shop_url,start_date,end_date} = req.params
+    const { shop_url, start_date, end_date } = req.params
     let shop = await shop_db.getShop(shop_url)
     var array_visitor_lastweek = []
-    var sql = `select distinct(user_id) from [session] where session_start_time between ${start_date} and ${end_date} ` + 'AND shop_id = ' + shop.id;
-    await Session.sequelize.query(sql,
-        { type: sequelize.QueryTypes.SELECT }
+    let start = new Date(start_date);
+    let end = new Date(end_date);
+    console.log(`${start} and ${end}`)
+    let loop = new Date(start);
+    let months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+    while (loop <= end) {
+        
+        let day = `${loop.getFullYear()}-${months[loop.getMonth()]}-${loop.getDate()}`
+        console.log(day)
+        let sql = `select distinct(user_id) from [session] where CONVERT(VARCHAR, session_start_time , 120) like '${day}%' ` + 'AND shop_id = ' + shop.id;
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
             array_visitor_lastweek.unshift(result.length)
         })
+        let newDate = loop.setDate(loop.getDate() + 1);
+        loop = new Date(newDate);
+    }
     res.json(array_visitor_lastweek)
 });
 /* ----- 
