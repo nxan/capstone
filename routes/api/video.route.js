@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const app = express();
 const dateFormat = require('dateformat');
 const path = require('path');
+const shop_db = require('../../db/shop_db')
+const session_db = require('../../db/session_db')
 const
     multer = require('multer')
     , inMemoryStorage = multer.memoryStorage()
@@ -30,13 +32,14 @@ function makePlayableString(argument) {
     let playableString = '[' + stringArgument + ']';
     return playableString;
 }
-router.get('/', async (req, res, next) => {
-    var condition = {
-        order: [
-            ['id', 'DESC'],
-        ]
-    }
-    var video = await video_db.getAll(condition);
+router.get('/:shop_url', async (req, res, next) => {
+    const shop_url = req.params.shop_url
+    // var condition = {
+    //     order: [
+    //         ['id', 'DESC'],
+    //     ]
+    // }
+    var video = await video_db.getAllByShop(shop_url);
     var result = []
     for (var i = 0; i < video.length; i++) {
         var model = {};
@@ -81,85 +84,6 @@ router.post('/sendVideo', async (req, res, next) => {
         }
     })
 });
-// router.post('/sendHeatMap', async (req, res, next) => {
-//     //convert array => string, getStream only accept String or Buffer
-
-//     var shop = req.body.shop;
-//     var heatmap = req.body.heat_map;
-//     var stringStream = JSON.stringify(heatmap);
-//     var url = './heatmap/' + req.body.shop + '.json';
-//     fs.appendFile(url, JSON.stringify(req.body.heat_map) + ',', (err) => {
-//         if (err) {
-//             console.log(err);
-//             //res.status(400).send('error on recording');
-//         } else {
-//             console.log('events updated');
-//             // res.send("event received");
-//         }
-//     })
-//     var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.body.shop + '.json';
-//     request.get(url, function (error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//             // var data = body + '' + JSON.stringify(heatmap);
-//             // var stringStream = JSON.stringify(data);
-//             var filename = './heatmap/' + shop + '.json';
-//             var buffer = bufferFile(filename);
-//             const
-//                 blobName = shop + '.json'
-//                 , stream = getStream(buffer)
-//                 , streamLength = buffer.length
-//                 ;
-
-//             blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-//                 if (!err) {
-//                     console.log("upload file success");
-
-//                 }
-//                 else {
-//                     console.log(err);
-//                 }
-//             });
-//             //res.send(readData);
-//         }
-//         else {
-//             // var stringStream = JSON.stringify(heatmap);
-//             var filename = './heatmap/' + shop + '.json';
-//             var buffer = bufferFile(filename);
-//             const
-//                 blobName = shop + '.json'
-
-//                 , stream = getStream(buffer)
-//                 , streamLength = buffer.length
-//                 ;
-
-//             blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-//                 if (!err) {
-//                     console.log("upload file success");
-
-//                 }
-//                 else {
-//                     console.log(err);
-//                 }
-//             });
-//             //res.send(404)
-//         }
-//     });
-
-// })
-
-// router.get('/getOneHeatMap', async (req, res, next) => {
-//     var url = 'https://videoshopifystorage.blob.core.windows.net/heatmapshopify/' + req.params.shop + '.json';
-//     request.get(url, function (error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//             var csv = body;
-//             readData = makePlayableString(csv);
-//             res.send(body);
-//         }
-//         else {
-//             res.send(404)
-//         }
-//     });
-// });
 
 function makePlayableString(argument) {
     let stringArgument = argument.toString();

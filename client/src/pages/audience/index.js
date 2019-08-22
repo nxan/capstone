@@ -7,6 +7,8 @@ import ChartCard2 from 'components/Components/ChartCard2'
 import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
+import moment from 'moment'
+
 // import styles from './style.module.scss'
 
 // function areaData(series) {
@@ -167,13 +169,13 @@ const data = [
     location: 'Vietnam',
     users: '23',
     percentuser: '100',
-    key:'VN',
+    key: 'VN',
     children: [
       {
         location: 'HCM',
         users: '23',
         percentuser: '100',
-        key:'HCM'
+        key: 'HCM'
       },
     ]
   },
@@ -187,9 +189,11 @@ const areaOptions = {
 @connect(({ audience }) => ({ audience }))
 class Audience extends React.Component {
   state = {
+    result: this.props,
     startValue: null,
     endValue: null,
     endOpen: false,
+
   }
 
   disabledStartDate = startValue => {
@@ -220,6 +224,30 @@ class Audience extends React.Component {
 
   onEndChange = value => {
     this.onChange('endValue', value)
+    const { startValue, endValue } = this.state;
+
+    /* eslint no-underscore-dangle: "error" */
+    /* eslint no-underscore-dangle: ["error", { "allow": ["_d"] }] */
+    const startTime = moment(startValue, 'YYYY-MM-DD').format('YYYY-MM-DD')
+
+    /* eslint no-underscore-dangle: "error" */
+    /* eslint no-underscore-dangle: ["error", { "allow": ["_d"] }] */
+    const endTime = moment(value, 'YYYY-MM-DD').format('YYYY-MM-DD')
+    console.log(startTime)
+    console.log(endValue)
+    console.log(endTime)
+    fetch('http://localhost:8888/api/stats/audience/information/capstonefpt.myshopify.com/' + startTime + '/' + endTime, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then((dataJson) => dataJson.json())
+      .then((dataJson) => {
+        this.setState({ result: dataJson });
+        console.log(dataJson)
+      }).catch(error => console.log(error));
   }
 
   handleStartOpenChange = open => {
@@ -232,9 +260,16 @@ class Audience extends React.Component {
     this.setState({ endOpen: open })
   }
 
+
+
   render() {
-    const { startValue, endValue, endOpen } = this.state
-    const { audience } = this.props
+    const { startValue, endValue, endOpen, result } = this.state
+    // const { audience } = this.props
+    console.log("AUDIENCE")
+    /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: true}}] */
+    const audience = result.audience
+    console.log(result)
+    console.log(audience)
     const pagesession = audience.session + audience.pageView
     const numberSessionUser = Math.round(audience.session / audience.user, 2)
     const x = parseInt(audience.olduser, 10)
@@ -257,8 +292,7 @@ class Audience extends React.Component {
           <div className="col-lg-4 text-right">
             <DatePicker
               disabledDate={this.disabledStartDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={startValue}
               placeholder="Start"
               onChange={this.onStartChange}
@@ -266,8 +300,7 @@ class Audience extends React.Component {
             />
             <DatePicker
               disabledDate={this.disabledEndDate}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={endValue}
               placeholder="End"
               onChange={this.onEndChange}
@@ -348,7 +381,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 2, 1, 2, 1, 2, 1, 2, 0,18, 20, 26],
+                    values: [1, 2, 1, 2, 1, 2, 1, 2, 0, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -367,7 +400,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [2, 2, 3, 2, 3, 2, 1, 2, 3,1, 20, 26],
+                    values: [2, 2, 3, 2, 3, 2, 1, 2, 3, 1, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -405,7 +438,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [3, 1, 1, 3, 3, 5, 3, 3, 4,18, 20, 26],
+                    values: [3, 1, 1, 3, 3, 5, 3, 3, 4, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -424,7 +457,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [1, 3, 2, 5, 2, 4, 1, 2, 0,18, 20, 26],
+                    values: [1, 3, 2, 5, 2, 4, 1, 2, 0, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -443,7 +476,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [5, 3, 2, 2, 3, 1, 1, 2, 0,18, 20, 26],
+                    values: [5, 3, 2, 2, 3, 1, 1, 2, 0, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -464,7 +497,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [3, 1, 1, 2, 1, 2, 1, 2, 0,18, 20, 26],
+                    values: [3, 1, 1, 2, 1, 2, 1, 2, 0, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',
@@ -483,7 +516,7 @@ class Audience extends React.Component {
                 height: 107,
                 lines: [
                   {
-                    values: [4, 2, 3, 2, 1, 2, 1, 2, 0,18, 20, 26],
+                    values: [4, 2, 3, 2, 1, 2, 1, 2, 0, 18, 20, 26],
                     colors: {
                       area: 'rgba(199, 228, 255, 0.5)',
                       line: '#004585',

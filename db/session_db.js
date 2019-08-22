@@ -5,7 +5,7 @@ const Os = require('../model/OperatingSystem');
 const Browser = require('../model/Browser');
 const axios = require('axios')
 const sequelize = require('sequelize');
-
+const Op = sequelize.Op
 City.hasMany(Session, { foreignKey: 'city_id', sourceKey: 'id' });
 Session.belongsTo(City, { foreignKey: 'city_id', targetKey: 'id' });
 
@@ -61,7 +61,7 @@ module.exports = {
         return result;
     },
     getAllSessionsByCondition: async function (condition) {
-        const session = await Session.findAll({
+        const session = await Session.findAll(condition, {
             include: [{
                 model: Browser
             },
@@ -78,8 +78,39 @@ module.exports = {
             attributes: {
                 exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
             }
-        }, condition);
+        });
+        return session
+    },
+    getAllSessionsByDate: async function (shop_id, from, to) {
+        const session = await Session.findAll({
+            where: {
+                shop_id: shop_id,
+                session_start_time: {
+                    [Op.gte]: from
+                },
+                session_end_time: {
+                    [Op.lte]: to
+                }
+
+            }
+        }, {
+                include: [{
+                    model: Browser
+                },
+                {
+                    model: Device
+                },
+                {
+                    model: City
+                },
+                {
+                    model: Os
+                },
+                ],
+                attributes: {
+                    exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
+                }
+            });
         return session
     }
-
 }

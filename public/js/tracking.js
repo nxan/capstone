@@ -6,10 +6,13 @@ var coordinates = [],
     heatMap = [],
     eventsMatrix = [[]]
     ;
-var events = [], interval;
+var events = [], intervalSocket, intervalVideo;
 var session_id = 0;
-$(document).ready(() => {
+$(window).load(function () {
+    // run code
 
+});
+$(document).ready(() => {
     var script = '<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>'
     $('head').prepend(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
     script = '<script  src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>';  // set its src to the provided UR L
@@ -19,10 +22,21 @@ $(document).ready(() => {
     //setInterval(record, 500);
     $('head').prepend(link);
     save_session()
-    setInterval(record, 1000);
-    setInterval(sendVideoSocket, 3000);
+    intervalVideo = setInterval(record, 1000);
+    intervalSocket = setInterval(sendVideoSocket, 3000);
     $(window).bind("beforeunload", function () {
         console.log('change page')
+        // let stopFn = rrweb.record({
+        //     emit(event) {
+        //         // stop after 100 events
+        //         stopFn();
+
+        //     },
+        // });
+        events = []
+        clearInterval(intervalSocket);
+        clearInterval(intervalVideo)
+
         var shop = window.location.hostname;
         if (window.location.pathname != '/') {
             shop = window.location.hostname + window.location.pathname
@@ -39,18 +53,14 @@ $(document).ready(() => {
             shop: window.location.hostname,
             is_change_page: false
         }
-        // clearTimeout(interval)
-        // let stopFn = rrweb.record({
-        //     emit(event) {
-        //         // stop after 100 events
-        //         stopFn();
+        //clearInterval(interval)
 
-        //     },
-        // });
-        events = []
+
+
+
         socket.emit("client-change-page");
-        socket.emit("client-send-video", JSON.stringify(video));
-        navigator.sendBeacon('https://646640e8.ngrok.io/api/page/sendHeatMap', data);
+        // socket.emit("client-send-video", JSON.stringify(video));
+        navigator.sendBeacon('https://9f70cec8.ngrok.io/api/page/sendHeatMap', data);
     })
     // document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -60,7 +70,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://646640e8.ngrok.io/api/session/save/resave', {
+        fetch('https://9f70cec8.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -77,7 +87,22 @@ $(document).ready(() => {
 })
 document.addEventListener('visibilitychange', () => {
     save_session();
+    if (document.visibilityState === 'visible') {
+        events = [];
+        intervalSocket = setInterval(sendVideoSocket, 3000);
+        intervalVideo = setInterval(record, 1000);
 
+    }
+    if (document.visibilityState === 'prerender') {
+        console.log('prerender');
+    }
+    if (document.visibilityState === 'hidden') {
+        events = [];
+        clearInterval(intervalVideo)
+        clearInterval(intervalSocket);
+
+
+    }
 });
 function getGroupedData() {
     var positions = coordinates
@@ -195,15 +220,16 @@ function sendVideoSocket() {
             shop: window.location.hostname,
             is_change_page: false
         }
+        events = []
         socket.emit("client-send-video", JSON.stringify(video));
-        window.events = []
+        events = []
     }
 }
 function sendVideo() {
     if (session_id != 0) {
         const body = events;
         events = [];
-        // navigator.sendBeacon('http://34e99e02.ngrok.io/api/video/sendVideo', data);
+        // navigator.sendBeacon('http://9f70cec8.ngrok.io/api/video/sendVideo', data);
 
         $.ajax({
             url: 'http://localhost:8888/api/video/sendVideo',
@@ -255,7 +281,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://646640e8.ngrok.io/api/session', {
+            fetch('https://9f70cec8.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit

@@ -1,4 +1,7 @@
 const Video = require('../model/Video')
+const sequelize = require('sequelize');
+
+
 module.exports = {
     addVideo: async (newVideoFields) => {
         try {
@@ -31,6 +34,15 @@ module.exports = {
         ).then((result) => {
             return result
         })
+    },
+    getAllByShop: async (shop_url) => {
+        var sql = "select id, session_id, url_video, date_time from video where session_id in ( select id from session where shop_id = (select id from shop where shop_url = N'" + shop_url  + "')) order by id desc ";
+        var video = await Video.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+           return result
+        })
+       return video;
     },
     updateVideo: async (data, id) => {
         await Video.update(data, { where: { id: id } });
