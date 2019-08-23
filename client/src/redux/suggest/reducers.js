@@ -4,7 +4,6 @@ const initialState = {
     mostProduct:[],
     lessProduct:[],
     hours:[],
-    boucerate:[]
 }
 
 export default function suggestReducer(state = initialState, action) {
