@@ -708,6 +708,24 @@ router.get('/audience/location/:url', async (req, res) => {
     }
 })
 
+router.get('/timeaccess/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var array_time_access = []
+    var sql = `select DATEPART(hh,session_start_time) hours, count(DATEPART(hh,session_start_time)) counter from [session] where shop_id = ${shop.id} GROUP by (DATEPART(hh,session_start_time)) ORDER BY COUNTER desc`;
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        result.forEach(element => {
+            let from = element.hours
+            let end = element.hours + 1
+            element.hours = from+"h - " +end+"h"
+            array_time_access.push(element)
+        });
+    })
+    res.json(array_time_access)
+});
+
 router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
     try {
         const url = req.params.shop_url

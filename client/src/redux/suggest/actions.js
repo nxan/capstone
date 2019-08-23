@@ -1,6 +1,6 @@
 const actions = {
     SET_STATE: 'suggest/SET_STATE',
-    LOAD_BEHAVIOR: 'suggest/LOAD_BEHAVIOR',    
+    LOAD_SUGGEST: 'suggest/LOAD_SUGGEST',    
     LOAD_CURRENT_ACCOUNT: 'suggest/LOAD_CURRENT_ACCOUNT',
 }
 
