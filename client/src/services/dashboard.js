@@ -24,7 +24,7 @@ export async function getSessionsLastWeek(shop_url) {
 }
 
 // eslint-disable-next-line camelcase
-export async function getSessionsByDate(shop_url,startDate,endDate) {
+export async function getSessionsByDate(shop_url, startDate, endDate) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/session/day/${shop_url}/${startDate}/${endDate}`
     return axios.get(url)
@@ -298,9 +298,45 @@ export async function getAcquistionTable(shop_url) {
         })
 }
 // eslint-disable-next-line camelcase
-export async function getVisitorByDate(shop_url,start,end) {
+export async function getBounceRate(shop_url) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/audience/bouncrate/${shop_url}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
+export async function getVisitorByDate(shop_url, start, end) {
     // eslint-disable-next-line camelcase
     const url = `http://localhost:8888/api/stats/count/visitor/date/${shop_url}/${start}/${end}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+// eslint-disable-next-line camelcase
+export async function getAcquisitionByDate(shop_url, start, end) {
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/acquisition/date/${shop_url}/${start}/${end}`
+    return axios.get(url)
+        .then((result) => {
+            return result.data;
+        }).catch((err) => {
+            console.log(err.response.statusText)
+        })
+}
+
+// eslint-disable-next-line camelcase
+export async function getAudienceByDate(shop_url, start, end) {
+    console.log(start)
+    // eslint-disable-next-line camelcase
+    const url = `http://localhost:8888/api/stats/audience/information/${shop_url}/${start}/${end}`
     return axios.get(url)
         .then((result) => {
             return result.data;

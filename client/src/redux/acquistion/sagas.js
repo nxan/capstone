@@ -1,7 +1,7 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
     getAcquistionSocial, getAcquistionSearch, getAcquistionDirect, getAcquistionOther,
-    getVisitorLastWeek, getAcquistionTable, getVisitorLastMonth, getVisitorByDate
+    getVisitorLastWeek, getAcquistionTable, getVisitorLastMonth, getVisitorByDate, getAcquisitionByDate
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
@@ -29,14 +29,14 @@ export function* LOAD_ACQUISTION() {
         },
     })
 }
-export function* LOAD_ACQUISTION_DATE({payload}) {
+export function* LOAD_ACQUISTION_DATE({ payload }) {
     const { startValue, endValue } = payload
     const labels = []
     const start = new Date(startValue);
     const end = new Date(endValue);
     let loop = new Date(start);
-    const months = ['01','02','03','04','05','06','07','08','09','10','11','12']
-    while (loop <= end) {        
+    const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    while (loop <= end) {
         const day = `${months[loop.getMonth()]}/${loop.getDate()}`
         labels.push(day)
         const newDate = loop.setDate(loop.getDate() + 1);
@@ -44,11 +44,14 @@ export function* LOAD_ACQUISTION_DATE({payload}) {
     }
     const shopUrl = yield select(selectors.shopUrl);
     const visitorLastWeek = yield call(getVisitorByDate, shopUrl, startValue, endValue)
+    const acquistionTable = yield call(getAcquisitionByDate, shopUrl, startValue, endValue)
+    console.log(acquistionTable)
     yield put({
         type: 'acquistion/SET_STATE',
         payload: {
             labels,
-            visitorLastWeek
+            visitorLastWeek,
+            acquistionTable
         },
     })
 }

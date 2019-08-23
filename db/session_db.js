@@ -81,6 +81,28 @@ module.exports = {
         });
         return session
     },
+    getAllByCondition: async function (condition) {
+        const session = await Session.findAll(
+            {
+                include: [{
+                    model: Browser
+                },
+                {
+                    model: Device
+                },
+                {
+                    model: City
+                },
+                {
+                    model: Os
+                },
+                ],
+                attributes: {
+                    exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
+                }
+            }, condition);
+        return session
+    },
     getAllSessionsByDate: async function (shop_id, from, to) {
         const session = await Session.findAll({
             where: {

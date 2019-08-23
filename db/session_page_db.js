@@ -70,13 +70,77 @@ module.exports = {
         // });
         return session_page
     },
+    getAllSessionPageFilterDate: async function (shop_id, from, to) {
+
+        var session_page = await Session_page.findAll({
+            include: [{
+                model: Session
+            }],
+            attributes: {
+                exclude: ['session_id'],
+
+            },
+            where: {
+                session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "') ")],
+
+            }
+        });
+        // const session_page = await Session_page.findAll({
+        //     include: [{
+        //         model: Session
+        //     }],
+        //     attributes: {
+        //         exclude: ['session_id']
+        //     }
+        // });
+        return session_page
+    },
     getSessionPageWithCount: async function (shop_id, acquistion_id) {
         var session_page = await Session_page.findAll(
             {
-                attributes:[sequelize.fn('COUNT', sequelize.col('session_id'))],
+                attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
                 group: 'session_id',
                 where: {
                     session_id: [sequelize.literal('(select id from session where shop_id = ' + shop_id + ' and acquistion_id=' + acquistion_id + ' ) ')],
+                },
+                having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
+            },
+        );
+        return session_page;
+    },
+    getSessionPageWithCountFilterDate: async function (shop_id, acquistion_id, from, to) {
+        var session_page = await Session_page.findAll(
+            {
+                attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
+                group: 'session_id',
+                where: {
+                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "' and acquistion_id=" + acquistion_id + ") ")],
+                },
+                having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
+            },
+        );
+        return session_page;
+    },
+    getSessionPageWithCountNoAcquisition: async function (shop_id) {
+        var session_page = await Session_page.findAll(
+            {
+                attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
+                group: 'session_id',
+                where: {
+                    session_id: [sequelize.literal('(select id from session where shop_id = ' + shop_id + ' ) ')],
+                },
+                having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
+            },
+        );
+        return session_page;
+    },
+    getSessionPageWithCountNoAcquisitionFilterDate: async function (shop_id, from, to) {
+        var session_page = await Session_page.findAll(
+            {
+                attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
+                group: 'session_id',
+                where: {
+                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "') ")],
                 },
                 having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
             },

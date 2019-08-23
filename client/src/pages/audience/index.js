@@ -189,11 +189,18 @@ const areaOptions = {
 @connect(({ audience }) => ({ audience }))
 class Audience extends React.Component {
   state = {
-    result: this.props,
+    // result: this.props,
     startValue: null,
     endValue: null,
     endOpen: false,
 
+  }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'audience/LOAD_AUDIENCE',
+    })
   }
 
   disabledStartDate = startValue => {
@@ -224,7 +231,7 @@ class Audience extends React.Component {
 
   onEndChange = value => {
     this.onChange('endValue', value)
-    const { startValue, endValue } = this.state;
+    const { startValue } = this.state;
 
     /* eslint no-underscore-dangle: "error" */
     /* eslint no-underscore-dangle: ["error", { "allow": ["_d"] }] */
@@ -233,21 +240,25 @@ class Audience extends React.Component {
     /* eslint no-underscore-dangle: "error" */
     /* eslint no-underscore-dangle: ["error", { "allow": ["_d"] }] */
     const endTime = moment(value, 'YYYY-MM-DD').format('YYYY-MM-DD')
-    console.log(startTime)
-    console.log(endValue)
-    console.log(endTime)
-    fetch('http://localhost:8888/api/stats/audience/information/capstonefpt.myshopify.com/' + startTime + '/' + endTime, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((dataJson) => dataJson.json())
-      .then((dataJson) => {
-        this.setState({ result: dataJson });
-        console.log(dataJson)
-      }).catch(error => console.log(error));
+    const values = { startTime, endTime }
+    // console.log(values)
+    const { dispatch } = this.props
+    dispatch({
+      type: 'audience/LOAD_AUDIENCE_DATE',
+      payload: values
+    })
+    // fetch('http://localhost:8888/api/stats/audience/information/capstonefpt.myshopify.com/' + startTime + '/' + endTime, {
+    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    //   credentials: 'include',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   }
+    // }).then((dataJson) => dataJson.json())
+    //   .then((dataJson) => {
+    //     this.setState({ result: dataJson });
+    //     console.log(dataJson)
+    //   }).catch(error => console.log(error));
   }
 
   handleStartOpenChange = open => {
@@ -263,17 +274,18 @@ class Audience extends React.Component {
 
 
   render() {
-    const { startValue, endValue, endOpen, result } = this.state
-    // const { audience } = this.props
+    const { startValue, endValue, endOpen } = this.state
+    const { audience } = this.props
     console.log("AUDIENCE")
     /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: true}}] */
-    const audience = result.audience
-    console.log(result)
-    console.log(audience)
+    // const audience = result.audience
+    // console.log(result)
+    // console.log(audience)
     const pagesession = audience.session + audience.pageView
     const numberSessionUser = Math.round(audience.session / audience.user, 2)
     const x = parseInt(audience.olduser, 10)
     const y = parseInt(audience.newuser, 10)
+    const bounceRate = audience.bounceRate
     const pie = {
       data: {
         columns: [['OLD USERS', x], ['NEW USERS', y]],
@@ -432,7 +444,7 @@ class Audience extends React.Component {
           <div className="col-md-2">
             <ChartCard2
               title="Bounce Rate"
-              amount="80%"
+              amount={bounceRate}
               chartProps={{
                 width: 180,
                 height: 107,
