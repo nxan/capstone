@@ -1,7 +1,9 @@
 import actions from './actions'
 
 const initialState = {
-    mostProduct:[]
+    mostProduct:[],
+    lessProduct:[],
+    hours:[],
 }
 
 export default function suggestReducer(state = initialState, action) {
