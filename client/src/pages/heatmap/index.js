@@ -23,7 +23,10 @@ class HeatMapList extends React.Component {
         $('head').prepend(link);
         link = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />'
         $('head').prepend(link);
-
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'heatmap/LOAD_HEATMAP',
+        })
     }
 
     disabledStartDate = startValue => {
@@ -66,7 +69,7 @@ class HeatMapList extends React.Component {
         this.setState({ endOpen: open })
     }
 
-    
+
 
     onInputChange = e => {
         this.setState({ searchText: e.target.value })

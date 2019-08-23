@@ -110,7 +110,7 @@ module.exports = {
                 session_start_time: {
                     [Op.gte]: from
                 },
-                session_end_time: {
+                session_start_time: {
                     [Op.lte]: to
                 }
 

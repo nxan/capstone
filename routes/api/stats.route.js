@@ -749,7 +749,7 @@ router.get('/acquisition/date/:shop_url/:from/:to', async (req, res) => {
         acc[o.session.acquistion_id] = (acc[o.session.acquistion_id] || 0) + 1, acc), {});
     var result = [];
 
-    var avg = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + " group by acquistion_id",
+    var avg = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND N'" + to + "'" + " group by acquistion_id",
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {
         return result
@@ -827,7 +827,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
                 session_start_time: {
                     [Op.gte]: from
                 },
-                session_end_time: {
+                session_start_time: {
                     [Op.lte]: to
                 }
 
@@ -858,7 +858,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             return session.is_first_visit == true
         })
 
-        var avgduration = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'",
+        var avgduration = await Session.sequelize.query("SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND N'" + to + "'",
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
             return formatSeconds(result[0].Avg)
@@ -877,7 +877,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
         })
 
         // //getUserBrowser
-        var sql = "SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id =" + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + " GROUP BY br.id, br.browser_name"
+        var sql = "SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id =" + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + " GROUP BY br.id, br.browser_name"
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
@@ -886,7 +886,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             }
         })
         //getUserDevice
-        var sql = "SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + "GROUP BY br.id, br.device_type_name"
+        var sql = "SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + "GROUP BY br.id, br.device_type_name"
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
@@ -895,7 +895,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             }
         })
         //getUserOS
-        var sql = "SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "' GROUP BY br.id, br.os_name"
+        var sql = "SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "' GROUP BY br.id, br.os_name"
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
@@ -903,80 +903,6 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
                 array_usrOS.unshift(result.pop())
             }
         })
-        // const count = await Session.count({
-        //     col: 'user_id',
-        //     distinct: true,
-        //     where: {
-        //         shop_id: shop.id,
-        //         session_start_time: {
-        //             [Op.gte]: from
-        //         },
-        //         session_end_time: {
-        //             [Op.lte]: to
-        //         }
-        //     }
-        // })
-        // //getNewVisitors
-        // const count = await Session.count({
-        //     where: { shop_id: shop.id, is_first_visit: true }
-        // })
-        // // getAvgDurationSession
-        // await Session.sequelize.query('SELECT avg(DATEDIFF(SECOND, session_start_time, session_end_time)) AS Avg FROM [session] WHERE shop_id = ' + shop.id,
-        //     { type: sequelize.QueryTypes.SELECT }
-        // ).then(function (result) {
-        //     res.json(formatSeconds(result[0].Avg))
-        // })
-        // //getTotalPageView
-        // const session = await Session.findAll({
-        //     where: {
-        //         shop_id: shop.id
-        //     }
-        // })
-        // var session_array = []
-        // var session_json = JSON.parse(JSON.stringify(session))
-        // for (var i in session_json) {
-        //     session_array.push(session_json[i].id)
-        // }
-        // const pageview = await SessionPage.count({
-        //     where: {
-        //         session_id: session_array
-        //     }
-        // })
-        // //getOldVistor
-        // const count = await Session.count({
-        //     where: { shop_id: shop.id, is_first_visit: false }
-        // })
-        // //getUserBrowser
-        // var sql = 'USE [shopify] SELECT br.id, br.browser_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [browser] AS br ON s.browser_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.browser_name'
-        // await Session.sequelize.query(sql,
-        //     { type: sequelize.QueryTypes.SELECT }
-        // ).then(function (result) {
-        //     while (result.length > 0) {
-        //         array_usrbrowser.unshift(result.pop())
-        //     }
-        // })
-        // //getUserDevice
-        // var sql = 'USE [shopify] SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.device_type_name'
-        // await Session.sequelize.query(sql,
-        //     { type: sequelize.QueryTypes.SELECT }
-        // ).then(function (result) {
-        //     while (result.length > 0) {
-        //         array_usrdevice.unshift(result.pop())
-        //     }
-        // })
-        // //getUserOS
-        // var sql = 'USE [shopify] SELECT br.id, br.os_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = ' + shop.id + ')AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [operating_system] AS br ON s.operating_system_id = br.id WHERE s.shop_id = ' + shop.id + ' GROUP BY br.id, br.os_name'
-        // await Session.sequelize.query(sql,
-        //     { type: sequelize.QueryTypes.SELECT }
-        // ).then(function (result) {
-        //     while (result.length > 0) {
-        //         array_usrOS.unshift(result.pop())
-        //     }
-        // })
-
-        // const count = await Session.count({
-        //     where: { shop_id: shop.id }
-        // })
         var array_sessions_lastweek = []
         var theDate = new Date(from);
         //theDate = dateFormat(theDate, "YYYY-MM-DD")

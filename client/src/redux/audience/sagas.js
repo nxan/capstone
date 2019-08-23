@@ -26,6 +26,7 @@ export function* LOAD_AUDIENCE() {
     yield put({
         type: 'audience/SET_STATE',
         payload: {
+            loading: true,
             sessionLastWeek,
             session,
             user,
@@ -76,24 +77,9 @@ export function* LOAD_CURRENT_ACCOUNT() {
 
 export function* LOAD_AUDIENCE_DATE({ payload }) {
     const { startTime, endTime } = payload
-    // const labels = []
-    // const start = new Date(startValue);
-    // const end = new Date(endValue);
-    // let loop = new Date(start);
-    // const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-    // while (loop <= end) {
-    //     const day = `${months[loop.getMonth()]}/${loop.getDate()}`
-    //     labels.push(day)
-    //     const newDate = loop.setDate(loop.getDate() + 1);
-    //     loop = new Date(newDate);
-    // }
-    console.log(payload)
-    console.log(startTime)
-    console.log(endTime)
     const shopUrl = yield select(selectors.shopUrl);
     const result = yield call(getAudienceByDate, shopUrl, startTime, endTime)
     const avgDuration = result.avgDuration
-    console.log(avgDuration)
     const newuser = result.newuser
     const olduser = result.olduser
     const pageView = result.pageView
@@ -107,6 +93,7 @@ export function* LOAD_AUDIENCE_DATE({ payload }) {
     yield put({
         type: 'audience/SET_STATE',
         payload: {
+            loading: true,
             avgDuration,
             newuser,
             olduser,
