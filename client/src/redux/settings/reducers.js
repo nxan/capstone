@@ -23,6 +23,7 @@ const initialState = {
     isFixedWidth: false,
     isMenuShadow: true,
     locale: 'en-US',
+    pages: []
   }),
 }
 

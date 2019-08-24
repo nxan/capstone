@@ -1,8 +1,10 @@
-import { all, takeEvery, put } from 'redux-saga/effects'
+import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import store from 'store'
 import qs from 'qs'
+import { getPages } from 'services/settings'
 import { history, store as reduxStore } from 'index'
 import actions from './actions'
+import * as selectors from './selectors'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
   yield store.set(`app.settings.${setting}`, value)
@@ -13,7 +15,16 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
     },
   })
 }
-
+export function* LOAD_PAGES() {
+  const shopUrl = yield select(selectors.shopUrl);
+  const pages = yield call(getPages, shopUrl);
+  yield put({
+      type: 'settings/SET_STATE',
+      payload: {
+        pages          
+      },
+  })
+}
 export function* SETUP() {
   // load settings from url on app load
   const changeSettings = search => {
@@ -57,6 +68,7 @@ export function* SETUP() {
 export default function* rootSaga() {
   yield all([
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.LOAD_PAGES,LOAD_PAGES),
     SETUP(), // run once on app load to init listeners
   ])
 }
