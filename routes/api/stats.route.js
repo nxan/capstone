@@ -6,6 +6,7 @@ const SessionPage = require('../../model/Session_page');
 const Session = require('../../model/Session');
 const db = require('../../config/db');
 const shop_db = require('../../db/shop_db')
+const country_db = require('../../db/country_db')
 const session_db = require('../../db/session_db')
 const session_page_db = require('../../db/session_page_db')
 const groupArray = require('group-array')
@@ -623,8 +624,9 @@ router.get('/count/location/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url)
     var arraylocation = []
+    var country = await country_db.getAllCountry();
     //get Location
-    var sql = "SELECT br.id, br.city_name as location, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id +  "  GROUP BY br.id, br.city_name"
+    var sql = "SELECT br.id, br.city_name as location, br.country_id, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id + "  GROUP BY br.id, br.city_name, br.country_id"
     await Session.sequelize.query(sql,
         { type: sequelize.QueryTypes.SELECT }
     ).then(function (result) {
@@ -632,16 +634,40 @@ router.get('/count/location/:shop_url', async (req, res) => {
             arraylocation.unshift(result.pop())
         }
     })
-    var location = [];
+    var location = []
+    for (var i = 0; i < country.length - 1; i++) {
         var model = {}
-        model.location = 'Viet Nam'
+        model.location = ''
         model.users = 0
         model.percentuser = '100'
-        model.children = arraylocation;
-        for (var i = 0; i < arraylocation.length - 1; i++) {
-            model.users += arraylocation[i].users
+        model.children = []
+        for (var j = 0; j <= arraylocation.length - 1; j++) {
+            var modelCity = {}
+            modelCity.location = ''
+            modelCity.users = 0;
+            modelCity.percentuser = 0
+            if (arraylocation[j].country_id == country[i].id) {
+                model.location = country[i].country_name
+                modelCity.location = arraylocation[j].location
+                modelCity.users = arraylocation[j].users
+                modelCity.percentuser = arraylocation[j].percentuser
+                model.children.push(modelCity);
+                model.users += arraylocation[j].users
+            }
+
         }
-        location.push(model)
+        location.push(model);
+    }
+    // var location = [];
+    // var model = {}
+    // model.location = 'Viet Nam'
+    // model.users = 0
+    // model.percentuser = '100'
+    // model.children = arraylocation;
+    // for (var i = 0; i < arraylocation.length - 1; i++) {
+    //     model.users += arraylocation[i].users
+    // }
+    // location.push(model)
     res.json(location)
 })
 /* ----- 
@@ -940,7 +966,7 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
         })
         //get Location
         var arraylocation = []
-        var sql = "SELECT br.id, br.city_name as location, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + "AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + "  GROUP BY br.id, br.city_name"
+        var sql = "SELECT br.id, br.city_name as location,br.country_id, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + "AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + "  GROUP BY br.id, br.city_name, br.country_id"
         await Session.sequelize.query(sql,
             { type: sequelize.QueryTypes.SELECT }
         ).then(function (result) {
@@ -984,17 +1010,32 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             })
             //array_sessions_lastweek.unshift(session.length);
         }
-        var location = [];
-        var model = {}
-        model.location = 'Viet Nam'
-        model.users = 0
-        model.percentuser = '100'
-        model.children = arraylocation;
-        for (var i = 0; i < arraylocation.length - 1; i++) {
-            model.users += arraylocation[i].users
-            //model.city_name = arraylocation[i].city_name
+
+        var country = await country_db.getAllCountry();
+        var location = []
+        for (var i = 0; i < country.length - 1; i++) {
+            var model = {}
+            model.location = ''
+            model.users = 0
+            model.percentuser = '100'
+            model.children = []
+            for (var j = 0; j <= arraylocation.length - 1; j++) {
+                var modelCity = {}
+                modelCity.location = ''
+                modelCity.users = 0;
+                modelCity.percentuser = 0
+                if (arraylocation[j].country_id == country[i].id) {
+                    model.location = country[i].country_name
+                    modelCity.location = arraylocation[j].location
+                    modelCity.users = arraylocation[j].users
+                    modelCity.percentuser = arraylocation[j].percentuser
+                    model.children.push(modelCity);
+                    model.users += arraylocation[j].users
+                }
+
+            }
+            location.push(model);
         }
-        location.push(model)
         var result = {
             avgDuration: avgduration,
             newuser: newvisitor.length,
