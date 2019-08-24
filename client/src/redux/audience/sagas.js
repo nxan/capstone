@@ -2,7 +2,7 @@ import { all, takeEvery, put, call, select } from 'redux-saga/effects'
 import {
     getSession, getSessionsLastWeek, getVisitor, getNewVisitors, getAvgDurationSession,
     getTotalPageView, getOldVistor, getUserBrowser, getUserDevice, getUserOS, getSessionsLastMonth,
-    getAudienceByDate, getBounceRate
+    getAudienceByDate, getBounceRate, getLocation
 } from 'services/dashboard'
 import { loadProfile } from 'services/user'
 import actions from './actions'
@@ -22,6 +22,7 @@ export function* LOAD_AUDIENCE() {
     const usrdev = yield call(getUserDevice, shopUrl);
     const usrOS = yield call(getUserOS, shopUrl);
     const sessionLastMonth = yield call(getSessionsLastMonth, shopUrl);
+    const location = yield call(getLocation, shopUrl);
     const bounceRate = yield call(getBounceRate, shopUrl)
     yield put({
         type: 'audience/SET_STATE',
@@ -38,7 +39,8 @@ export function* LOAD_AUDIENCE() {
             usrdev,
             usrOS,
             sessionLastMonth,
-            bounceRate
+            bounceRate,
+            location
         },
     })
 }
@@ -77,6 +79,17 @@ export function* LOAD_CURRENT_ACCOUNT() {
 
 export function* LOAD_AUDIENCE_DATE({ payload }) {
     const { startTime, endTime } = payload
+    const labels = []
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    let loop = new Date(start);
+    const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    while (loop <= end) {
+        const day = `${months[loop.getMonth()]}/${loop.getDate()}`
+        labels.push(day)
+        const newDate = loop.setDate(loop.getDate() + 1);
+        loop = new Date(newDate);
+    }
     const shopUrl = yield select(selectors.shopUrl);
     const result = yield call(getAudienceByDate, shopUrl, startTime, endTime)
     const avgDuration = result.avgDuration
@@ -90,9 +103,11 @@ export function* LOAD_AUDIENCE_DATE({ payload }) {
     const user = result.user
     const sessionLastWeek = result.sessionLastWeek
     const bounceRate = result.bounceRate
+    const location = result.location
     yield put({
         type: 'audience/SET_STATE',
         payload: {
+            labels,
             loading: true,
             avgDuration,
             newuser,
@@ -104,7 +119,8 @@ export function* LOAD_AUDIENCE_DATE({ payload }) {
             usrdev,
             user,
             sessionLastWeek,
-            bounceRate
+            bounceRate,
+            location
         },
     })
 }

@@ -618,6 +618,32 @@ router.get('/test/:shop_url', async (req, res) => {
 
     res.json(sessionData.length)
 })
+
+router.get('/count/location/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url)
+    var arraylocation = []
+    //get Location
+    var sql = "SELECT br.id, br.city_name as location, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id +  "  GROUP BY br.id, br.city_name"
+    await Session.sequelize.query(sql,
+        { type: sequelize.QueryTypes.SELECT }
+    ).then(function (result) {
+        while (result.length > 0) {
+            arraylocation.unshift(result.pop())
+        }
+    })
+    var location = [];
+        var model = {}
+        model.location = 'Viet Nam'
+        model.users = 0
+        model.percentuser = '100'
+        model.children = arraylocation;
+        for (var i = 0; i < arraylocation.length - 1; i++) {
+            model.users += arraylocation[i].users
+        }
+        location.push(model)
+    res.json(location)
+})
 /* ----- 
   @route  GET /api/aqui/acquisition/:shop_url
   @desc   Get all acquisition
@@ -686,9 +712,18 @@ router.get('/acquisition/:shop_url', async (req, res) => {
         var bounce_num = await session_page_db.getSessionPageWithCount(shop.id, i);
         model.visitor = result_vis['' + i]
         model.revisitor = result_re_vis['' + i] == undefined ? 0 : result_re_vis['' + i];
-        model.sessions = session['' + i];
+
+        var sessionnum = session['' + i] == undefined ? 1 : session['' + i];
+        model.bouncerate = ((bounce_num.length / sessionnum) * 100).toFixed(1) + '%';
+        if (session['' + i] == undefined || session_page['' + i] == undefined) {
+            model.pagessession = 0;
+            model.sessions = 0;
+        } else {
+            model.sessions = sessionnum;
+            model.pagessession = Math.round((session_page['' + i] / sessionnum), 2);
+        }
         model.bouncerate = ((bounce_num.length / session['' + i]) * 100).toFixed(1) + '%';
-        model.pagessession = session['' + i] + session_page['' + i];
+        // model.pagessession = session['' + i] + session_page['' + i];
         model.avgsessionduration = formatSeconds(avg[i - 1].Avg);
         model.conversionrate = 0;
         model.completion = 0;
@@ -811,7 +846,7 @@ router.get('/timeaccess/:shop_url', async (req, res) => {
         result.forEach(element => {
             let from = element.hours
             let end = element.hours + 1
-            element.hours = from+"h - " +end+"h"
+            element.hours = from + "h - " + end + "h"
             array_time_access.push(element)
         });
     })
@@ -903,6 +938,17 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
                 array_usrbrowser.unshift(result.pop())
             }
         })
+        //get Location
+        var arraylocation = []
+        var sql = "SELECT br.id, br.city_name as location, COUNT(s.user_id) users, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) users FROM [session] as s2 WHERE s2.shop_id =" + shop.id + "AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN city AS br ON s.city_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + "  GROUP BY br.id, br.city_name"
+        await Session.sequelize.query(sql,
+            { type: sequelize.QueryTypes.SELECT }
+        ).then(function (result) {
+            while (result.length > 0) {
+                arraylocation.unshift(result.pop())
+            }
+        })
+
         //getUserDevice
         var sql = "SELECT br.id, br.device_type_name, COUNT(s.user_id) totalCount, ROUND(CAST(COUNT(s.user_id) AS float)*100/CAST((SELECT COUNT(s2.user_id) userTotal FROM [session] as s2 WHERE s2.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND N'" + to + "'" + ")AS float),2) AS percentuser FROM [session] AS s LEFT JOIN [device_type] AS br ON s.device_type_id = br.id WHERE s.shop_id = " + shop.id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "'" + "GROUP BY br.id, br.device_type_name"
         await Session.sequelize.query(sql,
@@ -923,21 +969,32 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
         })
         var array_sessions_lastweek = []
         var theDate = new Date(from);
+        var endDate = new Date(to);
         //theDate = dateFormat(theDate, "YYYY-MM-DD")
-        for (var i = 1; i < 8; i++) {
-            console.log(i)
-            console.log(theDate.getDate())
+        var date_length = endDate.getDate() - theDate.getDate();
+        for (var i = 1; i <= date_length + 1; i++) {
             var time = theDate.getFullYear() + "-" + (theDate.getMonth() + 1) + "-" + (theDate.getDate());
-            var sql = "select * from session where cast(session_start_time as date) = N'" + time + "' AND shop_id = " + shop.id;
+            var sql = "select count(*) as visitor from session where cast(session_start_time as date) = N'" + time + "' AND shop_id = " + shop.id;
             theDate = new Date(theDate.setDate(theDate.getDate() + 1))
             //theDate = dateFormat(theDate, "YYYY-MM-DD")
             await Session.sequelize.query(sql,
                 { type: sequelize.QueryTypes.SELECT }
             ).then(function (result) {
-                array_sessions_lastweek.unshift(result.length)
+                array_sessions_lastweek.push(result[0].visitor)
             })
             //array_sessions_lastweek.unshift(session.length);
         }
+        var location = [];
+        var model = {}
+        model.location = 'Viet Nam'
+        model.users = 0
+        model.percentuser = '100'
+        model.children = arraylocation;
+        for (var i = 0; i < arraylocation.length - 1; i++) {
+            model.users += arraylocation[i].users
+            //model.city_name = arraylocation[i].city_name
+        }
+        location.push(model)
         var result = {
             avgDuration: avgduration,
             newuser: newvisitor.length,
@@ -949,8 +1006,8 @@ router.get('/audience/information/:shop_url/:from/:to', async (req, res) => {
             usrdev: array_usrdevice,
             user: newSession.length,
             bounceRate: bounceRate,
-            sessionLastWeek: array_sessions_lastweek
-
+            sessionLastWeek: array_sessions_lastweek,
+            location: location
         }
         res.json(result);
     } catch (error) {

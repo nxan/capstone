@@ -103,36 +103,67 @@ module.exports = {
             }, condition);
         return session
     },
+    // getAllSessionsByDate: async function (shop_id, from, to) {
+    //     const session = await Session.findAll({
+    //         where: {
+    //             shop_id: shop_id,
+    //             session_start_time: {
+    //                 [Op.gte]: from
+    //             },
+    //             session_start_time: {
+    //                 [Op.lte]: to
+    //             }
+
+    //         }
+    //     }, {
+    //             include: [{
+    //                 model: Browser
+    //             },
+    //             {
+    //                 model: Device
+    //             },
+    //             {
+    //                 model: City
+    //             },
+    //             {
+    //                 model: Os
+    //             },
+    //             ],
+    //             attributes: {
+    //                 exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
+    //             }
+    //         });
+    //     return session
+    // },
     getAllSessionsByDate: async function (shop_id, from, to) {
         const session = await Session.findAll({
+            include: [{
+                model: Browser
+            },
+            {
+                model: Device
+            },
+            {
+                model: City
+            },
+            {
+                model: Os
+            },
+            ],
+
             where: {
                 shop_id: shop_id,
                 session_start_time: {
-                    [Op.gte]: from
-                },
-                session_start_time: {
-                    [Op.lte]: to
+                    [Op.between]: [from, to]
                 }
 
             }
-        }, {
-                include: [{
-                    model: Browser
-                },
-                {
-                    model: Device
-                },
-                {
-                    model: City
-                },
-                {
-                    model: Os
-                },
-                ],
-                attributes: {
-                    exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
-                }
-            });
+            ,
+
+            attributes: {
+                exclude: ['device_type_id', 'city_id', 'operating_system_id', 'browser_id']
+            }
+        });
         return session
     }
 }

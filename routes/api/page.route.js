@@ -154,7 +154,12 @@ router.get('/getOneHeatMap/:id', async (req, res, next) => {
             var result = {
                 web: data
             }
-            res.send(result);
+            try {
+                res.send(result);
+            } catch (error) {
+                console.log(error)
+            }
+
         })
     }
 
@@ -162,10 +167,15 @@ router.get('/getOneHeatMap/:id', async (req, res, next) => {
 });
 
 function makePlayableString(argument) {
-    let stringArgument = argument.toString();
-    stringArgument = stringArgument.substring(0, stringArgument.length - 1);
-    let playableString = '[' + stringArgument + ']';
-    return playableString;
+    if (argument == undefined) {
+        return "[]"
+    } else {
+        let stringArgument = argument.toString();
+        stringArgument = stringArgument.substring(0, stringArgument.length - 1);
+        let playableString = '[' + stringArgument + ']';
+        return playableString;
+    }
+
 }
 router.get('/getAll/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
