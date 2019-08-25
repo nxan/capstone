@@ -5,7 +5,7 @@ import styles from './style.module.scss'
 
 @withRouter
 class LoginLayout extends React.PureComponent {
-  
+
   render() {
     const { children } = this.props
     return (
@@ -15,13 +15,13 @@ class LoginLayout extends React.PureComponent {
             <div className={styles.header}>
               <div className={styles.logo}>
                 <Link to="/">
-                  { (
-                    <img src="resources/images/logo.png" alt="Shopify Analytics" />
-                  )}                  
+                  {(
+                    <img src="/resources/images/logo.png" alt="Shopify Analytics" />
+                  )}
                 </Link>
-              </div>              
+              </div>
               <nav className={styles.navigation}>
-                <ul className={styles.navigationItems}>                  
+                <ul className={styles.navigationItems}>
                   <li>
                     <a className={styles.navigationActive} href="javascript: void(0);">
                       Login

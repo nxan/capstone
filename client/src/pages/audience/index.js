@@ -281,7 +281,7 @@ class Audience extends React.Component {
     // const audience = result.audience
     // console.log(result)
     // console.log(audience)
-    const pagesession = audience.session + audience.pageView
+    const pagesession = Math.round(audience.pageView / audience.session, 2)
     const numberSessionUser = Math.round(audience.session / audience.user, 2)
     const x = parseInt(audience.olduser, 10)
     const y = parseInt(audience.newuser, 10)
