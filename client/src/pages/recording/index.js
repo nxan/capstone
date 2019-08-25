@@ -24,6 +24,10 @@ class VideosList extends React.Component {
 
     $('#close').click(function hideDiv() {
     });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'video/LOAD_VIDEO',
+    })
   }
   
   linkSearchInput = node => {

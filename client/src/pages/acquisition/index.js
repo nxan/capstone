@@ -6,14 +6,14 @@ import ChartistGraph from 'react-chartist'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import ReactTable from 'react-table'
-import { Tabs, DatePicker } from 'antd'
+import { DatePicker } from 'antd'
 import 'react-table/react-table.css'
 import styles from './style.module.scss'
 
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY-MM-DD';
 
-const { TabPane } = Tabs
+// const { TabPane } = Tabs
 
 const colors = {
   primary: '#01a8fe',
@@ -27,6 +27,7 @@ const lineOptions = {
     right: 40,
   },
   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
+  low: 0
 }
 
 function pie(social, search, direct, others) {
@@ -100,7 +101,7 @@ class Acquisition extends React.Component {
     })
   }
 
-  lineData = (labels,series) => {
+  lineData = (labels, series) => {
     return {
       labels,
       series: [series],
@@ -132,8 +133,6 @@ class Acquisition extends React.Component {
     if (startValue != null && endValue != null) {
       const { dispatch } = this.props
       const values = { startValue, endValue }
-      console.log(startValue)
-      console.log(endValue)
       dispatch({
         type: 'acquistion/LOAD_ACQUISTION_DATE',
         payload: values
@@ -157,10 +156,13 @@ class Acquisition extends React.Component {
     // With `object` enabled
     const endValue = dateString[1]
     const values = { startValue, endValue }
-    dispatch({
-      type: 'acquistion/LOAD_ACQUISTION_DATE',
-      payload: values
-    })
+    if (endValue !== undefined) {
+      dispatch({
+        type: 'acquistion/LOAD_ACQUISTION_DATE',
+        payload: values
+      })
+    }
+
   };
 
   render() {
@@ -218,32 +220,13 @@ class Acquisition extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <Tabs type="card">
-                    {/* <TabPane tab="Last Month" key="1">
-                      <ChartistGraph
-                        className="height-300"
-                        data={lineData(acquistion.visitorLastWeek)}
-                        options={lineOptions}
-                        type="Line"
-                      />
-                    </TabPane> */}
-                    <TabPane tab="Last Week" key="2">
-                      <ChartistGraph
-                        className="height-300"
-                        data={this.lineData(acquistion.labels,acquistion.visitorLastWeek)}
-                        options={lineOptions}
-                        type="Line"
-                      />
-                    </TabPane>
-                    {/* <TabPane tab="Date" key="3">
-                      <ChartistGraph
-                        className="height-300"
-                        data={lineData2(acquistion.visitorLastMonth)}
-                        options={lineOptions}
-                        type="Line"
-                      />
-                    </TabPane> */}
-                  </Tabs>
+                  <ChartistGraph
+                    className="height-300"
+                    data={this.lineData(acquistion.labels, acquistion.visitorLastWeek)}
+                    options={lineOptions}
+                    type="Line"
+                  />
+
                 </div>
               </div>
             </section>

@@ -8,53 +8,18 @@ import { Helmet } from 'react-helmet'
 import ChartistTooltip from 'chartist-plugin-tooltips-updated'
 import C3Chart from 'react-c3js'
 import moment from 'moment'
-
+// import ReactLoading from 'react-loading';
 // import styles from './style.module.scss'
 
-// function areaData(series) {
+
+// function areaData2(series) {
 //   return {
-//     labels: [
-//       '30',
-//       '29',
-//       '28',
-//       '27',
-//       '26',
-//       '25',
-//       '24',
-//       '23',
-//       '22',
-//       '21',
-//       '20',
-//       '19',
-//       '18',
-//       '17',
-//       '16',
-//       '15',
-//       '14',
-//       '13',
-//       '12',
-//       '11',
-//       '10',
-//       '9',
-//       '8',
-//       '7',
-//       '6',
-//       '5',
-//       '4',
-//       '3',
-//       '2 days ago',
-//       'Yesterday',
-//     ],
+//     labels: ['7', '6', '5', '4', '3', '2 days ago', 'Yesterday'],
 //     series: [series],
 //   }
 // }
 
-function areaData2(series) {
-  return {
-    labels: ['7', '6', '5', '4', '3', '2 days ago', 'Yesterday'],
-    series: [series],
-  }
-}
+
 
 const colors = {
   primary: '#01a8fe',
@@ -164,26 +129,35 @@ const columnsLocation = [
     ),
   },
 ]
-const data = [
-  {
-    location: 'Vietnam',
-    users: '23',
-    percentuser: '100',
-    key: 'VN',
-    children: [
-      {
-        location: 'HCM',
-        users: '23',
-        percentuser: '100',
-        key: 'HCM'
-      },
-    ]
+// const data = [
+//   {
+//     location: 'Vietnam',
+//     users: '23',
+//     percentuser: '100',
+//     key: 'VN',
+//     children: [
+//       {
+//         location: 'HCM',
+//         users: '23',
+//         percentuser: '100',
+//         key: 'HCM'
+//       },
+//     ]
+//   },
+// ]
+// const areaOptions = {
+//   low: 0,
+//   showArea: true,
+//   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
+// }
+
+const lineOptions = {
+  fullWidth: !0,
+  chartPadding: {
+    right: 40,
   },
-]
-const areaOptions = {
-  low: 0,
-  showArea: true,
   plugins: [ChartistTooltip({ anchorToPoint: false, appendToBody: true, seriesName: false })],
+  low: 0
 }
 
 @connect(({ audience }) => ({ audience }))
@@ -193,7 +167,14 @@ class Audience extends React.Component {
     startValue: null,
     endValue: null,
     endOpen: false,
+    // loading: true
+  }
 
+  lineData = (labels, series) => {
+    return {
+      labels,
+      series: [series],
+    }
   }
 
   componentDidMount = () => {
@@ -242,23 +223,13 @@ class Audience extends React.Component {
     const endTime = moment(value, 'YYYY-MM-DD').format('YYYY-MM-DD')
     const values = { startTime, endTime }
     // console.log(values)
+    // this.setState({ loading: true })
     const { dispatch } = this.props
     dispatch({
       type: 'audience/LOAD_AUDIENCE_DATE',
       payload: values
     })
-    // fetch('http://localhost:8888/api/stats/audience/information/capstonefpt.myshopify.com/' + startTime + '/' + endTime, {
-    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    //   credentials: 'include',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   }
-    // }).then((dataJson) => dataJson.json())
-    //   .then((dataJson) => {
-    //     this.setState({ result: dataJson });
-    //     console.log(dataJson)
-    //   }).catch(error => console.log(error));
+
   }
 
   handleStartOpenChange = open => {
@@ -300,6 +271,7 @@ class Audience extends React.Component {
       <Authorize roles={['admin']}>
         <Helmet title="Audience" />
         <div className="row">
+
           <div className="col-lg-8" />
           <div className="col-lg-4 text-right">
             <DatePicker
@@ -324,6 +296,7 @@ class Audience extends React.Component {
         <div className="row">
           <div className="col-lg-12">
             <div className="card">
+              {/* <ReactLoading type="balls" color="#FFA07A" height='20%' width='20%' /> */}
               <div className="card-header">
                 <h5 className="text-black">
                   <strong>OVERVIEW SESSION BY TIME</strong>
@@ -333,7 +306,6 @@ class Audience extends React.Component {
               </div>
               <div className="card-body">
                 <div className="mb-5">
-                  <Tabs type="card">
                     {/* <TabPane tab="Last Month" key="1">
                       <ChartistGraph
                         className="height-300"
@@ -342,14 +314,13 @@ class Audience extends React.Component {
                         type="Line"
                       />
                     </TabPane> */}
-                    <TabPane tab="Last Week" key="2">
-                      <ChartistGraph
-                        className="height-300"
-                        data={areaData2(audience.sessionLastWeek)}
-                        options={areaOptions}
-                        type="Line"
-                      />
-                    </TabPane>
+                    <ChartistGraph
+                      className="height-300"
+                      data={this.lineData(audience.labels, audience.sessionLastWeek)}
+                      // data={areaData2(audience.sessionLastWeek)}
+                      options={lineOptions}
+                      type="Line"
+                    />
                     {/* <TabPane tab="Date" key="3">
                       <DatePicker
                         disabledDate={this.disabledStartDate}
@@ -377,7 +348,6 @@ class Audience extends React.Component {
                         type="Line"
                       />
                     </TabPane> */}
-                  </Tabs>
                 </div>
               </div>
             </div>
@@ -566,7 +536,7 @@ class Audience extends React.Component {
                         <Table columns={columnsbrowser} dataSource={audience.usrbrowser} />
                       </TabPane>
                       <TabPane tab="Location" key="4">
-                        <Table columns={columnsLocation} dataSource={data} />
+                        <Table columns={columnsLocation} dataSource={audience.location} />
                       </TabPane>
                     </Tabs>
                   </div>

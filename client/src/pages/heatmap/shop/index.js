@@ -104,7 +104,9 @@ class HeatMap extends React.Component {
                 this.replayFormatSetter(data);
                 // const heatmap = 
                 // $('.frame').contents().find("body").append(heatMapScript(data.heatMap))
-            }).catch(error => console.log(error));
+            }).catch(error => {
+                console.log(error)
+            });
     }
 
 

@@ -8,10 +8,17 @@ import * as selectors from './selectors';
 export function* LOAD_HEATMAP() {
     const shopUrl = yield select(selectors.shopUrl)
     const heatmap = yield call(getHeatMap, shopUrl)
+    const newHeatMap = []
+    // const id = heatmap.id
+    // // eslint-disable-next-line camelcase
+    // const page_url = heatmap.page_url
+    // // eslint-disable-next-line camelcase
+    // const shop_id = heatmap.shop_id
     yield put({
         type: 'heatmap/SET_STATE',
         payload: {
             heatmap,
+            newHeatMap
         },
     })
 }
