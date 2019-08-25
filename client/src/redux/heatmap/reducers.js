@@ -2,6 +2,7 @@ import actions from './actions'
 
 const initialState = {
   heatmap: [],
+  newHeatMap: []
 }
 
 export default function heatmapReducer(state = initialState, action) {

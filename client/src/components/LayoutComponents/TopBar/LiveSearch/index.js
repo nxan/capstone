@@ -1,7 +1,7 @@
 import React from 'react'
-import { Input, Icon } from 'antd'
+// import { Input, Icon } from 'antd'
 import { injectIntl } from 'react-intl'
-import styles from './style.module.scss'
+// import styles from './style.module.scss'
 
 @injectIntl
 class LiveSearch extends React.Component {
@@ -53,18 +53,18 @@ class LiveSearch extends React.Component {
 
   render() {
     // const { showSearch, searchText } = this.state
-    const {
-      intl: { formatMessage },
-    } = this.props
+    // const {
+    //   intl: { formatMessage },
+    // } = this.props
     return (
       <div className="d-inline-block mr-4">
-        <Input
+        {/* <Input
           className={styles.extInput}
           placeholder={formatMessage({ id: 'topBar.typeToSearch' })}
           prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
           style={{ width: 200 }}
           onFocus={this.showLiveSearch}
-        />
+        /> */}
         {/* <div
           className={`${
             showSearch ? `${styles.livesearch} ${styles.livesearchVisible}` : styles.livesearch

@@ -81,7 +81,7 @@ module.exports = {
 
             },
             where: {
-                session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "') ")],
+                session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "') ")],
 
             }
         });
@@ -114,7 +114,7 @@ module.exports = {
                 attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
                 group: 'session_id',
                 where: {
-                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "' and acquistion_id=" + acquistion_id + ") ")],
+                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time BETWEEN N'" + from + "' AND  N'" + to + "' and acquistion_id=" + acquistion_id + ") ")],
                 },
                 having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
             },
@@ -140,7 +140,7 @@ module.exports = {
                 attributes: [sequelize.fn('COUNT', sequelize.col('session_id'))],
                 group: 'session_id',
                 where: {
-                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time >= N'" + from + "' AND session_end_time <= N'" + to + "') ")],
+                    session_id: [sequelize.literal("(select id from session where shop_id = " + shop_id + " AND session_start_time BETWEEN N'" + from + "' AND N'" + to + "') ")],
                 },
                 having: sequelize.where(sequelize.fn('COUNT', sequelize.col('session_id')), '=', 1)
             },

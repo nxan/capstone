@@ -16,7 +16,7 @@ class LoginLayout extends React.PureComponent {
               <div className={styles.logo}>
                 <Link to="/">
                   { (
-                    <img src="resources/images/logo.png" alt="Shopify Analytics" />
+                    <img src="/resources/images/logo.png" alt="Shopify Analytics" />
                   )}                  
                 </Link>
               </div>              
