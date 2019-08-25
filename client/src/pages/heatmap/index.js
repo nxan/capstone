@@ -153,7 +153,7 @@ class HeatMapList extends React.Component {
 
         /* eslint object-shorthand: [2, "consistent"] */
         const inputProps = {
-            placeholder: "Type to search page url",
+            placeholder: "Type to search page url...",
             value: value,
             onChange: this.onChange
         };

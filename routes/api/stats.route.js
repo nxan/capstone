@@ -736,7 +736,7 @@ router.get('/acquisition/:shop_url', async (req, res) => {
             model.acquistion = 'Other';
         }
         var bounce_num = await session_page_db.getSessionPageWithCount(shop.id, i);
-        model.visitor = result_vis['' + i]
+        model.visitor = result_vis['' + i] == undefined? 0 : result_vis['' + i]
         model.revisitor = result_re_vis['' + i] == undefined ? 0 : result_re_vis['' + i];
 
         var sessionnum = session['' + i] == undefined ? 1 : session['' + i];
@@ -748,9 +748,9 @@ router.get('/acquisition/:shop_url', async (req, res) => {
             model.sessions = sessionnum;
             model.pagessession = Math.round((session_page['' + i] / sessionnum), 2);
         }
-        model.bouncerate = ((bounce_num.length / session['' + i]) * 100).toFixed(1) + '%';
+        model.bouncerate = ((bounce_num.length / sessionnum) * 100).toFixed(1) + '%';
         // model.pagessession = session['' + i] + session_page['' + i];
-        model.avgsessionduration = formatSeconds(avg[i - 1].Avg);
+        model.avgsessionduration = avg[i-1] == undefined ? 0 : formatSeconds(avg[i - 1].Avg);
         model.conversionrate = 0;
         model.completion = 0;
         model.value = 0;
