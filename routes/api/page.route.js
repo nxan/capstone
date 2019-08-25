@@ -181,7 +181,12 @@ router.get('/getAll/:shop_url', async (req, res) => {
     const shop_url = req.params.shop_url
     let shop = await shop_db.getShop(shop_url);
     var pages = await page_db.getAllPageWithNotPage(shop);
-    console.log(pages);
+    res.json(pages);
+})
+router.get('/getAllPages/:shop_url', async (req, res) => {
+    const shop_url = req.params.shop_url
+    let shop = await shop_db.getShop(shop_url);
+    let pages = await page_db.getAllPage(shop.id);
     res.json(pages);
 })
 router.get('/page_url/:url', async (req, res) => {

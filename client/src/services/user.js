@@ -8,10 +8,6 @@ export async function login(email, password, shop, hmac, code, stateShop, instal
     }
   };
   const state = stateShop
-  console.log(shop)
-  console.log(code)
-  console.log(stateShop)
-  console.log(installed)
   const body = JSON.stringify({ email, password });
   
   return axios.post('http://localhost:8888/api/auth', body, config)
