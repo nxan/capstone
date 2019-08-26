@@ -67,13 +67,23 @@ class HeatMap extends React.Component {
         const h337 = require('heatmap.js')
         const config = {
             container: document.getElementById('shop'),
-            radius: 20,
-            maxOpacity: .7,
-            minOpacity: 0,
-            blur: .75
+            // radius: 20,
+            // maxOpacity: .7,
+            // minOpacity: .3,
+            // blur: .75,
+            // gradient: {
+            //     // enter n keys between 0 and 1 here
+            //     // for gradient color customization
+            //     0.45: "rgb(000,000,255)",
+            //     0.55: "rgb(000,255,255)",
+            //     0.65: "rgb(000,255,000)",
+            //     0.95: "rgb(255,255,000)",
+            //     1.00: "rgb(255,000,000)"
+            // }
         };
         const heatmap = h337.create(config);
         heatmap.setData({
+            max:5,
             data: JSON.parse(localStorage.getItem('heatmap'))
         });
         // document.getElementsByClassName('spy_frame').contentWindow.postMessage(JSON.stringify({ key: 'levi' }), "*");

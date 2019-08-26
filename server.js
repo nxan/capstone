@@ -5,6 +5,7 @@ const path = require('path');
 var cors = require('cors')
 var favicon = require('serve-favicon')
 const db = require('./config/db');
+const mkdirp = require('mkdirp')
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var allClients = [];
@@ -146,25 +147,30 @@ async function uploadVideo() {
             videoFields.session_id = onlines[i].session_id;
             videoFields.url_video = onlines[i].session_id;
             videoFields.date_time = new Date(Date.now()).toISOString()
-            var video = await video_db.addVideo(videoFields);
-            var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
-            var buffer = bufferFile(filename);
-            const
-                blobName = video.id + '.json'
-                , stream = getStream(buffer)
-                , streamLength = buffer.length
-                ;
-            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                if (!err) {
-                    console.log("upload file success");
 
-                }
-                else {
-                    console.log(err);
-                }
-            });
-            var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
-            fs.unlinkSync(filePath);
+            
+            var filename = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+            if (fs.existsSync(filename)) {
+                var video = await video_db.addVideo(videoFields);
+                var buffer = bufferFile(filename);
+                const
+                    blobName = video.id + '.json'
+                    , stream = getStream(buffer)
+                    , streamLength = buffer.length
+                    ;
+                blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                    if (!err) {
+                        console.log("upload file success");
+
+                    }
+                    else {
+                        console.log(err);
+                    }
+                });
+                var filePath = 'recordings/' + onlines[i].shop + '/' + onlines[i].session_id + '.json';
+                fs.unlinkSync(filePath);
+            }
+
             onlines.splice(i, 1);
         }
     }
@@ -344,6 +350,11 @@ io.on("connection", function (socket) {
         var json = JSON.parse(data);
         console.log('video received:' + socket.id);
         var url = 'recordings/' + json.shop + '/' + json.session_id + '.json';
+        var dir = 'recordings/' + json.shop;
+        if (!fs.existsSync(dir)) {
+            mkdirp(dir, function (err) {
+            });
+        }
         if (!json.is_change_page) {
             fs.appendFile(url, JSON.stringify(json.video) + ',', (err) => {
                 if (err) {

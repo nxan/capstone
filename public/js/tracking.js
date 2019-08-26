@@ -60,7 +60,7 @@ $(document).ready(() => {
 
         socket.emit("client-change-page");
         // socket.emit("client-send-video", JSON.stringify(video));
-        navigator.sendBeacon('https://552b2d72.ngrok.io/api/page/sendHeatMap', data);
+        navigator.sendBeacon('https://d4131186.ngrok.io/api/page/sendHeatMap', data);
     })
     // document.onmousemove = handler;
     //setInterval(getMousePosition, 100); // setInterval repeats every X ms
@@ -70,7 +70,7 @@ $(document).ready(() => {
     })
 
     setInterval(function () {
-        fetch('https://552b2d72.ngrok.io/api/session/save/resave', {
+        fetch('https://d4131186.ngrok.io/api/session/save/resave', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             // mode: 'cors', // no-cors, cors, *same-origin
             credentials: 'include',
@@ -142,71 +142,6 @@ function record() {
             events.push(event);
         },
     });
-    // setTimeout(sendVideo, 2000);
-    // function save() {
-    //     const body = JSON.stringify({
-    //         session_id: session_id,
-    //         video: events,
-    //         shop: window.location.hostname
-    //     });
-
-    //     events = [];
-    //     fetch('http://localhost:8888/api/video/sendVideo', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body,
-    //     });
-    // }
-
-    // // save events every 10 seconds
-    // setInterval(save, 2000);
-
-
-    // function savevideo() {
-    //     // const body = JSON.stringify(events);
-    //     //console.log(events);
-    //     console.log(session_id)
-    //     if (session_id != 0) {
-    //         const body = events;
-    //         events = [];
-    //         $.ajax({
-    //             url: 'http://localhost:8888/api/video/sendVideo',
-    //             method: 'post',
-    //             contentType: 'application/json',
-    //             data: JSON.stringify({
-    //                 session_id: session_id,
-    //                 video: body,
-    //                 shop: window.location.hostname
-    //             }),
-    //             complete: function () {
-    //                 window.positions = [];
-    //             },
-    //             success: function (data) {
-    //                 window.positions = [];
-    //             }
-    //         }).done(function () {
-    //             console.log('ok');
-    //         })
-    //     }
-    // }
-    // setInterval(savevideo, 0.1 * 20000);
-    // interval = setTimeout(function () {
-    //     if (typeof socket !== 'undefined') {
-    //         console.log('socket true')
-    //         var video = {
-    //             session_id: session_id,
-    //             video: events,
-    //             shop: window.location.hostname,
-    //             is_change_page: false
-    //         }
-    //         console.log(events)
-    //         events = []
-    //         socket.emit("client-send-video", JSON.stringify(video));
-
-    //     }
-    // }, 1000)
 
 }
 function sendVideoSocket() {
@@ -281,7 +216,7 @@ function handler(event) {
 function save_session(set) {
     if (!save) {
         if (document.visibilityState === 'visible') {
-            fetch('https://552b2d72.ngrok.io/api/session', {
+            fetch('https://d4131186.ngrok.io/api/session', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 // mode: 'no-cors', // no-cors, cors, *same-origin
                 // credentials: 'include', // include, *same-origin, omit
