@@ -65,7 +65,11 @@ router.post('/sendHeatMap', async (req, res, next) => {
     var stringStream = JSON.stringify(heatmap);
     var page = await page_db.getPage(req.body.page);
     var url = './heatmap/' + page.id + '.json';
-
+    var dir = './heatmap/' + req.body.shop;
+    if (!fs.existsSync(dir)) {
+        mkdirp(dir, function (err) {
+        });
+    }
     fs.appendFile(url, JSON.stringify(req.body.heat_map) + ',', (err) => {
         if (err) {
             console.log(err);
